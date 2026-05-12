@@ -1,0 +1,42 @@
+registry:
+  sinks:
+    hep.render.hist1d:
+      spec: fasthep_render.spec.sinks.hist1d:HIST1D_RENDER_SPEC
+      impl: fasthep_render.impl.sinks.hist1d:run_hist1d_render
+
+    hep.render.data_mc:
+      spec: fasthep_render.spec.sinks.data_mc:DATA_MC_RENDER_SPEC
+      impl: fasthep_render.impl.sinks.data_mc:run_data_mc_render
+
+    hep.render.heatmap2d:
+      spec: fasthep_render.spec.sinks.heatmap2d:HEATMAP2D_RENDER_SPEC
+      impl: fasthep_render.impl.sinks.heatmap2d:run_heatmap2d_render
+
+    hep.render.project:
+      spec: fasthep_render.spec.sinks.project:PROJECT_RENDER_SPEC
+      impl: fasthep_render.impl.sinks.project:run_project_render
+
+    hep.render.comparison:
+      spec: fasthep_render.spec.sinks.comparison:COMPARISON_RENDER_SPEC
+      impl: fasthep_render.impl.sinks.comparison:run_comparison_render
+
+  renderers:
+    hep.render.hist1d:
+      spec: fasthep_render.types.hist1d:HIST1D_RENDER_TYPE
+      impl: fasthep_render.impl.hist1d:render_hist1d
+
+    hep.render.data_mc:
+      spec: fasthep_render.types.data_mc:DATA_MC_RENDER_TYPE
+      impl: fasthep_render.impl.data_mc:render_data_mc
+
+    hep.render.heatmap2d:
+      spec: fasthep_render.types.heatmap2d:HEATMAP2D_RENDER_TYPE
+      impl: fasthep_render.impl.heatmap2d:render_heatmap2d
+
+    hep.render.project:
+      spec: fasthep_render.types.project:PROJECT_RENDER_TYPE
+      impl: fasthep_render.impl.project:render_project_then
+
+    hep.render.comparison:
+      spec: fasthep_render.types.comparison:COMPARISON_RENDER_TYPE
+      impl: fasthep_render.impl.comparison:render_comparison
