@@ -12,7 +12,7 @@ from hepflow.runtime.engine import execute_plan_partition
 
 def test_flow_executes_render_sink_from_profile(tmp_path) -> None:
     profile = load_profile_config("fasthep_render:registry", project_root=tmp_path)
-    h = hist.Hist(hist.axis.Regular(5, 0, 5, name="x", label="x"))
+    h: hist.Hist = hist.Hist(hist.axis.Regular(5, 0, 5, name="x", label="x"))
     h.fill([0.5, 1.5, 1.5, 3.5])
     plan = ExecutionPlan(registry=profile["registry"])
     plan.add_node(

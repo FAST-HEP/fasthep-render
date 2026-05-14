@@ -30,6 +30,9 @@ def render_data_mc(
     out_png = ctx["output_path"]
 
     ds_axis = find_dataset_axis_name(h)
+    if ds_axis is None:
+        msg = "data_mc render requires a category axis named 'dataset' or 'dataset_name'"
+        raise ValueError(msg)
     available = set(get_dataset_categories(h))
 
     data_id = params.data

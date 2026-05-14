@@ -1,10 +1,15 @@
 from __future__ import annotations
 
 from math import ceil
-from typing import Any
+from typing import Any, Protocol
 
 import mplhep as mh
-from hepflow.model.render_types import RenderCommonSpec
+from hepflow.model.render import StyleSpec
+
+
+class HasRenderStyle(Protocol):
+    @property
+    def style(self) -> StyleSpec: ...
 
 
 def auto_legend_ncol(
@@ -26,19 +31,16 @@ def auto_legend_ncol(
     return min(ncol, max_ncol)
 
 
-def find_dataset_axis_name(h: Any) -> str:
+def find_dataset_axis_name(h: Any) -> str | None:
     for ax in getattr(h, "axes", []):
         if getattr(ax, "name", None) in ("dataset", "dataset_name"):
             return str(ax.name)
-    msg = "data_mc render requires a category axis named 'dataset' or 'dataset_name'"
-    raise ValueError(
-        msg
-    )
+    return None
 
 
 def resolve_color_for_dataset(
-    spec: RenderCommonSpec, ds: str, *, is_data: bool, mc_index: int
-) -> str:
+    spec: HasRenderStyle, ds: str, *, is_data: bool, mc_index: int
+) -> str | None:
     ds_style = (spec.style.datasets or {}).get(ds)
     if ds_style and ds_style.color:
         return ds_style.color
@@ -50,7 +52,7 @@ def resolve_color_for_dataset(
     return cyc[mc_index % len(cyc)]
 
 
-def resolve_label(spec: RenderCommonSpec, ds: str) -> str:
+def resolve_label(spec: HasRenderStyle, ds: str) -> str:
     ds_style = (spec.style.datasets or {}).get(ds)
     if ds_style and ds_style.label:
         return ds_style.label

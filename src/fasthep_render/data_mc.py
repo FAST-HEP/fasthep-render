@@ -4,7 +4,13 @@ from typing import Any
 
 import matplotlib.pyplot as plt
 import mplhep as mh
-from hepflow.model.render import DatasetStyle, RenderOutcome, RenderSpec, RenderStatus
+from hepflow.model.render import (
+    AxesSpec,
+    DatasetStyle,
+    RenderOutcome,
+    RenderSpec,
+    RenderStatus,
+)
 from mplhep.comp import data_model
 
 from fasthep_render.common import (
@@ -72,6 +78,9 @@ def render_data_mc(
     h_sel = h
 
     ds_axis = find_dataset_axis_name(h_sel)
+    if ds_axis is None:
+        msg = "data_mc render requires a category axis named 'dataset' or 'dataset_name'"
+        raise ValueError(msg)
     available = set(get_dataset_categories(h_sel))
 
     data_id = dm.data
@@ -165,6 +174,7 @@ def render_data_mc(
     # ------------------------------------------------------------
     # Figure / axes
     # ------------------------------------------------------------
+    axes = spec.axes or AxesSpec()
     figsize = tuple(spec.figure.size)
     dpi = int(spec.figure.dpi)
 
@@ -181,8 +191,8 @@ def render_data_mc(
             stacked_components=stacked_components,
             stacked_labels=stacked_labels,
             stacked_colors=stacked_colors,
-            xlabel=spec.axes.x.label or spec.axes.x.name,
-            ylabel=spec.axes.y.label or "Events",
+            xlabel=axes.x.label or axes.x.name,
+            ylabel=axes.y.label or "Events",
         )
         fig.set_size_inches(figsize)
         fig.set_dpi(dpi)
@@ -229,13 +239,13 @@ def render_data_mc(
     # ------------------------------------------------------------
     # Axis scale / limits
     # ------------------------------------------------------------
-    if spec.axes.y.scale == "log":
+    if axes.y.scale == "log":
         ax_main.set_yscale("log")
 
-    if spec.axes.x.limits:
-        ax_main.set_xlim(*spec.axes.x.limits)
-    if spec.axes.y.limits:
-        ax_main.set_ylim(*spec.axes.y.limits)
+    if axes.x.limits:
+        ax_main.set_xlim(*axes.x.limits)
+    if axes.y.limits:
+        ax_main.set_ylim(*axes.y.limits)
 
     if ax_ratio is not None and dm.ratio:
         ax_ratio.set_ylabel(dm.ratio_ylabel)

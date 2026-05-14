@@ -27,15 +27,15 @@ def make_group_map_from_transform(
         return out
 
     if isinstance(by, dict):
-        out: dict[str, str] = {}
+        group_map: dict[str, str] = {}
         for group_name, members in by.items():
             for ds in members:
-                out[str(ds)] = str(group_name)
+                group_map[str(ds)] = str(group_name)
 
         # samples not listed stay in their own group
         for ds in dataset_names:
-            out.setdefault(ds, ds)
-        return out
+            group_map.setdefault(ds, ds)
+        return group_map
 
     msg = f"Invalid group transform 'by': {by!r}"
     raise ValueError(msg)
@@ -107,17 +107,17 @@ def rebuild_hist_from_grouped_samples(
     view = out.view(flow=False)
 
     for i, (_group_name, h_group) in enumerate(grouped.items()):
-        slicer = [slice(None)] * view.ndim
+        slicer: list[Any] = [slice(None)] * view.ndim
         slicer[ds_axis_idx] = i
-        slicer = tuple(slicer)
+        index = tuple(slicer)
 
         gview = h_group.view(flow=False)
 
         if hasattr(view, "value") and hasattr(view, "variance"):
-            view.value[slicer] = gview.value
-            view.variance[slicer] = gview.variance
+            view.value[index] = gview.value
+            view.variance[index] = gview.variance
         else:
-            view[slicer] = gview
+            view[index] = gview
 
     return out
 
@@ -147,7 +147,7 @@ def apply_group_transform_to_products(
         dataset_names=dataset_names,
     )
 
-    grouped = {}
+    grouped: dict[str, Any] = {}
     for ds in dataset_names:
         group = group_map.get(ds, ds)
         h_ds = h[{dataset_axis_name: ds}]
@@ -306,17 +306,17 @@ def rebuild_hist_from_scaled_samples(
     for ds, sf in sample_scale_map.items():
         idx = out.axes[dataset_axis_name].index(ds)
 
-        slicer = [slice(None)] * view.ndim
+        slicer: list[Any] = [slice(None)] * view.ndim
         slicer[ds_axis_idx] = idx
-        slicer = tuple(slicer)
+        index = tuple(slicer)
 
         # Weight storage: values scale linearly, variances quadratically
         if hasattr(view, "value") and hasattr(view, "variance"):
-            view.value[slicer] *= sf
-            view.variance[slicer] *= sf * sf
+            view.value[index] *= sf
+            view.variance[index] *= sf * sf
         else:
             # Count / plain numeric storage
-            view[slicer] *= sf
+            view[index] *= sf
 
     return out
 

@@ -11,7 +11,7 @@ from fasthep_render.impl.sinks.hist1d import run_hist1d_render
 
 
 def _hist1d() -> hist.Hist:
-    h = hist.Hist(hist.axis.Regular(5, 0, 5, name="x", label="x"))
+    h: hist.Hist = hist.Hist(hist.axis.Regular(5, 0, 5, name="x", label="x"))
     h.fill([0.5, 1.5, 1.5, 3.5])
     return h
 
