@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-import matplotlib
+import matplotlib as mpl
 
-matplotlib.use("Agg")
+mpl.use("Agg")
 
 import hist
-
 from hepflow.compiler.profiles import load_profile_config
 from hepflow.model.plan import ExecutionNode, ExecutionPlan, PlanInputRef
 from hepflow.runtime.engine import execute_plan_partition

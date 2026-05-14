@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import networkx as nx
-from networkx.drawing.nx_pydot import to_pydot
-
 from hepflow.model.graph import GraphNode
-
+from networkx.drawing.nx_pydot import to_pydot
 
 _NODE_STYLES: dict[str, dict[str, str]] = {
     "reader": {"shape": "oval", "fillcolor": "#E3F2FD"},

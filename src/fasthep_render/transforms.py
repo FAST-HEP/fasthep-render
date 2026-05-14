@@ -1,9 +1,8 @@
 from typing import Any
 
 import hist
-
-from hepflow.model.render import RenderSpec
 from hepflow.model.render_types import RenderCommonSpec
+
 from fasthep_render.common import find_dataset_axis_name
 
 
@@ -18,7 +17,8 @@ def make_group_map_from_transform(
     """
     if isinstance(by, str):
         if by != "dataset_group":
-            raise ValueError(f"Unsupported group transform mode: {by!r}")
+            msg = f"Unsupported group transform mode: {by!r}"
+            raise ValueError(msg)
 
         out: dict[str, str] = {}
         for ds in dataset_names:
@@ -37,7 +37,8 @@ def make_group_map_from_transform(
             out.setdefault(ds, ds)
         return out
 
-    raise ValueError(f"Invalid group transform 'by': {by!r}")
+    msg = f"Invalid group transform 'by': {by!r}"
+    raise ValueError(msg)
 
 
 def apply_group_transform(
@@ -105,7 +106,7 @@ def rebuild_hist_from_grouped_samples(
 
     view = out.view(flow=False)
 
-    for i, (group_name, h_group) in enumerate(grouped.items()):
+    for i, (_group_name, h_group) in enumerate(grouped.items()):
         slicer = [slice(None)] * view.ndim
         slicer[ds_axis_idx] = i
         slicer = tuple(slicer)
@@ -198,7 +199,8 @@ def apply_render_transforms(
                 ctx=ctx,
             )
         else:
-            raise ValueError(f"Unsupported transform kind: {t.kind}")
+            msg = f"Unsupported transform kind: {t.kind}"
+            raise ValueError(msg)
 
     return out
 
@@ -256,7 +258,8 @@ def make_sample_scale_map(
             out[ds] = float(factors.get(group, 1.0))
         return out
 
-    raise ValueError(f"Unsupported scale transform 'by': {by!r}")
+    msg = f"Unsupported scale transform 'by': {by!r}"
+    raise ValueError(msg)
 
 
 def build_scaled_samples(
@@ -338,15 +341,21 @@ def apply_scale_transform_to_products(
         return products
 
     if scale.mode != "overall":
-        raise ValueError(
+        msg = (
             f"Unsupported scale transform mode for now: {scale.mode!r} "
             "(only 'overall' is implemented)"
         )
+        raise ValueError(
+            msg
+        )
 
     if scale.factors_ref:
-        raise ValueError(
+        msg = (
             "scale transform with factors_ref is not implemented yet "
             "(only inline factors are supported for now)"
+        )
+        raise ValueError(
+            msg
         )
 
     h = products.get("hist")

@@ -4,8 +4,7 @@ from typing import Any
 
 import matplotlib.pyplot as plt
 import mplhep as mh
-
-from hepflow.model.render import RenderArtifact, RenderSpec, RenderOutcome, RenderStatus
+from hepflow.model.render import RenderArtifact, RenderOutcome, RenderSpec, RenderStatus
 
 
 def _strip_dataset_axis_for_comparison(h):
@@ -26,15 +25,17 @@ def render_comparison(
     input_paths: dict[str, str] | None = None,
 ) -> RenderOutcome:
     if spec.plot != "comparison" or spec.comparison is None:
-        raise ValueError("render_comparison requires RenderSpec(plot='comparison')")
+        msg = "render_comparison requires RenderSpec(plot='comparison')"
+        raise ValueError(msg)
 
     cmp = spec.comparison
 
     h1 = _strip_dataset_axis_for_comparison(products["reference"])
     h2 = _strip_dataset_axis_for_comparison(products["target"])
     if h1 is None or h2 is None:
+        msg = "render_comparison requires products['reference'] and products['target']"
         raise ValueError(
-            "render_comparison requires products['reference'] and products['target']"
+            msg
         )
 
     figsize = tuple(spec.figure.size)
@@ -70,7 +71,7 @@ def render_comparison(
 
     # Legend
     if spec.legend:
-        handles, labels = ax.get_legend_handles_labels()
+        handles, _labels = ax.get_legend_handles_labels()
         if handles:
             ax.legend(
                 loc=spec.legend.loc,

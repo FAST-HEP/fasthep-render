@@ -6,9 +6,10 @@ from typing import Any
 from hepflow.model.render import RenderOutcome
 from hepflow.model.render_types import RenderCommonSpec
 from hepflow.registry.loaders import resolve_runtime_registry
+from hepflow.utils import to_dict
+
 from fasthep_render.dispatch import render_resolved
 from fasthep_render.types.project import ProjectParams
-from hepflow.utils import to_dict
 
 
 def render_project_then(
@@ -27,12 +28,14 @@ def render_project_then(
 
     axis_name = params.axis
     if not axis_name:
-        raise ValueError("project renderer requires a projection axis")
+        msg = "project renderer requires a projection axis"
+        raise ValueError(msg)
 
     ax_names = [getattr(ax, "name", None) for ax in getattr(h, "axes", [])]
     if axis_name not in ax_names:
+        msg = f"project renderer axis '{axis_name}' not found in histogram axes: {ax_names}"
         raise ValueError(
-            f"project renderer axis '{axis_name}' not found in histogram axes: {ax_names}"
+            msg
         )
 
     dataset_axis_name = None
@@ -54,12 +57,14 @@ def render_project_then(
     h_proj = h.project(*keep_axes)
 
     if not isinstance(params.then, dict) or not params.then:
-        raise ValueError("project renderer requires a non-empty 'then' block")
+        msg = "project renderer requires a non-empty 'then' block"
+        raise ValueError(msg)
 
     downstream_spec = deepcopy(params.then)
     downstream_op = downstream_spec.get("op")
     if not isinstance(downstream_op, str) or not downstream_op:
-        raise ValueError("project renderer downstream spec requires explicit 'op'")
+        msg = "project renderer downstream spec requires explicit 'op'"
+        raise ValueError(msg)
 
     # Inherit common config only if not explicitly overridden downstream.
     downstream_spec.setdefault("figure", to_dict(common.figure))
@@ -73,12 +78,13 @@ def render_project_then(
     downstream_spec.setdefault("extensions", dict(common.extensions or {}))
 
     runtime_registry = resolve_runtime_registry(
-        ((ctx.get("plan") or {}).get("registry") or {})
+        (ctx.get("plan") or {}).get("registry") or {}
     )
     entry = runtime_registry.renderers.get(downstream_op)
     if entry is None:
+        msg = f"project renderer downstream op '{downstream_op}' is not registered"
         raise ValueError(
-            f"project renderer downstream op '{downstream_op}' is not registered"
+            msg
         )
 
     downstream_common = RenderCommonSpec.from_dict(downstream_spec)

@@ -1,21 +1,23 @@
 from __future__ import annotations
 
-from typing import Any, Optional
+import contextlib
+from typing import Any
 
 import matplotlib.pyplot as plt
 import mplhep as mh
-
 from hepflow.model.render import RenderOutcome, RenderStatus
 from hepflow.model.render_types import RenderCommonSpec
-from fasthep_render.types.data_mc import DataMcParams
+from mplhep.comp import data_model
+
 from fasthep_render.common import (
+    auto_legend_ncol,
+    find_dataset_axis_name,
     get_dataset_categories,
     label_experiment,
     resolve_color_for_dataset,
     resolve_label,
-    auto_legend_ncol,
-    find_dataset_axis_name,
 )
+from fasthep_render.types.data_mc import DataMcParams
 
 
 def render_data_mc(
@@ -36,10 +38,8 @@ def render_data_mc(
 
     exp = (common.style.experiment or "").strip()
     if exp:
-        try:
+        with contextlib.suppress(Exception):
             mh.style.use(exp)
-        except Exception:
-            pass
 
     def get_ds_hist(ds: str) -> Any | None:
         if ds not in available:
@@ -71,13 +71,14 @@ def render_data_mc(
     legend_order = [ds for ds in legend_order if ds in available]
 
     if data_id not in available:
+        msg = f"data_mc: data dataset '{data_id}' not present in histogram categories: {sorted(available)}"
         raise ValueError(
-            f"data_mc: data dataset '{data_id}' not present in histogram categories: {sorted(available)}"
+            msg
         )
 
     hist_map: dict[str, Any] = {}
     label_map: dict[str, str] = {}
-    color_map: dict[str, Optional[str]] = {}
+    color_map: dict[str, str | None] = {}
 
     mc_color_idx = 0
     for ds in legend_order:
@@ -112,8 +113,6 @@ def render_data_mc(
     dpi = int(common.figure.dpi)
 
     if params.stack:
-        from mplhep.comp import data_model
-
         stacked_components = [hist_map[ds] for ds in stack_draw_order]
         stacked_labels = [label_map[ds] for ds in stack_draw_order]
         stacked_colors = [color_map[ds] for ds in stack_draw_order]
@@ -176,7 +175,7 @@ def render_data_mc(
         ax_ratio.set_ylim(*params.ratio_ylim)
 
     handles, labels = ax_main.get_legend_handles_labels()
-    handle_by_label = {lab: hnd for hnd, lab in zip(handles, labels)}
+    handle_by_label = {lab: hnd for hnd, lab in zip(handles, labels, strict=False)}
 
     ordered_labels = [label_map[ds] for ds in legend_order if ds in hist_map]
     ordered_handles = [handle_by_label[lab] for lab in ordered_labels if lab in handle_by_label]

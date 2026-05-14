@@ -37,7 +37,8 @@ def run_render_sink(
     )
     errors = [issue for issue in issues if str(getattr(issue, "level", "")).lower() == "error"]
     if errors:
-        raise ValueError(f"Render validation failed for {op}: {errors}")
+        msg = f"Render validation failed for {op}: {errors}"
+        raise ValueError(msg)
 
     outcome: RenderOutcome = handler(product, common, params, ctx)
     if outcome.status not in {RenderStatus.RENDERED, RenderStatus.SKIPPED}:

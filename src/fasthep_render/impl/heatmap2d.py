@@ -6,9 +6,9 @@ from typing import Any
 
 import matplotlib.pyplot as plt
 import mplhep as mh
-
 from hepflow.model.render import RenderOutcome, RenderStatus
 from hepflow.model.render_types import RenderCommonSpec
+
 from fasthep_render.types.heatmap2d import Heatmap2DParams
 
 
@@ -29,7 +29,8 @@ def render_heatmap2d(
     xname = common.axes.x.name
     yname = common.axes.y.name
     if not (xname and yname):
-        raise ValueError("heatmap2d renderer requires axes.x.name and axes.y.name")
+        msg = "heatmap2d renderer requires axes.x.name and axes.y.name"
+        raise ValueError(msg)
 
     ax_names = [getattr(ax, "name", None) for ax in getattr(h, "axes", [])]
     ds_axis = (

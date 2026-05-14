@@ -5,6 +5,7 @@ from typing import Any
 
 from hepflow.model.issues import FlowIssue, IssueLevel
 from hepflow.model.render_types import RenderCommonSpec, RenderTypeSpec
+
 from fasthep_render.types.common import resolve_single_hist_input
 
 

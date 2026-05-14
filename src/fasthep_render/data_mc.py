@@ -1,15 +1,20 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Any
 
 import matplotlib.pyplot as plt
-
 import mplhep as mh
+from hepflow.model.render import DatasetStyle, RenderOutcome, RenderSpec, RenderStatus
 from mplhep.comp import data_model
 
-from hepflow.model.render import DatasetStyle, RenderOutcome, RenderSpec, RenderStatus
-from fasthep_render.common import auto_legend_ncol, find_dataset_axis_name, get_dataset_categories, label_experiment, resolve_color_for_dataset, resolve_label
-
+from fasthep_render.common import (
+    auto_legend_ncol,
+    find_dataset_axis_name,
+    get_dataset_categories,
+    label_experiment,
+    resolve_color_for_dataset,
+    resolve_label,
+)
 
 
 def _is_stackable(name: str, spec: RenderSpec) -> bool:
@@ -48,8 +53,6 @@ def render_data_mc(
     h: Any,
     spec: RenderSpec,
     out_png: str,
-    select: dict[str, Any] | None = None,
-    on_mismatch: str = "skip",
     **_kw,
 ) -> RenderOutcome:
     """
@@ -62,7 +65,8 @@ def render_data_mc(
     - stack draw order is derived from legend order using data_mc.stack_order
     """
     if spec.data_mc is None:
-        raise ValueError("RenderSpec.plot='data_mc' requires spec.data_mc to be set")
+        msg = "RenderSpec.plot='data_mc' requires spec.data_mc to be set"
+        raise ValueError(msg)
 
     dm = spec.data_mc
     h_sel = h
@@ -115,8 +119,9 @@ def render_data_mc(
     legend_order = [ds for ds in legend_order if ds in available]
 
     if data_id not in available:
+        msg = f"data_mc: data dataset '{data_id}' not present in histogram categories: {sorted(available)}"
         raise ValueError(
-            f"data_mc: data dataset '{data_id}' not present in histogram categories: {sorted(available)}"
+            msg
         )
 
     # ------------------------------------------------------------
@@ -124,7 +129,7 @@ def render_data_mc(
     # ------------------------------------------------------------
     hist_map: dict[str, Any] = {}
     label_map: dict[str, str] = {}
-    color_map: dict[str, Optional[str]] = {}
+    color_map: dict[str, str | None] = {}
 
     mc_color_idx = 0
     for ds in legend_order:
@@ -241,7 +246,7 @@ def render_data_mc(
     # Keep legend order stable and user-facing, independent of draw order
     # ------------------------------------------------------------
     handles, labels = ax_main.get_legend_handles_labels()
-    handle_by_label = {lab: hnd for hnd, lab in zip(handles, labels)}
+    handle_by_label = {lab: hnd for hnd, lab in zip(handles, labels, strict=False)}
 
     ordered_labels = [label_map[ds] for ds in legend_order if ds in hist_map]
     ordered_handles = [handle_by_label[lab] for lab in ordered_labels if lab in handle_by_label]

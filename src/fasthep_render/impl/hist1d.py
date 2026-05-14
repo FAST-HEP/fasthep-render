@@ -1,17 +1,18 @@
 from __future__ import annotations
 
+import contextlib
 from typing import Any
 
 import matplotlib.pyplot as plt
 import mplhep as mh
-
 from hepflow.model.render import RenderOutcome, RenderStatus
 from hepflow.model.render_types import RenderCommonSpec
+
 from fasthep_render.common import (
+    auto_legend_ncol,
     label_experiment,
     resolve_color_for_dataset,
     resolve_label,
-    auto_legend_ncol,
 )
 from fasthep_render.types.hist1d import Hist1DParams
 
@@ -29,8 +30,9 @@ def _find_physics_axis_name(h: Any, dataset_axis_name: str | None) -> str:
     names = [getattr(ax, "name", None) for ax in getattr(h, "axes", [])]
     physics = [n for n in names if n and n != dataset_axis_name]
     if len(physics) != 1:
+        msg = f"hist1d renderer requires exactly one non-dataset axis, found {physics}"
         raise ValueError(
-            f"hist1d renderer requires exactly one non-dataset axis, found {physics}"
+            msg
         )
     return physics[0]
 
@@ -46,10 +48,8 @@ def render_hist1d(
 
     exp = (common.style.experiment or "").strip()
     if exp:
-        try:
+        with contextlib.suppress(Exception):
             mh.style.use(exp)
-        except Exception:
-            pass
 
     dataset_axis_name = _find_dataset_axis_name(h)
     xname = _find_physics_axis_name(h, dataset_axis_name)

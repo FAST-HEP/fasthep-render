@@ -4,9 +4,10 @@ from typing import Any
 
 import matplotlib.pyplot as plt
 import mplhep as mh
-
 from hepflow.model.render import RenderOutcome, RenderStatus
 from hepflow.model.render_types import RenderCommonSpec
+from mplhep.comp import comparison as mplhep_comparison
+
 from fasthep_render.types.comparison import ComparisonParams
 
 
@@ -24,8 +25,6 @@ def render_comparison(
     ax = fig.add_subplot(1, 1, 1)
 
     try:
-        from mplhep.comp import comparison as mplhep_comparison
-
         mplhep_comparison(
             h_ref,
             h_tgt,

@@ -6,6 +6,7 @@ from hepflow.model.render import RenderOutcome
 from hepflow.model.render_types import RenderCommonSpec
 from hepflow.registry.loaders import resolve_runtime_registry
 from hepflow.registry.runtime import RuntimeRegistry
+
 from fasthep_render.transforms import apply_render_transforms
 
 
@@ -20,12 +21,13 @@ def render_by_registry(
     spec_dict = dict(params.get("spec") or {})
 
     runtime_registry = runtime_registry or resolve_runtime_registry(
-        ((ctx.get("plan") or {}).get("registry") or {})
+        (ctx.get("plan") or {}).get("registry") or {}
     )
 
     entry = runtime_registry.renderers.get(op)
     if entry is None:
-        raise ValueError(f"Unknown renderer: {op}")
+        msg = f"Unknown renderer: {op}"
+        raise ValueError(msg)
 
     common = RenderCommonSpec.from_dict(spec_dict)
     render_params = entry.spec.parse_params(spec_dict)
@@ -51,13 +53,15 @@ def render_resolved(
 ) -> RenderOutcome:
     entry = runtime_registry.renderers.get(op)
     if entry is None:
-        raise ValueError(f"Unknown renderer: {op}")
+        msg = f"Unknown renderer: {op}"
+        raise ValueError(msg)
 
     validation_ctx = dict(ctx.get("render_validation") or {})
     issues = entry.spec.validate(common, render_params, validation_ctx)
     errors = [i for i in issues if str(getattr(i, "level", "")).lower() == "error"]
     if errors:
-        raise ValueError(f"Render validation failed for {op}: {errors}")
+        msg = f"Render validation failed for {op}: {errors}"
+        raise ValueError(msg)
 
     product = apply_render_transforms(
         products=product,

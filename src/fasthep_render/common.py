@@ -4,7 +4,6 @@ from math import ceil
 from typing import Any
 
 import mplhep as mh
-
 from hepflow.model.render_types import RenderCommonSpec
 
 
@@ -31,8 +30,9 @@ def find_dataset_axis_name(h: Any) -> str:
     for ax in getattr(h, "axes", []):
         if getattr(ax, "name", None) in ("dataset", "dataset_name"):
             return str(ax.name)
+    msg = "data_mc render requires a category axis named 'dataset' or 'dataset_name'"
     raise ValueError(
-        "data_mc render requires a category axis named 'dataset' or 'dataset_name'"
+        msg
     )
 
 
@@ -75,7 +75,6 @@ def get_dataset_categories(h: Any) -> list[str]:
         if getattr(ax, "name", None) in ("dataset", "dataset_name"):
             try:
                 return list(ax)
-            except Exception as e:
-                print("Error getting dataset categories:", e)
+            except Exception:
                 return []
     return []

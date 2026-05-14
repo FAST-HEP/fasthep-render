@@ -1,9 +1,11 @@
 from dataclasses import dataclass, field
-from typing import Literal, Any
+from typing import Any, Literal
 
 from hepflow.model.issues import FlowIssue, IssueLevel
 from hepflow.model.render_types import RenderCommonSpec, RenderTypeSpec
+
 from fasthep_render.types.common import resolve_single_hist_input
+
 
 @dataclass(frozen=True)
 class DataMcParams:
@@ -39,7 +41,7 @@ def validate_data_mc_params(
     issues: list[FlowIssue] = []
 
     available = set(context.get("available_datasets") or [])
-    needed = [params.data] + list(params.backgrounds) + list(params.signals)
+    needed = [params.data, *list(params.backgrounds), *list(params.signals)]
     missing = sorted(x for x in needed if x not in available)
 
     if missing:

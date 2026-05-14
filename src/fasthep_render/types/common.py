@@ -24,7 +24,8 @@ def resolve_single_hist_input(
         }
 
     if not default_product:
-        raise ValueError("No default product available for renderer input resolution")
+        msg = "No default product available for renderer input resolution"
+        raise ValueError(msg)
 
     return {
         "product": str(default_product),

@@ -29,6 +29,7 @@ dependencies = [
     "matplotlib",
     "mplhep",
     "numpy",
+    "scipy", # for Garwood interval
 ]
 
 [project.optional-dependencies]
@@ -59,6 +60,9 @@ include = [
 line-length = 88
 target-version = "py311"
 src = ["src", "tests"]
+extend-exclude = [
+  "src/fasthep_render/_version.py",
+]
 
 [tool.ruff.lint]
 select = [
@@ -84,12 +88,23 @@ select = [
     "YTT",
 ]
 ignore = [
-    "E501",
-    "PLR",
+  "E501",   # Line too long; handled pragmatically by formatter/review
+  "PLR",    # Design-related pylint refactor recommendations
+  "EM101",  # Raw string literals in exceptions are acceptable here
+  "EM102",  # Allow inline f-strings in exceptions
+  "EM103",  # Allow exception messages directly in raise statements
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["T20", "ARG"]
+"src/fasthep_render/types/*.py" = [
+  "ARG001",  # Registry call signatures may include optional ctx
+  "ARG002",  # Registry call signatures may include optional ctx
+]
+"src/fasthep_render/transforms.py" = [
+  "ARG001",  # Registry call signatures may include optional ctx
+  "ARG002",  # Registry call signatures may include optional ctx
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
