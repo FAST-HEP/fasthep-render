@@ -77,7 +77,7 @@ def render_project_then(
     )
     downstream_spec.setdefault("extensions", dict(common.extensions or {}))
 
-    runtime_registry = resolve_runtime_registry(
+    runtime_registry = ctx.get("runtime_registry") or resolve_runtime_registry(
         (ctx.get("plan") or {}).get("registry") or {}
     )
     entry = runtime_registry.renderers.get(downstream_op)

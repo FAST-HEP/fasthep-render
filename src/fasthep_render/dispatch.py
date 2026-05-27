@@ -20,8 +20,12 @@ def render_by_registry(
     op = str(params.get("op") or "")
     spec_dict = dict(params.get("spec") or {})
 
-    runtime_registry = runtime_registry or resolve_runtime_registry(
-        (ctx.get("plan") or {}).get("registry") or {}
+    runtime_registry = (
+        runtime_registry
+        or ctx.get("runtime_registry")
+        or resolve_runtime_registry(
+            (ctx.get("plan") or {}).get("registry") or {}
+        )
     )
 
     entry = runtime_registry.renderers.get(op)

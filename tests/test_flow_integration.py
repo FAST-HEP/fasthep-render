@@ -43,3 +43,59 @@ def test_flow_executes_render_sink_from_profile(tmp_path) -> None:
     result = value_store[("render.Hist.0", "artifact")]
     assert result.path == str(tmp_path / "run" / "artifacts" / "hist_plot.png")
     assert (tmp_path / "run" / "artifacts" / "hist_plot.png").is_file()
+
+
+def test_flow_project_render_uses_runtime_renderer_registry(
+    tmp_path,
+    dataset_axis_hist1d: hist.Hist,
+) -> None:
+    profile = load_profile_config("fasthep_render:registry", project_root=tmp_path)
+    plan = ExecutionPlan(registry=profile["registry"])
+    plan.add_node(
+        ExecutionNode(
+            id="render.Project.0",
+            graph_node_id="render.Project.0",
+            role="sink",
+            impl="hep.render.project",
+            inputs=[PlanInputRef("stage.Hist2D", "hist", "target")],
+            params={
+                "when": "partition",
+                "out": "projected_pt",
+                "spec": {
+                    "axes": {
+                        "x": {"name": "mass", "label": "m(ll) [GeV]"},
+                        "y": {"name": "events", "label": "Events"},
+                    },
+                    "project": {
+                        "axis": "mass",
+                        "then": {
+                            "op": "hep.render.data_mc",
+                            "data_mc": {
+                                "data": "data",
+                                "backgrounds": ["zjets", "ttbar"],
+                                "signals": ["signal"],
+                                "include_signals_in_stack": False,
+                            },
+                        },
+                    },
+                },
+            },
+            outputs={"artifact": "artifact"},
+            meta={"stage_id": "render.Project.0"},
+        )
+    )
+
+    value_store = execute_plan_partition(
+        plan,
+        ctx={
+            "outdir": str(tmp_path / "run"),
+            "render_validation": {
+                "available_datasets": ["data", "zjets", "ttbar", "signal"]
+            },
+        },
+        initial_values={("stage.Hist2D", "hist"): dataset_axis_hist1d},
+    )
+
+    result = value_store[("render.Project.0", "artifact")]
+    assert result.path == str(tmp_path / "run" / "artifacts" / "projected_pt.png")
+    assert (tmp_path / "run" / "artifacts" / "projected_pt.png").is_file()
