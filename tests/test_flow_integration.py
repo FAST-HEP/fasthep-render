@@ -41,8 +41,10 @@ def test_flow_executes_render_sink_from_profile(tmp_path) -> None:
     )
 
     result = value_store[("render.Hist.0", "artifact")]
-    assert result.path == str(tmp_path / "run" / "artifacts" / "hist_plot.png")
-    assert (tmp_path / "run" / "artifacts" / "hist_plot.png").is_file()
+    assert result.path == str(
+        tmp_path / "run" / "artifacts" / "plots" / "hist_plot.png"
+    )
+    assert (tmp_path / "run" / "artifacts" / "plots" / "hist_plot.png").is_file()
 
 
 def test_flow_project_render_uses_runtime_renderer_registry(
@@ -97,5 +99,7 @@ def test_flow_project_render_uses_runtime_renderer_registry(
     )
 
     result = value_store[("render.Project.0", "artifact")]
-    assert result.path == str(tmp_path / "run" / "artifacts" / "projected_pt.png")
-    assert (tmp_path / "run" / "artifacts" / "projected_pt.png").is_file()
+    assert result.path == str(
+        tmp_path / "run" / "artifacts" / "plots" / "projected_pt.png"
+    )
+    assert (tmp_path / "run" / "artifacts" / "plots" / "projected_pt.png").is_file()
