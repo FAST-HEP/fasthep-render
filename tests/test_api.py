@@ -162,12 +162,32 @@ def test_render_spec_file_renders_cutflow_json_product(tmp_path: Path) -> None:
     product.write_text(
         json.dumps(
             {
-                "cutflows": [
+                "version": "1.0",
+                "kind": "cutflow",
+                "producer": "stage.EventSelection",
+                "datasets": ["data"],
+                "nodes": [
                     {
-                        "dataset": "data",
-                        "cuts": [{"name": "All[0]", "n": 4}],
+                        "id": "All[0]",
+                        "selection": "All",
+                        "index": 0,
+                        "label": "NIsoMuon >= 2",
+                        "expr": "NIsoMuon >= 2",
+                        "kind": "expression",
+                        "parents": [],
+                        "stats": {
+                            "data": {
+                                "n_in": 8,
+                                "n_out": 4,
+                                "sumw_in": 8.0,
+                                "sumw_out": 4.0,
+                                "sumw2_in": 8.0,
+                                "sumw2_out": 4.0,
+                            }
+                        },
                     }
-                ]
+                ],
+                "edges": [],
             }
         ),
         encoding="utf-8",
@@ -176,7 +196,7 @@ def test_render_spec_file_renders_cutflow_json_product(tmp_path: Path) -> None:
     outcome = render_spec_file(spec, product=product, out=out)
 
     assert outcome.status == RenderStatus.RENDERED
-    assert "data,All[0],4" in out.read_text(encoding="utf-8")
+    assert "All,NIsoMuon >= 2,data,8,4" in out.read_text(encoding="utf-8")
 
 
 def _write_spec(

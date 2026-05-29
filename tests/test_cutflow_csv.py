@@ -12,13 +12,13 @@ def test_cutflow_csv_renderer_writes_single_dataset_csv(tmp_path: Path) -> None:
     out = tmp_path / "cutflow.csv"
 
     result = run_cutflow_csv_render(
-        {
-            "dataset": "data",
-            "cuts": [
-                {"name": "All[0]", "n": 10, "sumw": 10.0},
-                {"name": "All[1]", "n": 5, "sumw": 5.0},
+        _cutflow_graph(
+            datasets=["data"],
+            nodes=[
+                ("All[0]", "All", "NIsoMuon >= 2", {"data": (20, 10)}),
+                ("All[1]", "All", "Muon_Pt > 25", {"data": (10, 5)}),
             ],
-        },
+        ),
         spec={"op": "hep.render.cutflow_csv"},
         output_path=str(out),
     )
@@ -27,7 +27,10 @@ def test_cutflow_csv_renderer_writes_single_dataset_csv(tmp_path: Path) -> None:
         rows = list(csv.DictReader(handle))
     assert result.path == str(out)
     assert rows[0]["dataset"] == "data"
-    assert rows[0]["name"] == "All[0]"
+    assert rows[0]["selection"] == "All"
+    assert rows[0]["cut"] == "NIsoMuon >= 2"
+    assert rows[0]["n_in"] == "20"
+    assert rows[0]["n_out"] == "10"
     assert rows[1]["efficiency"] == "0.5"
 
 
@@ -35,12 +38,12 @@ def test_cutflow_csv_renderer_writes_multi_dataset_csv(tmp_path: Path) -> None:
     out = tmp_path / "cutflow.csv"
 
     run_cutflow_csv_render(
-        {
-            "cutflows": [
-                {"dataset": "data", "cuts": [{"name": "All[0]", "n": 10}]},
-                {"dataset": "dy", "cuts": [{"name": "All[0]", "n": 20}]},
-            ]
-        },
+        _cutflow_graph(
+            datasets=["data", "dy"],
+            nodes=[
+                ("All[0]", "All", "NIsoMuon >= 2", {"data": (20, 10), "dy": (40, 20)})
+            ],
+        ),
         spec={"op": "hep.render.cutflow_csv"},
         output_path=str(out),
     )
@@ -48,7 +51,7 @@ def test_cutflow_csv_renderer_writes_multi_dataset_csv(tmp_path: Path) -> None:
     with out.open(encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
     assert [row["dataset"] for row in rows] == ["data", "dy"]
-    assert [row["n"] for row in rows] == ["10", "20"]
+    assert [row["n_out"] for row in rows] == ["10", "20"]
 
 
 def test_cutflow_csv_renderer_rejects_invalid_cutflow(tmp_path: Path) -> None:
@@ -58,3 +61,51 @@ def test_cutflow_csv_renderer_rejects_invalid_cutflow(tmp_path: Path) -> None:
             spec={"op": "hep.render.cutflow_csv"},
             output_path=str(tmp_path / "cutflow.csv"),
         )
+
+
+def test_cutflow_csv_renderer_rejects_invalid_canonical_cutflow(
+    tmp_path: Path,
+) -> None:
+    with pytest.raises(ValueError, match="canonical cutflow 'nodes'"):
+        run_cutflow_csv_render(
+            {"kind": "cutflow", "datasets": ["data"]},
+            spec={"op": "hep.render.cutflow_csv"},
+            output_path=str(tmp_path / "cutflow.csv"),
+        )
+
+
+def _cutflow_graph(
+    *,
+    datasets: list[str],
+    nodes: list[tuple[str, str, str, dict[str, tuple[int, int]]]],
+) -> dict[str, object]:
+    return {
+        "version": "1.0",
+        "kind": "cutflow",
+        "producer": "stage.EventSelection",
+        "datasets": datasets,
+        "nodes": [
+            {
+                "id": node_id,
+                "selection": selection,
+                "index": index,
+                "label": label,
+                "expr": label,
+                "kind": "expression",
+                "parents": [],
+                "stats": {
+                    dataset: {
+                        "n_in": n_in,
+                        "n_out": n_out,
+                        "sumw_in": float(n_in),
+                        "sumw_out": float(n_out),
+                        "sumw2_in": float(n_in),
+                        "sumw2_out": float(n_out),
+                    }
+                    for dataset, (n_in, n_out) in stats.items()
+                },
+            }
+            for index, (node_id, selection, label, stats) in enumerate(nodes)
+        ],
+        "edges": [],
+    }

@@ -10,11 +10,15 @@ from hepflow.model.render_types import RenderCommonSpec
 from fasthep_render.types.cutflow_csv import CutflowCsvParams
 
 FIELD_ORDER = [
+    "selection",
+    "cut",
     "dataset",
-    "name",
-    "n",
-    "sumw",
-    "sumw2",
+    "n_in",
+    "n_out",
+    "sumw_in",
+    "sumw_out",
+    "sumw2_in",
+    "sumw2_out",
     "efficiency",
 ]
 
@@ -56,12 +60,54 @@ def _resolve_cutflow_product(product: dict[str, Any]) -> Any:
 
 
 def _cutflow_rows(value: Any, *, include_dataset: bool) -> list[dict[str, Any]]:
+    if isinstance(value, dict) and value.get("kind") == "cutflow":
+        return _graph_cutflow_rows(value, include_dataset=include_dataset)
     if isinstance(value, dict) and isinstance(value.get("cutflows"), list):
         rows: list[dict[str, Any]] = []
         for item in value["cutflows"]:
             rows.extend(_single_cutflow_rows(item, include_dataset=include_dataset))
         return rows
     return _single_cutflow_rows(value, include_dataset=include_dataset)
+
+
+def _graph_cutflow_rows(value: dict[str, Any], *, include_dataset: bool) -> list[dict[str, Any]]:
+    nodes = value.get("nodes")
+    if not isinstance(nodes, list):
+        msg = "cutflow_csv renderer requires canonical cutflow 'nodes'"
+        raise ValueError(msg)
+
+    datasets = value.get("datasets")
+    if not isinstance(datasets, list):
+        datasets = []
+
+    rows: list[dict[str, Any]] = []
+    for node in nodes:
+        if not isinstance(node, dict):
+            continue
+        stats_by_dataset = node.get("stats")
+        if not isinstance(stats_by_dataset, dict):
+            continue
+        dataset_names = [str(item) for item in datasets] or sorted(stats_by_dataset)
+        for dataset in dataset_names:
+            stats = stats_by_dataset.get(dataset)
+            if not isinstance(stats, dict):
+                continue
+            row = {
+                "selection": node.get("selection", ""),
+                "cut": node.get("label", node.get("id", "")),
+                "n_in": int(stats.get("n_in", 0)),
+                "n_out": int(stats.get("n_out", 0)),
+                "sumw_in": float(stats.get("sumw_in", 0.0)),
+                "sumw_out": float(stats.get("sumw_out", 0.0)),
+                "sumw2_in": float(stats.get("sumw2_in", 0.0)),
+                "sumw2_out": float(stats.get("sumw2_out", 0.0)),
+            }
+            if include_dataset:
+                row["dataset"] = dataset
+            if row["n_in"]:
+                row["efficiency"] = row["n_out"] / row["n_in"]
+            rows.append(row)
+    return rows
 
 
 def _single_cutflow_rows(value: Any, *, include_dataset: bool) -> list[dict[str, Any]]:
