@@ -3,7 +3,7 @@ from __future__ import annotations
 import hist
 from hepflow.compiler.profiles import load_profile_config
 
-from fasthep_render.impl.sinks.project import run_project_render
+from fasthep_render.sinks.project import run_project_render
 
 
 def test_project_render_writes_projected_histogram_png(

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hist
 
-from fasthep_render.impl.sinks.comparison import run_comparison_render
+from fasthep_render.sinks.comparison import run_comparison_render
 
 
 def test_comparison_render_writes_docs_ready_png(

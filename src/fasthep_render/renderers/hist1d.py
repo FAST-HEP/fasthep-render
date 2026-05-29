@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import contextlib
-from typing import Any
+from dataclasses import dataclass
+from typing import Any, Literal
 
 import matplotlib.pyplot as plt
 import mplhep as mh
+from hepflow.model.issues import FlowIssue
 from hepflow.model.render import RenderOutcome, RenderStatus
-from hepflow.model.render_types import RenderCommonSpec
+from hepflow.model.render_types import RenderCommonSpec, RenderTypeSpec
 
 from fasthep_render.common import (
     auto_legend_ncol,
@@ -14,7 +16,56 @@ from fasthep_render.common import (
     resolve_color_for_dataset,
     resolve_label,
 )
-from fasthep_render.types.hist1d import Hist1DParams
+from fasthep_render.sinks._common import run_render_sink
+from fasthep_render.types.common import resolve_single_hist_input
+
+HIST1D_RENDER_SPEC = {
+    "name": "hep.render.hist1d",
+    "kind": "sink",
+    "version": "1.0",
+    "params": {
+        "spec": {"type": "mapping", "required": False},
+        "out": {"type": "string", "required": False},
+    },
+    "result": {"kind": "artifact", "format": "png"},
+}
+
+
+@dataclass(frozen=True)
+class Hist1DParams:
+    overlay: bool = True
+    histtype: Literal["step", "fill", "errorbar"] = "step"
+    sort_datasets: Literal["none", "data_first"] = "data_first"
+
+
+def parse_hist1d_params(spec_dict: dict[str, Any]) -> Hist1DParams:
+    return Hist1DParams(**dict(spec_dict.get("hist1d") or {}))
+
+
+def validate_hist1d_params(
+    common: RenderCommonSpec,
+    params: Hist1DParams,
+    context: dict[str, Any],
+) -> list[FlowIssue]:
+    del common, params, context
+    return []
+
+
+HIST1D_RENDER_TYPE = RenderTypeSpec(
+    parse_params=parse_hist1d_params,
+    validate=validate_hist1d_params,
+    resolve_input=resolve_single_hist_input,
+)
+
+
+def run_hist1d_render(target: Any, **kwargs: Any):
+    return run_render_sink(
+        op="hep.render.hist1d",
+        render_type=HIST1D_RENDER_TYPE,
+        handler=render_hist1d,
+        target=target,
+        **kwargs,
+    )
 
 
 def _find_dataset_axis_name(h: Any) -> str | None:

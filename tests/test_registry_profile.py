@@ -15,6 +15,7 @@ def test_registry_profile_loads_render_sink_specs_and_impls(tmp_path) -> None:
         "hep.render.heatmap2d",
         "hep.render.project",
         "hep.render.comparison",
+        "hep.render.cutflow_csv",
     }
 
     assert expected <= set(sinks)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hist
 
-from fasthep_render.impl.sinks.heatmap2d import run_heatmap2d_render
+from fasthep_render.sinks.heatmap2d import run_heatmap2d_render
 
 
 def test_heatmap2d_render_writes_png(tmp_path, hist2d: hist.Hist) -> None:

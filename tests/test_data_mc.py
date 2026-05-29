@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from conftest import DataMcBundle
-from fasthep_render.impl.sinks.data_mc import run_data_mc_render
+from fasthep_render.sinks.data_mc import run_data_mc_render
 
 
 def test_data_mc_render_writes_stacked_png(

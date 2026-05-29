@@ -1,15 +1,66 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from math import ceil, sqrt
 from pathlib import Path
 from typing import Any
 
 import matplotlib.pyplot as plt
 import mplhep as mh
+from hepflow.model.issues import FlowIssue
 from hepflow.model.render import RenderOutcome, RenderStatus
-from hepflow.model.render_types import RenderCommonSpec
+from hepflow.model.render_types import RenderCommonSpec, RenderTypeSpec
 
-from fasthep_render.types.heatmap2d import Heatmap2DParams
+from fasthep_render.sinks._common import run_render_sink
+from fasthep_render.types.common import resolve_single_hist_input
+
+HEATMAP2D_RENDER_SPEC = {
+    "name": "hep.render.heatmap2d",
+    "kind": "sink",
+    "version": "1.0",
+    "params": {
+        "spec": {"type": "mapping", "required": False},
+        "out": {"type": "string", "required": False},
+    },
+    "result": {"kind": "artifact", "format": "png"},
+}
+
+
+@dataclass(frozen=True)
+class Heatmap2DParams:
+    per_dataset: bool = False
+    cbar: bool = True
+    max_cols: int | None = None
+
+
+def parse_heatmap2d_params(spec_dict: dict[str, Any]) -> Heatmap2DParams:
+    return Heatmap2DParams(**dict(spec_dict.get("heatmap2d") or {}))
+
+
+def validate_heatmap2d_params(
+    common: RenderCommonSpec,
+    params: Heatmap2DParams,
+    context: dict[str, Any],
+) -> list[FlowIssue]:
+    del common, params, context
+    return []
+
+
+HEATMAP2D_RENDER_TYPE = RenderTypeSpec(
+    parse_params=parse_heatmap2d_params,
+    validate=validate_heatmap2d_params,
+    resolve_input=resolve_single_hist_input,
+)
+
+
+def run_heatmap2d_render(target: Any, **kwargs: Any):
+    return run_render_sink(
+        op="hep.render.heatmap2d",
+        render_type=HEATMAP2D_RENDER_TYPE,
+        handler=render_heatmap2d,
+        target=target,
+        **kwargs,
+    )
 
 
 def render_heatmap2d(

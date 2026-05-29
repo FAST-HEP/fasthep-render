@@ -1,17 +1,78 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from dataclasses import dataclass
 from importlib import resources
 from typing import Any
 
 import yaml
+from hepflow.model.issues import FlowIssue, IssueLevel
 from hepflow.model.render import RenderOutcome
-from hepflow.model.render_types import RenderCommonSpec
+from hepflow.model.render_types import RenderCommonSpec, RenderTypeSpec
 from hepflow.registry.loaders import resolve_runtime_registry
 from hepflow.utils import to_dict
 
 from fasthep_render.dispatch import render_resolved
-from fasthep_render.types.project import ProjectParams
+from fasthep_render.sinks._common import run_render_sink
+from fasthep_render.types.common import resolve_single_hist_input
+
+PROJECT_RENDER_SPEC = {
+    "name": "hep.render.project",
+    "kind": "sink",
+    "version": "1.0",
+    "params": {
+        "spec": {"type": "mapping", "required": True},
+        "out": {"type": "string", "required": False},
+    },
+    "result": {"kind": "artifact", "format": "png"},
+}
+
+
+@dataclass(frozen=True)
+class ProjectParams:
+    axis: str
+    keep_dataset: bool = True
+    then: dict[str, Any] | None = None
+
+
+def parse_project_params(spec_dict: dict[str, Any]) -> ProjectParams:
+    return ProjectParams(**dict(spec_dict.get("project") or {}))
+
+
+def validate_project_params(
+    common: RenderCommonSpec,
+    params: ProjectParams,
+    context: dict[str, Any],
+) -> list[FlowIssue]:
+    del common, context
+    issues: list[FlowIssue] = []
+    if not params.axis:
+        issues.append(
+            FlowIssue(
+                level=IssueLevel.ERROR,
+                code="RENDER_PROJECT_AXIS_MISSING",
+                message="project renderer requires a projection axis",
+                meta={},
+            )
+        )
+    return issues
+
+
+PROJECT_RENDER_TYPE = RenderTypeSpec(
+    parse_params=parse_project_params,
+    validate=validate_project_params,
+    resolve_input=resolve_single_hist_input,
+)
+
+
+def run_project_render(target: Any, **kwargs: Any):
+    return run_render_sink(
+        op="hep.render.project",
+        render_type=PROJECT_RENDER_TYPE,
+        handler=render_project_then,
+        target=target,
+        **kwargs,
+    )
 
 
 def render_project_then(
