@@ -58,6 +58,7 @@ def test_cutflow_csv_renderer_writes_multi_dataset_csv(tmp_path: Path) -> None:
     with out.open(encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
     assert [row["dataset"] for row in rows] == ["data", "dy"]
+    assert "default" not in {row["dataset"] for row in rows}
     assert [row["n_out"] for row in rows] == ["10.0", "20.5"]
     assert [row["n_unweighted_out"] for row in rows] == ["10", "20"]
 
