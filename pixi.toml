@@ -55,5 +55,6 @@ test = "pytest"
 build = "python -m build"
 check = { depends-on = ["lint", "typecheck", "test"] }
 ci = { depends-on = ["check", "build"] }
+check-dist = "twine check dist/*"
 docs = "sphinx-build -b html docs docs/_build/html"
 docs-clean = "rm -rf docs/_build"
