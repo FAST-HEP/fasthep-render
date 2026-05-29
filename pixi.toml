@@ -14,6 +14,7 @@ ruff = "*"
 mypy = "*"
 pre-commit = "*"
 codespell = "*"
+twine = "*"
 
 [pypi-dependencies]
 fasthep-flow = ">=2026.5.0"
@@ -35,6 +36,15 @@ python = "3.13.*"
 [feature.py314.dependencies]
 python = "3.14.*"
 
+[feature.docs.dependencies]
+python = ">=3.11"
+sphinx = "*"
+myst-parser = "*"
+pydata-sphinx-theme = "*"
+sphinx-copybutton = "*"
+sphinx-design = "*"
+sphinxcontrib-mermaid = "*"
+
 [tasks]
 format = "ruff format src tests"
 lint = "ruff check src tests"
@@ -44,3 +54,5 @@ test = "pytest"
 build = "python -m build"
 check = { depends-on = ["lint", "typecheck", "test"] }
 ci = { depends-on = ["check", "build"] }
+docs = "sphinx-build -b html docs docs/_build/html"
+docs-clean = "rm -rf docs/_build"
