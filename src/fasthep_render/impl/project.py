@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from importlib import resources
 from typing import Any
 
+import yaml
 from hepflow.model.render import RenderOutcome
 from hepflow.model.render_types import RenderCommonSpec
 from hepflow.registry.loaders import resolve_runtime_registry
@@ -78,7 +80,7 @@ def render_project_then(
     downstream_spec.setdefault("extensions", dict(common.extensions or {}))
 
     runtime_registry = ctx.get("runtime_registry") or resolve_runtime_registry(
-        (ctx.get("plan") or {}).get("registry") or {}
+        (ctx.get("plan") or {}).get("registry") or _packaged_render_registry()
     )
     entry = runtime_registry.renderers.get(downstream_op)
     if entry is None:
@@ -98,3 +100,15 @@ def render_project_then(
         ctx=ctx,
         runtime_registry=runtime_registry,
     )
+
+
+def _packaged_render_registry() -> dict[str, Any]:
+    registry_file = resources.files("fasthep_render.profiles").joinpath(
+        "registry.yaml"
+    )
+    with registry_file.open(encoding="utf-8") as handle:
+        doc = yaml.safe_load(handle) or {}
+    registry = doc.get("registry")
+    if not isinstance(registry, dict):
+        raise ValueError("fasthep_render profile registry is invalid")
+    return registry
