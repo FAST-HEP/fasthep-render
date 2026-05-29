@@ -177,10 +177,12 @@ def test_render_spec_file_renders_cutflow_json_product(tmp_path: Path) -> None:
                         "parents": [],
                         "stats": {
                             "data": {
-                                "n_in": 8,
-                                "n_out": 4,
-                                "sumw_in": 8.0,
-                                "sumw_out": 4.0,
+                                "n_in": 8.5,
+                                "n_out": 4.5,
+                                "n_unweighted_in": 8,
+                                "n_unweighted_out": 4,
+                                "sumw_in": 8.5,
+                                "sumw_out": 4.5,
                                 "sumw2_in": 8.0,
                                 "sumw2_out": 4.0,
                             }
@@ -196,7 +198,7 @@ def test_render_spec_file_renders_cutflow_json_product(tmp_path: Path) -> None:
     outcome = render_spec_file(spec, product=product, out=out)
 
     assert outcome.status == RenderStatus.RENDERED
-    assert "All,NIsoMuon >= 2,data,8,4" in out.read_text(encoding="utf-8")
+    assert "All,NIsoMuon >= 2,data,8.5,4.5,8,4" in out.read_text(encoding="utf-8")
 
 
 def _write_spec(

@@ -15,6 +15,8 @@ FIELD_ORDER = [
     "dataset",
     "n_in",
     "n_out",
+    "n_unweighted_in",
+    "n_unweighted_out",
     "sumw_in",
     "sumw_out",
     "sumw2_in",
@@ -95,8 +97,10 @@ def _graph_cutflow_rows(value: dict[str, Any], *, include_dataset: bool) -> list
             row = {
                 "selection": node.get("selection", ""),
                 "cut": node.get("label", node.get("id", "")),
-                "n_in": int(stats.get("n_in", 0)),
-                "n_out": int(stats.get("n_out", 0)),
+                "n_in": float(stats.get("n_in", 0.0)),
+                "n_out": float(stats.get("n_out", 0.0)),
+                "n_unweighted_in": int(stats.get("n_unweighted_in", 0)),
+                "n_unweighted_out": int(stats.get("n_unweighted_out", 0)),
                 "sumw_in": float(stats.get("sumw_in", 0.0)),
                 "sumw_out": float(stats.get("sumw_out", 0.0)),
                 "sumw2_in": float(stats.get("sumw2_in", 0.0)),
@@ -104,8 +108,8 @@ def _graph_cutflow_rows(value: dict[str, Any], *, include_dataset: bool) -> list
             }
             if include_dataset:
                 row["dataset"] = dataset
-            if row["n_in"]:
-                row["efficiency"] = row["n_out"] / row["n_in"]
+            if row["n_unweighted_in"]:
+                row["efficiency"] = row["n_unweighted_out"] / row["n_unweighted_in"]
             rows.append(row)
     return rows
 
