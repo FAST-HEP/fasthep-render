@@ -10,7 +10,7 @@ import yaml
 from hepflow.model.render import RenderStatus
 from hepflow.model.render_types import RenderCommonSpec
 from hepflow.registry.loaders import resolve_runtime_registry
-from hepflow.utils import read_pickle, read_yaml
+from hepflow.utils import read_json, read_pickle, read_yaml
 
 from fasthep_render.dispatch import render_resolved
 
@@ -48,10 +48,7 @@ def render_spec_file(
 
     output_path = _resolve_output_path(spec_doc, out=out)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    product_values = {
-        name: read_pickle(path)
-        for name, path in product_paths.items()
-    }
+    product_values = {name: _load_product(path) for name, path in product_paths.items()}
 
     plan = read_yaml(plan_path) if plan_path is not None else None
     runtime_registry = resolve_runtime_registry(_render_registry_config())
@@ -124,6 +121,12 @@ def _normalize_product_paths(
     if product is not None:
         normalized.setdefault("hist", Path(product))
     return normalized
+
+
+def _load_product(path: Path) -> Any:
+    if path.suffix == ".json":
+        return read_json(path)
+    return read_pickle(path)
 
 
 def _resolve_output_path(

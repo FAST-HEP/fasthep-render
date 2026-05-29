@@ -20,6 +20,10 @@ registry:
       spec: fasthep_render.spec.sinks.comparison:COMPARISON_RENDER_SPEC
       impl: fasthep_render.impl.sinks.comparison:run_comparison_render
 
+    hep.render.cutflow_csv:
+      spec: fasthep_render.spec.sinks.cutflow_csv:CUTFLOW_CSV_RENDER_SPEC
+      impl: fasthep_render.impl.sinks.cutflow_csv:run_cutflow_csv_render
+
   renderers:
     hep.render.hist1d:
       spec: fasthep_render.types.hist1d:HIST1D_RENDER_TYPE
@@ -40,3 +44,7 @@ registry:
     hep.render.comparison:
       spec: fasthep_render.types.comparison:COMPARISON_RENDER_TYPE
       impl: fasthep_render.impl.comparison:render_comparison
+
+    hep.render.cutflow_csv:
+      spec: fasthep_render.types.cutflow_csv:CUTFLOW_CSV_RENDER_TYPE
+      impl: fasthep_render.impl.cutflow_csv:render_cutflow_csv

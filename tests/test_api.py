@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
@@ -136,6 +137,46 @@ def test_render_spec_file_accepts_plan_path(
 
     assert seen["ctx"]["plan_path"] == str(plan)
     assert seen["ctx"]["plan"] == {"registry": {}}
+
+
+def test_render_spec_file_renders_cutflow_json_product(tmp_path: Path) -> None:
+    spec = tmp_path / "render_cutflow.yaml"
+    product = tmp_path / "EventSelection.json"
+    out = tmp_path / "EventSelection.csv"
+    spec.write_text(
+        yaml.safe_dump(
+            {
+                "node_id": "render.EventSelection.0",
+                "impl": "hep.render.cutflow_csv",
+                "out": "EventSelection.csv",
+                "product": {
+                    "kind": "cutflow",
+                    "path": "artifacts/cutflows/EventSelection.json",
+                },
+                "spec": {"op": "hep.render.cutflow_csv"},
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+    product.write_text(
+        json.dumps(
+            {
+                "cutflows": [
+                    {
+                        "dataset": "data",
+                        "cuts": [{"name": "All[0]", "n": 4}],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    outcome = render_spec_file(spec, product=product, out=out)
+
+    assert outcome.status == RenderStatus.RENDERED
+    assert "data,All[0],4" in out.read_text(encoding="utf-8")
 
 
 def _write_spec(
