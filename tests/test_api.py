@@ -7,12 +7,12 @@ from typing import Any
 import hist
 import pytest
 import yaml
-from hepflow.model.render import RenderOutcome as FlowRenderOutcome
-from hepflow.model.render import RenderStatus
 from hepflow.utils import write_pickle
 
 import fasthep_render.api as render_api
 from fasthep_render.api import render_spec_file
+from fasthep_render.model import RenderOutcome as FlowRenderOutcome
+from fasthep_render.model import RenderStatus
 
 
 def test_render_spec_file_resolves_op_from_impl(

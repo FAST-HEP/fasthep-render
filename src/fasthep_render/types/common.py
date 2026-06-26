@@ -1,6 +1,6 @@
 from typing import Any
 
-from hepflow.model.render_types import RenderCommonSpec
+from fasthep_render.render_types import RenderCommonSpec
 
 
 def resolve_single_hist_input(

@@ -2,11 +2,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from hepflow.model.render import RenderOutcome
-from hepflow.model.render_types import RenderCommonSpec
-from hepflow.registry.loaders import resolve_runtime_registry
-from hepflow.registry.runtime import RuntimeRegistry
-
+from fasthep_render.model import RenderOutcome
+from fasthep_render.registry import RenderRegistry, resolve_render_registry
+from fasthep_render.render_types import RenderCommonSpec
 from fasthep_render.transforms import apply_render_transforms
 
 
@@ -15,20 +13,18 @@ def render_by_registry(
     params: dict[str, Any],
     ctx: dict[str, Any],
     *,
-    runtime_registry: RuntimeRegistry | None = None,
+    render_registry: RenderRegistry | None = None,
 ) -> RenderOutcome:
     op = str(params.get("op") or "")
     spec_dict = dict(params.get("spec") or {})
 
-    runtime_registry = (
-        runtime_registry
-        or ctx.get("runtime_registry")
-        or resolve_runtime_registry(
-            (ctx.get("plan") or {}).get("registry") or {}
-        )
+    render_registry = (
+        render_registry
+        or ctx.get("render_registry")
+        or resolve_render_registry()
     )
 
-    entry = runtime_registry.renderers.get(op)
+    entry = render_registry.renderers.get(op)
     if entry is None:
         msg = f"Unknown renderer: {op}"
         raise ValueError(msg)
@@ -42,7 +38,7 @@ def render_by_registry(
         common=common,
         render_params=render_params,
         ctx=ctx,
-        runtime_registry=runtime_registry,
+        render_registry=render_registry,
     )
 
 
@@ -53,9 +49,9 @@ def render_resolved(
     common: RenderCommonSpec,
     render_params: Any,
     ctx: dict[str, Any],
-    runtime_registry: RuntimeRegistry,
+    render_registry: RenderRegistry,
 ) -> RenderOutcome:
-    entry = runtime_registry.renderers.get(op)
+    entry = render_registry.renderers.get(op)
     if entry is None:
         msg = f"Unknown renderer: {op}"
         raise ValueError(msg)

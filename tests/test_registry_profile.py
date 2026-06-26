@@ -3,11 +3,12 @@ from __future__ import annotations
 from hepflow.compiler.profiles import load_profile_config
 from hepflow.registry.loaders import load_object
 
+from fasthep_render.registry import resolve_render_registry
+
 
 def test_registry_profile_loads_render_sink_specs_and_impls(tmp_path) -> None:
     cfg = load_profile_config("fasthep_render:registry", project_root=tmp_path)
     sinks = cfg["registry"]["sinks"]
-    renderers = cfg["registry"]["renderers"]
 
     expected = {
         "hep.render.hist1d",
@@ -19,15 +20,18 @@ def test_registry_profile_loads_render_sink_specs_and_impls(tmp_path) -> None:
     }
 
     assert expected <= set(sinks)
-    assert expected <= set(renderers)
 
     for name in expected:
         sink_spec = load_object(sinks[name]["spec"])
         sink_impl = load_object(sinks[name]["impl"])
-        renderer_spec = load_object(renderers[name]["spec"])
-        renderer_impl = load_object(renderers[name]["impl"])
 
         assert sink_spec["kind"] == "sink"
         assert callable(sink_impl)
-        assert callable(renderer_spec.parse_params)
-        assert callable(renderer_impl)
+
+
+def test_render_registry_is_render_package_local() -> None:
+    registry = resolve_render_registry()
+
+    assert "hep.render.hist1d" in registry.renderers
+    assert callable(registry.renderers["hep.render.hist1d"].spec.parse_params)
+    assert callable(registry.renderers["hep.render.hist1d"].handler)

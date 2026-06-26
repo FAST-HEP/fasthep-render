@@ -8,9 +8,9 @@ from typing import Any
 import matplotlib.pyplot as plt
 import mplhep as mh
 from hepflow.model.issues import FlowIssue
-from hepflow.model.render import RenderOutcome, RenderStatus
-from hepflow.model.render_types import RenderCommonSpec, RenderTypeSpec
 
+from fasthep_render.model import RenderOutcome, RenderStatus
+from fasthep_render.render_types import RenderCommonSpec, RenderTypeSpec
 from fasthep_render.sinks._common import run_render_sink
 from fasthep_render.types.common import resolve_single_hist_input
 

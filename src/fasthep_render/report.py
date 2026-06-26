@@ -1,7 +1,8 @@
 from dataclasses import replace
 
-from hepflow.model.render import RenderAttempt, RenderOutcome
 from hepflow.utils import write_json
+
+from fasthep_render.model import RenderAttempt, RenderOutcome
 
 
 def write_render_attempt(

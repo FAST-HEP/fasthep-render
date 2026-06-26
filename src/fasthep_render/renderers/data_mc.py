@@ -7,8 +7,6 @@ from typing import Any, Literal
 import matplotlib.pyplot as plt
 import mplhep as mh
 from hepflow.model.issues import FlowIssue, IssueLevel
-from hepflow.model.render import RenderOutcome, RenderStatus
-from hepflow.model.render_types import RenderCommonSpec, RenderTypeSpec
 from mplhep.comp import data_model
 
 from fasthep_render.common import (
@@ -19,6 +17,8 @@ from fasthep_render.common import (
     resolve_color_for_dataset,
     resolve_label,
 )
+from fasthep_render.model import RenderOutcome, RenderStatus
+from fasthep_render.render_types import RenderCommonSpec, RenderTypeSpec
 from fasthep_render.sinks._common import run_render_sink
 from fasthep_render.types.common import resolve_single_hist_input
 

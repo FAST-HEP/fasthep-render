@@ -4,8 +4,9 @@ from pathlib import Path
 from typing import Any
 
 from hepflow.model.io import OutputResult
-from hepflow.model.render import RenderOutcome, RenderStatus
-from hepflow.model.render_types import RenderCommonSpec, RenderTypeSpec
+
+from fasthep_render.model import RenderOutcome, RenderStatus
+from fasthep_render.render_types import RenderCommonSpec, RenderTypeSpec
 
 
 def run_render_sink(

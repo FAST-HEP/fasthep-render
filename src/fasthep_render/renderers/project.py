@@ -7,12 +7,12 @@ from typing import Any
 
 import yaml
 from hepflow.model.issues import FlowIssue, IssueLevel
-from hepflow.model.render import RenderOutcome
-from hepflow.model.render_types import RenderCommonSpec, RenderTypeSpec
-from hepflow.registry.loaders import resolve_runtime_registry
 from hepflow.utils import to_dict
 
 from fasthep_render.dispatch import render_resolved
+from fasthep_render.model import RenderOutcome
+from fasthep_render.registry import resolve_render_registry
+from fasthep_render.render_types import RenderCommonSpec, RenderTypeSpec
 from fasthep_render.sinks._common import run_render_sink
 from fasthep_render.types.common import resolve_single_hist_input
 
@@ -140,10 +140,10 @@ def render_project_then(
     )
     downstream_spec.setdefault("extensions", dict(common.extensions or {}))
 
-    runtime_registry = ctx.get("runtime_registry") or resolve_runtime_registry(
-        (ctx.get("plan") or {}).get("registry") or _packaged_render_registry()
+    render_registry = ctx.get("render_registry") or resolve_render_registry(
+        _packaged_render_registry()
     )
-    entry = runtime_registry.renderers.get(downstream_op)
+    entry = render_registry.renderers.get(downstream_op)
     if entry is None:
         msg = f"project renderer downstream op '{downstream_op}' is not registered"
         raise ValueError(
@@ -159,7 +159,7 @@ def render_project_then(
         common=downstream_common,
         render_params=downstream_params,
         ctx=ctx,
-        runtime_registry=runtime_registry,
+        render_registry=render_registry,
     )
 
 

@@ -4,7 +4,8 @@ from typing import Any
 
 import matplotlib.pyplot as plt
 import mplhep as mh
-from hepflow.model.render import RenderArtifact, RenderOutcome, RenderSpec, RenderStatus
+
+from fasthep_render.model import RenderArtifact, RenderOutcome, RenderSpec, RenderStatus
 
 
 def _strip_dataset_axis_for_comparison(h):

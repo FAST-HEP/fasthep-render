@@ -7,12 +7,12 @@ from pathlib import Path
 from typing import Any
 
 import yaml
-from hepflow.model.render import RenderStatus
-from hepflow.model.render_types import RenderCommonSpec
-from hepflow.registry.loaders import resolve_runtime_registry
 from hepflow.utils import read_json, read_pickle, read_yaml
 
 from fasthep_render.dispatch import render_resolved
+from fasthep_render.model import RenderStatus
+from fasthep_render.registry import resolve_render_registry
+from fasthep_render.render_types import RenderCommonSpec
 
 
 @dataclass(frozen=True, slots=True)
@@ -51,8 +51,8 @@ def render_spec_file(
     product_values = {name: _load_product(path) for name, path in product_paths.items()}
 
     plan = read_yaml(plan_path) if plan_path is not None else None
-    runtime_registry = resolve_runtime_registry(_render_registry_config())
-    entry = runtime_registry.renderers.get(render_op)
+    render_registry = resolve_render_registry(_render_registry_config())
+    entry = render_registry.renderers.get(render_op)
     if entry is None:
         raise ValueError(f"Unknown renderer: {render_op}")
 
@@ -63,7 +63,7 @@ def render_spec_file(
         "output_dir": str(output_path.parent),
         "plan_path": str(plan_path) if plan_path is not None else None,
         "plan": plan or {},
-        "runtime_registry": runtime_registry,
+        "render_registry": render_registry,
     }
     common = RenderCommonSpec.from_dict(render_spec)
     render_params = entry.spec.parse_params(render_spec)
@@ -73,7 +73,7 @@ def render_spec_file(
         common=common,
         render_params=render_params,
         ctx=ctx,
-        runtime_registry=runtime_registry,
+        render_registry=render_registry,
     )
 
     return RenderOutcome(

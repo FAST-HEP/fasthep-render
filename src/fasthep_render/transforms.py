@@ -1,9 +1,9 @@
 from typing import Any
 
 import hist
-from hepflow.model.render_types import RenderCommonSpec
 
 from fasthep_render.common import find_dataset_axis_name
+from fasthep_render.render_types import RenderCommonSpec
 
 
 def make_group_map_from_transform(

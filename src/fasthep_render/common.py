@@ -4,7 +4,8 @@ from math import ceil
 from typing import Any, Protocol
 
 import mplhep as mh
-from hepflow.model.render import StyleSpec
+
+from fasthep_render.model import StyleSpec
 
 
 class HasRenderStyle(Protocol):

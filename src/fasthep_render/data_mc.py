@@ -4,13 +4,6 @@ from typing import Any
 
 import matplotlib.pyplot as plt
 import mplhep as mh
-from hepflow.model.render import (
-    AxesSpec,
-    DatasetStyle,
-    RenderOutcome,
-    RenderSpec,
-    RenderStatus,
-)
 from mplhep.comp import data_model
 
 from fasthep_render.common import (
@@ -20,6 +13,13 @@ from fasthep_render.common import (
     label_experiment,
     resolve_color_for_dataset,
     resolve_label,
+)
+from fasthep_render.model import (
+    AxesSpec,
+    DatasetStyle,
+    RenderOutcome,
+    RenderSpec,
+    RenderStatus,
 )
 
 

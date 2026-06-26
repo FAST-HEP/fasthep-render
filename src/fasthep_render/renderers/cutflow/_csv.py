@@ -6,9 +6,9 @@ from pathlib import Path
 from typing import Any
 
 from hepflow.model.issues import FlowIssue
-from hepflow.model.render import RenderOutcome, RenderStatus
-from hepflow.model.render_types import RenderCommonSpec, RenderTypeSpec
 
+from fasthep_render.model import RenderOutcome, RenderStatus
+from fasthep_render.render_types import RenderCommonSpec, RenderTypeSpec
 from fasthep_render.sinks._common import run_render_sink
 
 CUTFLOW_CSV_RENDER_SPEC = {

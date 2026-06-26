@@ -6,10 +6,10 @@ from typing import Any, Literal
 import matplotlib.pyplot as plt
 import mplhep as mh
 from hepflow.model.issues import FlowIssue, IssueLevel
-from hepflow.model.render import RenderOutcome, RenderStatus
-from hepflow.model.render_types import RenderCommonSpec, RenderTypeSpec
 from mplhep.comp import comparison as mplhep_comparison
 
+from fasthep_render.model import RenderOutcome, RenderStatus
+from fasthep_render.render_types import RenderCommonSpec, RenderTypeSpec
 from fasthep_render.sinks._common import run_render_sink
 
 COMPARISON_RENDER_SPEC = {

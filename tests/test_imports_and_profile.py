@@ -65,4 +65,4 @@ def test_flow_loads_render_profile(tmp_path) -> None:
     assert "hep.render.heatmap2d" in cfg["registry"]["sinks"]
     assert "hep.render.comparison" in cfg["registry"]["sinks"]
     assert "hep.render.cutflow_csv" in cfg["registry"]["sinks"]
-    assert "hep.render.project" in cfg["registry"]["renderers"]
+    assert "hep.render.project" in cfg["registry"]["sinks"]
