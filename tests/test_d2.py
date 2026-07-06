@@ -149,7 +149,7 @@ def test_graph_d2_compile_hook_requests_shared_renderer(
         def __init__(self) -> None:
             self.status = RenderStatus.RENDERED
             self.message = None
-            self.output_path = graph_dir / "graph.png"
+            self.output_path = graph_dir / "graph.svg"
             self.meta = {"renderer": "d2"}
 
     def fake_render_path(*args: Any, **kwargs: Any) -> Outcome:
@@ -161,7 +161,7 @@ def test_graph_d2_compile_hook_requests_shared_renderer(
 
     result = compile_hooks.render_graph_d2_hook(Ctx())
 
-    assert seen["args"] == ("d2", graph_dir / "graph.d2", graph_dir / "graph.png")
+    assert seen["args"] == ("d2", graph_dir / "graph.d2", graph_dir / "graph.svg")
     assert seen["kwargs"]["plan_path"] == tmp_path / "compile" / "plan.yaml"
     assert result["graph_render"]["status"] == "rendered"
     assert not (tmp_path / "render" / "specs" / "graph_d2.yaml").exists()
