@@ -25,6 +25,7 @@ classifiers = [
 ]
 dependencies = [
     "fasthep-flow",
+    "fasthep-toolbench",
     "hist",
     "matplotlib",
     "mplhep",

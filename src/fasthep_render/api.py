@@ -17,7 +17,7 @@ from fasthep_render.render_types import RenderCommonSpec
 
 @dataclass(frozen=True, slots=True)
 class RenderOutcome:
-    spec_path: Path
+    spec_path: Path | None
     output_path: Path
     product_paths: dict[str, Path]
     status: RenderStatus
@@ -38,15 +38,55 @@ def render_spec_file(
     spec_doc = _load_render_spec(spec_file)
     render_spec = _render_spec_payload(spec_doc)
     render_op = _render_op(spec_doc, render_spec)
+    return _render_paths(
+        render_op=render_op,
+        render_spec=render_spec,
+        product=product,
+        products=products,
+        output_path=_resolve_output_path(spec_doc, out=out),
+        spec_path=spec_file,
+        plan_path=plan_path,
+    )
+
+
+def render_path(
+    renderer: str,
+    input_path: str | Path,
+    output_path: str | Path,
+    *,
+    params: Mapping[str, Any] | None = None,
+    plan_path: str | Path | None = None,
+) -> RenderOutcome:
+    """Render one input path to one output path through the renderer registry."""
+    render_spec = _render_path_spec(renderer, params=params)
+    return _render_paths(
+        render_op=renderer,
+        render_spec=render_spec,
+        products={renderer: input_path},
+        output_path=Path(output_path),
+        spec_path=None,
+        plan_path=plan_path,
+    )
+
+
+def _render_paths(
+    *,
+    render_op: str,
+    render_spec: dict[str, Any],
+    output_path: Path,
+    spec_path: Path | None,
+    product: str | Path | None = None,
+    products: Mapping[str, str | Path] | None = None,
+    plan_path: str | Path | None = None,
+) -> RenderOutcome:
     product_paths = _normalize_product_paths(product=product, products=products)
     if not product_paths:
-        raise ValueError("render spec execution requires an explicit product path")
+        raise ValueError("render execution requires an explicit product path")
     missing_products = [path for path in product_paths.values() if not path.is_file()]
     if missing_products:
         missing = ", ".join(str(path) for path in missing_products)
         raise ValueError(f"product path does not exist: {missing}")
 
-    output_path = _resolve_output_path(spec_doc, out=out)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     product_values = {name: _load_product(path) for name, path in product_paths.items()}
 
@@ -57,7 +97,6 @@ def render_spec_file(
         raise ValueError(f"Unknown renderer: {render_op}")
 
     ctx = {
-        "spec_path": str(spec_file),
         "product_paths": {name: str(path) for name, path in product_paths.items()},
         "output_path": str(output_path),
         "output_dir": str(output_path.parent),
@@ -65,6 +104,8 @@ def render_spec_file(
         "plan": plan or {},
         "render_registry": render_registry,
     }
+    if spec_path is not None:
+        ctx["spec_path"] = str(spec_path)
     common = RenderCommonSpec.from_dict(render_spec)
     render_params = entry.spec.parse_params(render_spec)
     outcome = render_resolved(
@@ -77,13 +118,25 @@ def render_spec_file(
     )
 
     return RenderOutcome(
-        spec_path=spec_file,
+        spec_path=spec_path,
         output_path=Path(outcome.meta.get("output") or output_path),
         product_paths=product_paths,
         status=outcome.status,
         message=outcome.message,
         meta=dict(outcome.meta or {}),
     )
+
+
+def _render_path_spec(
+    renderer: str,
+    *,
+    params: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    spec = dict(params or {})
+    if "op" in spec:
+        return spec
+    render_params = dict(spec)
+    return {"op": renderer, renderer: render_params}
 
 
 def _load_render_spec(spec_path: Path) -> dict[str, Any]:
@@ -126,6 +179,8 @@ def _normalize_product_paths(
 def _load_product(path: Path) -> Any:
     if path.suffix == ".json":
         return read_json(path)
+    if path.suffix == ".d2":
+        return path.read_text(encoding="utf-8")
     return read_pickle(path)
 
 

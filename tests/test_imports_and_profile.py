@@ -21,6 +21,8 @@ def test_load_registry_profile_resource() -> None:
 
     assert "hep.render.hist1d" in text
     assert "fasthep_render.sinks.hist1d:run_hist1d_render" in text
+    assert "fasthep_render.renderers.d2:render_d2" in text
+    assert "fasthep_render.compile_hooks:render_graph_d2_hook" in text
 
 
 def test_load_render_specs_and_impls() -> None:
@@ -66,3 +68,5 @@ def test_flow_loads_render_profile(tmp_path) -> None:
     assert "hep.render.comparison" in cfg["registry"]["sinks"]
     assert "hep.render.cutflow_csv" in cfg["registry"]["sinks"]
     assert "hep.render.project" in cfg["registry"]["sinks"]
+    assert "d2" in cfg["registry"]["render"]
+    assert "fasthep.render.graph_d2" in cfg["registry"]["compile_hooks"]

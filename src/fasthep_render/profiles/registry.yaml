@@ -1,4 +1,14 @@
 registry:
+  render:
+    d2:
+      spec: fasthep_render.renderers.d2:D2_RENDER_TYPE
+      impl: fasthep_render.renderers.d2:render_d2
+
+  compile_hooks:
+    fasthep.render.graph_d2:
+      spec: fasthep_render.compile_hooks:GRAPH_D2_RENDER_HOOK_SPEC
+      impl: fasthep_render.compile_hooks:render_graph_d2_hook
+
   sinks:
     hep.render.hist1d:
       spec: fasthep_render.sinks.hist1d:HIST1D_RENDER_SPEC

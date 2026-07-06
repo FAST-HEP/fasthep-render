@@ -20,6 +20,14 @@ def test_registry_profile_loads_render_sink_specs_and_impls(tmp_path) -> None:
     }
 
     assert expected <= set(sinks)
+    assert cfg["registry"]["render"]["d2"] == {
+        "spec": "fasthep_render.renderers.d2:D2_RENDER_TYPE",
+        "impl": "fasthep_render.renderers.d2:render_d2",
+    }
+    assert cfg["registry"]["compile_hooks"]["fasthep.render.graph_d2"] == {
+        "spec": "fasthep_render.compile_hooks:GRAPH_D2_RENDER_HOOK_SPEC",
+        "impl": "fasthep_render.compile_hooks:render_graph_d2_hook",
+    }
 
     for name in expected:
         sink_spec = load_object(sinks[name]["spec"])
@@ -33,5 +41,6 @@ def test_render_registry_is_render_package_local() -> None:
     registry = resolve_render_registry()
 
     assert "hep.render.hist1d" in registry.renderers
+    assert "d2" in registry.renderers
     assert callable(registry.renderers["hep.render.hist1d"].spec.parse_params)
     assert callable(registry.renderers["hep.render.hist1d"].handler)

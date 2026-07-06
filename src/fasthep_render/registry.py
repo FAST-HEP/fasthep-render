@@ -31,6 +31,10 @@ _BUILTIN_RENDERERS: dict[str, dict[str, str]] = {
         "spec": "fasthep_render.renderers.cutflow:CUTFLOW_CSV_RENDER_TYPE",
         "impl": "fasthep_render.renderers.cutflow:render_cutflow_csv",
     },
+    "d2": {
+        "spec": "fasthep_render.renderers.d2:D2_RENDER_TYPE",
+        "impl": "fasthep_render.renderers.d2:render_d2",
+    },
 }
 
 
