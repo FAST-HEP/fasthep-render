@@ -137,6 +137,26 @@ render_artifact(
 )
 ```
 
+## Comparison area normalisation
+
+`hep.render.comparison` supports a small presentation-only option:
+
+```yaml
+comparison:
+  normalise: area
+```
+
+This scales each input histogram independently to unit visible-bin area before
+drawing the comparison, using the histogram API's `density()` implementation for
+the normalized visible-bin values. The renderer operates on histogram copies, so
+stored histogram artifacts keep their original weighted counts and can be reused
+by other render stages. Weighted variances are scaled with the copied histogram.
+
+Zero-integral histograms are left unchanged and reported in renderer metadata.
+Negative visible-bin integrals are rejected because the area normalisation would
+be ambiguous. This option is intentionally narrow; a more general render
+transform mechanism may replace it later.
+
 ## Design principles
 
 `fasthep-render` focuses on:
