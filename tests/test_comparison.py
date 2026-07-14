@@ -76,6 +76,41 @@ def test_comparison_area_normalise_scales_copies_and_variances(tmp_path) -> None
     assert np.allclose(reference.variances(), reference_variances)
 
 
+def test_comparison_render_slices_variation_histogram(tmp_path) -> None:
+    h = hist.Hist(
+        hist.axis.StrCategory(["data", "mc"], name="dataset"),
+        hist.axis.Regular(3, 0.0, 3.0, name="x"),
+        hist.axis.StrCategory(["nominal", "up"], name="variation"),
+        storage=hist.storage.Weight(),
+    )
+    h.fill(dataset="data", x=[0.5, 1.5], variation="nominal")
+    h.fill(dataset="mc", x=[0.5, 1.5], variation="nominal", weight=[1.0, 1.0])
+    h.fill(dataset="mc", x=[0.5, 1.5], variation="up", weight=[1.2, 1.2])
+    out = tmp_path / "variation.png"
+
+    result = run_comparison_render(
+        {"hist": h},
+        spec={
+            "axes": {"x": {"name": "x", "label": "x"}, "y": {"name": "events"}},
+            "comparison": {
+                "variation_axis": "variation",
+                "variation": "up",
+                "variation_reference": "nominal",
+            },
+        },
+        output_path=str(out),
+        ctx={
+            "datasets": {
+                "data": {"eventtype": "data"},
+                "mc": {"eventtype": "mc"},
+            }
+        },
+    )
+
+    assert result.path == str(out)
+    assert out.is_file()
+
+
 def test_comparison_area_normalise_warns_on_zero_integral() -> None:
     h: hist.Hist = hist.Hist(hist.axis.Regular(3, 0.0, 3.0, name="x"))
     warnings: list[dict[str, object]] = []

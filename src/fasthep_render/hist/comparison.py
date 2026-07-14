@@ -28,8 +28,8 @@ COMPARISON_RENDER_SPEC = {
 
 @dataclass(frozen=True)
 class ComparisonParams:
-    reference: str
-    target: str
+    reference: str = "reference"
+    target: str = "target"
 
     reference_label: str = "reference"
     target_label: str = "target"
@@ -54,6 +54,12 @@ class ComparisonParams:
     target_color: str = "red"
     reference_histtype: str = "errorbar"
     target_histtype: str = "step"
+    variation_axis: str | None = None
+    variation: str | None = None
+    variation_reference: str = "nominal"
+    dataset_axis: str = "dataset"
+    reference_eventtype: str = "data"
+    target_eventtype: str = "mc"
 
 
 def parse_comparison_params(spec_dict: dict[str, Any]) -> ComparisonParams:
@@ -69,9 +75,12 @@ def validate_comparison_params(
     issues: list[FlowIssue] = []
 
     available_products = set(context.get("available_products") or [])
-    missing = [
-        p for p in [params.reference, params.target] if p not in available_products
-    ]
+    if params.variation_axis is not None:
+        missing = [] if "hist" in available_products else ["hist"]
+    else:
+        missing = [
+            p for p in [params.reference, params.target] if p not in available_products
+        ]
     if missing:
         issues.append(
             FlowIssue(
@@ -93,6 +102,8 @@ def resolve_comparison_input(
     context: dict[str, Any],
 ) -> dict[str, Any]:
     del common, context
+    if params.variation_axis is not None:
+        return {"products": {"hist": params.target}}
     return {
         "products": {
             "reference": params.reference,
@@ -124,8 +135,7 @@ def render_comparison(
     params: ComparisonParams,
     ctx: dict[str, Any],
 ) -> RenderOutcome:
-    h_ref = product["reference"]
-    h_tgt = product["target"]
+    h_ref, h_tgt = _comparison_histograms(product, params, ctx)
     out_path = ctx["output_path"]
     warnings: list[dict[str, Any]] = []
 
@@ -212,6 +222,43 @@ def render_comparison(
             "warnings": warnings,
         },
     )
+
+
+def _comparison_histograms(
+    product: dict[str, Any],
+    params: ComparisonParams,
+    ctx: dict[str, Any],
+) -> tuple[Any, Any]:
+    if params.variation_axis is None:
+        return product["reference"], product["target"]
+    h = product["hist"]
+    data_dataset = _dataset_for_eventtype(ctx, params.reference_eventtype)
+    target_dataset = _dataset_for_eventtype(ctx, params.target_eventtype)
+    variation = params.variation or params.variation_reference
+    return (
+        h[{params.dataset_axis: data_dataset, params.variation_axis: params.variation_reference}],
+        h[{params.dataset_axis: target_dataset, params.variation_axis: variation}],
+    )
+
+
+def _dataset_for_eventtype(ctx: dict[str, Any], eventtype: str) -> str:
+    datasets = dict(ctx.get("datasets") or {})
+    plan = ctx.get("plan")
+    if not datasets and isinstance(plan, dict):
+        context = plan.get("context")
+        if isinstance(context, dict):
+            datasets = dict(context.get("datasets") or {})
+    matches = [
+        str(name)
+        for name, dataset in datasets.items()
+        if isinstance(dataset, dict) and str(dataset.get("eventtype")) == eventtype
+    ]
+    if len(matches) != 1:
+        raise ValueError(
+            "comparison variation rendering requires exactly one dataset with "
+            f"eventtype={eventtype!r}, found {matches}"
+        )
+    return matches[0]
 
 
 def _normalise_for_comparison(
