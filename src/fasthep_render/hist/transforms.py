@@ -2,7 +2,7 @@ from typing import Any
 
 import hist
 
-from fasthep_render.common import find_dataset_axis_name
+from fasthep_render.hist.common import find_dataset_axis_name
 from fasthep_render.render_types import RenderCommonSpec
 
 
@@ -183,6 +183,7 @@ def apply_render_transforms(
 
     Returns a new products-like dict for downstream renderers.
     """
+    del render_params
     out = dict(products)
 
     for t in common.transforms or []:

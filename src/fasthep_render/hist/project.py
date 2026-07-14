@@ -9,12 +9,12 @@ import yaml
 from hepflow.model.issues import FlowIssue, IssueLevel
 from hepflow.utils import to_dict
 
+from fasthep_render.api import run_render_sink
 from fasthep_render.dispatch import render_resolved
+from fasthep_render.hist.inputs import resolve_single_hist_input
 from fasthep_render.model import RenderOutcome
 from fasthep_render.registry import resolve_render_registry
 from fasthep_render.render_types import RenderCommonSpec, RenderTypeSpec
-from fasthep_render.sinks._common import run_render_sink
-from fasthep_render.types.common import resolve_single_hist_input
 
 PROJECT_RENDER_SPEC = {
     "name": "hep.render.project",

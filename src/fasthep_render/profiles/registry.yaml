@@ -1,35 +1,48 @@
 registry:
+  report_templates:
+    hep.provenance.default:
+      path: fasthep_render/templates/reports/provenance.md.j2
+      source: provenance
+      formats:
+        - markdown
+        - html
+      description: Default FAST-HEP provenance report.
+
   render:
     d2:
-      spec: fasthep_render.renderers.d2:D2_RENDER_TYPE
-      impl: fasthep_render.renderers.d2:render_d2
+      spec: fasthep_render.graph.d2:D2_RENDER_TYPE
+      impl: fasthep_render.graph.d2:render_d2
 
   compile_hooks:
     fasthep.render.graph_d2:
-      spec: fasthep_render.compile_hooks:GRAPH_D2_RENDER_HOOK_SPEC
-      impl: fasthep_render.compile_hooks:render_graph_d2_hook
+      spec: fasthep_render.graph.compile_hooks:GRAPH_D2_RENDER_HOOK_SPEC
+      impl: fasthep_render.graph.compile_hooks:render_graph_d2_hook
 
   sinks:
     hep.render.hist1d:
-      spec: fasthep_render.sinks.hist1d:HIST1D_RENDER_SPEC
-      impl: fasthep_render.sinks.hist1d:run_hist1d_render
+      spec: fasthep_render.hist.hist1d:HIST1D_RENDER_SPEC
+      impl: fasthep_render.hist.hist1d:run_hist1d_render
 
     hep.render.data_mc:
-      spec: fasthep_render.sinks.data_mc:DATA_MC_RENDER_SPEC
-      impl: fasthep_render.sinks.data_mc:run_data_mc_render
+      spec: fasthep_render.hist.data_mc:DATA_MC_RENDER_SPEC
+      impl: fasthep_render.hist.data_mc:run_data_mc_render
 
     hep.render.heatmap2d:
-      spec: fasthep_render.sinks.heatmap2d:HEATMAP2D_RENDER_SPEC
-      impl: fasthep_render.sinks.heatmap2d:run_heatmap2d_render
+      spec: fasthep_render.hist.heatmap2d:HEATMAP2D_RENDER_SPEC
+      impl: fasthep_render.hist.heatmap2d:run_heatmap2d_render
 
     hep.render.project:
-      spec: fasthep_render.sinks.project:PROJECT_RENDER_SPEC
-      impl: fasthep_render.sinks.project:run_project_render
+      spec: fasthep_render.hist.project:PROJECT_RENDER_SPEC
+      impl: fasthep_render.hist.project:run_project_render
 
     hep.render.comparison:
-      spec: fasthep_render.sinks.comparison:COMPARISON_RENDER_SPEC
-      impl: fasthep_render.sinks.comparison:run_comparison_render
+      spec: fasthep_render.hist.comparison:COMPARISON_RENDER_SPEC
+      impl: fasthep_render.hist.comparison:run_comparison_render
 
     hep.render.cutflow_csv:
-      spec: fasthep_render.sinks.cutflow_csv:CUTFLOW_CSV_RENDER_SPEC
-      impl: fasthep_render.sinks.cutflow_csv:run_cutflow_csv_render
+      spec: fasthep_render.tables.cutflow_csv:CUTFLOW_CSV_RENDER_SPEC
+      impl: fasthep_render.tables.cutflow_csv:run_cutflow_csv_render
+
+    hep.report.template:
+      spec: fasthep_render.reports.template:REPORT_TEMPLATE_SPEC
+      impl: fasthep_render.reports.template:run_report_template

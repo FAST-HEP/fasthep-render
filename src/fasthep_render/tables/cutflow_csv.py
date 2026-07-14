@@ -7,9 +7,9 @@ from typing import Any
 
 from hepflow.model.issues import FlowIssue
 
+from fasthep_render.api import run_render_sink
 from fasthep_render.model import RenderOutcome, RenderStatus
 from fasthep_render.render_types import RenderCommonSpec, RenderTypeSpec
-from fasthep_render.sinks._common import run_render_sink
 
 CUTFLOW_CSV_RENDER_SPEC = {
     "name": "hep.render.cutflow_csv",
@@ -76,6 +76,7 @@ def run_cutflow_csv_render(target: Any, **kwargs: Any):
         target=target,
         **kwargs,
     )
+
 
 FIELD_ORDER = [
     "selection",

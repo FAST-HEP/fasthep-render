@@ -8,32 +8,32 @@ from fasthep_render.render_types import RenderEntry, RenderTypeSpec
 
 _BUILTIN_RENDERERS: dict[str, dict[str, str]] = {
     "hep.render.hist1d": {
-        "spec": "fasthep_render.renderers.hist1d:HIST1D_RENDER_TYPE",
-        "impl": "fasthep_render.renderers.hist1d:render_hist1d",
+        "spec": "fasthep_render.hist.hist1d:HIST1D_RENDER_TYPE",
+        "impl": "fasthep_render.hist.hist1d:render_hist1d",
     },
     "hep.render.data_mc": {
-        "spec": "fasthep_render.renderers.data_mc:DATA_MC_RENDER_TYPE",
-        "impl": "fasthep_render.renderers.data_mc:render_data_mc",
+        "spec": "fasthep_render.hist.data_mc:DATA_MC_RENDER_TYPE",
+        "impl": "fasthep_render.hist.data_mc:render_data_mc",
     },
     "hep.render.heatmap2d": {
-        "spec": "fasthep_render.renderers.heatmap2d:HEATMAP2D_RENDER_TYPE",
-        "impl": "fasthep_render.renderers.heatmap2d:render_heatmap2d",
+        "spec": "fasthep_render.hist.heatmap2d:HEATMAP2D_RENDER_TYPE",
+        "impl": "fasthep_render.hist.heatmap2d:render_heatmap2d",
     },
     "hep.render.project": {
-        "spec": "fasthep_render.renderers.project:PROJECT_RENDER_TYPE",
-        "impl": "fasthep_render.renderers.project:render_project_then",
+        "spec": "fasthep_render.hist.project:PROJECT_RENDER_TYPE",
+        "impl": "fasthep_render.hist.project:render_project_then",
     },
     "hep.render.comparison": {
-        "spec": "fasthep_render.renderers.comparison:COMPARISON_RENDER_TYPE",
-        "impl": "fasthep_render.renderers.comparison:render_comparison",
+        "spec": "fasthep_render.hist.comparison:COMPARISON_RENDER_TYPE",
+        "impl": "fasthep_render.hist.comparison:render_comparison",
     },
     "hep.render.cutflow_csv": {
-        "spec": "fasthep_render.renderers.cutflow:CUTFLOW_CSV_RENDER_TYPE",
-        "impl": "fasthep_render.renderers.cutflow:render_cutflow_csv",
+        "spec": "fasthep_render.tables.cutflow_csv:CUTFLOW_CSV_RENDER_TYPE",
+        "impl": "fasthep_render.tables.cutflow_csv:render_cutflow_csv",
     },
     "d2": {
-        "spec": "fasthep_render.renderers.d2:D2_RENDER_TYPE",
-        "impl": "fasthep_render.renderers.d2:render_d2",
+        "spec": "fasthep_render.graph.d2:D2_RENDER_TYPE",
+        "impl": "fasthep_render.graph.d2:render_d2",
     },
 }
 

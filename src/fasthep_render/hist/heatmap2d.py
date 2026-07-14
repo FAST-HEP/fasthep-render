@@ -9,10 +9,10 @@ import matplotlib.pyplot as plt
 import mplhep as mh
 from hepflow.model.issues import FlowIssue
 
+from fasthep_render.api import run_render_sink
+from fasthep_render.hist.inputs import resolve_single_hist_input
 from fasthep_render.model import RenderOutcome, RenderStatus
 from fasthep_render.render_types import RenderCommonSpec, RenderTypeSpec
-from fasthep_render.sinks._common import run_render_sink
-from fasthep_render.types.common import resolve_single_hist_input
 
 HEATMAP2D_RENDER_SPEC = {
     "name": "hep.render.heatmap2d",

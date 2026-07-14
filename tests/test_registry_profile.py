@@ -21,12 +21,12 @@ def test_registry_profile_loads_render_sink_specs_and_impls(tmp_path) -> None:
 
     assert expected <= set(sinks)
     assert cfg["registry"]["render"]["d2"] == {
-        "spec": "fasthep_render.renderers.d2:D2_RENDER_TYPE",
-        "impl": "fasthep_render.renderers.d2:render_d2",
+        "spec": "fasthep_render.graph.d2:D2_RENDER_TYPE",
+        "impl": "fasthep_render.graph.d2:render_d2",
     }
     assert cfg["registry"]["compile_hooks"]["fasthep.render.graph_d2"] == {
-        "spec": "fasthep_render.compile_hooks:GRAPH_D2_RENDER_HOOK_SPEC",
-        "impl": "fasthep_render.compile_hooks:render_graph_d2_hook",
+        "spec": "fasthep_render.graph.compile_hooks:GRAPH_D2_RENDER_HOOK_SPEC",
+        "impl": "fasthep_render.graph.compile_hooks:render_graph_d2_hook",
     }
 
     for name in expected:

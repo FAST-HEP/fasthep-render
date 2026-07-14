@@ -20,36 +20,36 @@ def test_load_registry_profile_resource() -> None:
     )
 
     assert "hep.render.hist1d" in text
-    assert "fasthep_render.sinks.hist1d:run_hist1d_render" in text
-    assert "fasthep_render.renderers.d2:render_d2" in text
-    assert "fasthep_render.compile_hooks:render_graph_d2_hook" in text
+    assert "fasthep_render.hist.hist1d:run_hist1d_render" in text
+    assert "fasthep_render.graph.d2:render_d2" in text
+    assert "fasthep_render.graph.compile_hooks:render_graph_d2_hook" in text
 
 
 def test_load_render_specs_and_impls() -> None:
     refs = [
         (
-            "fasthep_render.sinks.hist1d:HIST1D_RENDER_SPEC",
-            "fasthep_render.sinks.hist1d:run_hist1d_render",
+            "fasthep_render.hist.hist1d:HIST1D_RENDER_SPEC",
+            "fasthep_render.hist.hist1d:run_hist1d_render",
         ),
         (
-            "fasthep_render.sinks.data_mc:DATA_MC_RENDER_SPEC",
-            "fasthep_render.sinks.data_mc:run_data_mc_render",
+            "fasthep_render.hist.data_mc:DATA_MC_RENDER_SPEC",
+            "fasthep_render.hist.data_mc:run_data_mc_render",
         ),
         (
-            "fasthep_render.sinks.heatmap2d:HEATMAP2D_RENDER_SPEC",
-            "fasthep_render.sinks.heatmap2d:run_heatmap2d_render",
+            "fasthep_render.hist.heatmap2d:HEATMAP2D_RENDER_SPEC",
+            "fasthep_render.hist.heatmap2d:run_heatmap2d_render",
         ),
         (
-            "fasthep_render.sinks.project:PROJECT_RENDER_SPEC",
-            "fasthep_render.sinks.project:run_project_render",
+            "fasthep_render.hist.project:PROJECT_RENDER_SPEC",
+            "fasthep_render.hist.project:run_project_render",
         ),
         (
-            "fasthep_render.sinks.comparison:COMPARISON_RENDER_SPEC",
-            "fasthep_render.sinks.comparison:run_comparison_render",
+            "fasthep_render.hist.comparison:COMPARISON_RENDER_SPEC",
+            "fasthep_render.hist.comparison:run_comparison_render",
         ),
         (
-            "fasthep_render.sinks.cutflow_csv:CUTFLOW_CSV_RENDER_SPEC",
-            "fasthep_render.sinks.cutflow_csv:run_cutflow_csv_render",
+            "fasthep_render.tables.cutflow_csv:CUTFLOW_CSV_RENDER_SPEC",
+            "fasthep_render.tables.cutflow_csv:run_cutflow_csv_render",
         ),
     ]
 

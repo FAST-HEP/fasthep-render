@@ -1,0 +1,92 @@
+# Provenance Report
+
+## Run
+
+- Run ID: {{ run.id or "unknown" }}
+- Workflow graph: {{ run.workflow.graph or "unknown" }}
+- Workflow plan: {{ run.workflow.plan or "unknown" }}
+- Summary: {{ run.summary.summary_path or "unknown" }}
+
+## Software Versions
+
+| Package | Version |
+|---|---|
+{% for name, version in software_versions.items() %}
+| {{ name }} | {{ version }} |
+{% else %}
+| none recorded | |
+{% endfor %}
+
+## Environment
+
+| Field | Value |
+|---|---|
+{% for name, value in environment.items() %}
+| {{ name }} | {{ value }} |
+{% else %}
+| none recorded | |
+{% endfor %}
+
+## Resources
+
+| Resource | Requested | Selected | Fallback | Correction |
+|---|---|---|---|---|
+{% for resource in resources %}
+| {{ resource.id }} | {{ resource.requested_era or "" }} | {{ resource.selected_era or "" }} | {{ resource.fallback }} | {{ resource.correction or "" }} |
+{% else %}
+| none recorded | | | | |
+{% endfor %}
+
+## Operations
+
+{% for execution in executions %}
+### {{ execution.node_id }}
+
+- Impl: {{ execution.impl }}
+- Role: {{ execution.role }}
+- Dataset: {{ execution.dataset or "" }}
+- Partition: {{ execution.partition or "" }}
+
+{% for operation in execution.operations %}
+Inputs:
+{% for symbol in operation.inputs.symbols %}
+- symbol: `{{ symbol }}`
+{% else %}
+- none
+{% endfor %}
+
+Resources:
+{% for resource in operation.inputs.resources %}
+- `{{ resource }}`
+{% else %}
+- none
+{% endfor %}
+
+Outputs:
+{% for symbol in operation.outputs.symbols %}
+- symbol: `{{ symbol }}`
+{% else %}
+- none
+{% endfor %}
+{% endfor %}
+{% else %}
+No runtime operation records were captured.
+{% endfor %}
+
+## Produced Artifacts
+
+| Artifact | Kind | Producer |
+|---|---|---|
+{% for artifact in artifacts %}
+| {{ artifact.path }} | {{ artifact.kind }} | {{ artifact.node_id }} |
+{% else %}
+| none recorded | | |
+{% endfor %}
+
+## Warnings
+
+{% for warning in warnings %}
+- {{ warning.code }}: {{ warning.message }}
+{% else %}
+- none
+{% endfor %}

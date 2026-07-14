@@ -4,8 +4,7 @@ import hist
 import numpy as np
 import pytest
 
-from fasthep_render.renderers.comparison import _normalise_hist_area
-from fasthep_render.sinks.comparison import run_comparison_render
+from fasthep_render.hist.comparison import _normalise_hist_area, run_comparison_render
 
 
 def test_comparison_render_writes_docs_ready_png(

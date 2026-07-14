@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from fasthep_render.sinks.cutflow_csv import run_cutflow_csv_render
+from fasthep_render.tables.cutflow_csv import run_cutflow_csv_render
 
 
 def test_cutflow_csv_renderer_writes_single_dataset_csv(tmp_path: Path) -> None:

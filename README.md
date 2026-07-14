@@ -128,14 +128,24 @@ render:
 Example Python usage:
 
 ```python id="xskmwo"
-from fasthep_render.api import render_artifact
+from fasthep_render.api import render_spec_file
 
-render_artifact(
-    artifact="results/NumberOfJets.pkl",
-    spec="render_specs/render_NumberOfJets.yaml",
-    output="results/NumberOfJets.png",
+render_spec_file(
+    "render_specs/render_NumberOfJets.yaml",
+    product="results/NumberOfJets.pkl",
+    out="results/NumberOfJets.png",
 )
 ```
+
+Renderer implementations are organised by domain:
+
+* `fasthep_render.hist` for histogram plots and render-side histogram transforms
+* `fasthep_render.graph` for graph renderers and graph compile hooks
+* `fasthep_render.reports` for document/template rendering
+* `fasthep_render.tables` for tabular outputs
+
+`fasthep_render.api` is the stable invocation boundary for standalone rendering
+and Flow-facing render sinks.
 
 ## Comparison area normalisation
 

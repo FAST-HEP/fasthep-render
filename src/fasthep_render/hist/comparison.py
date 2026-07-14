@@ -10,9 +10,9 @@ from hepflow.model.issues import FlowIssue, IssueLevel
 from matplotlib.gridspec import GridSpec
 from mplhep.comp import comparison as mplhep_comparison
 
+from fasthep_render.api import run_render_sink
 from fasthep_render.model import RenderOutcome, RenderStatus
 from fasthep_render.render_types import RenderCommonSpec, RenderTypeSpec
-from fasthep_render.sinks._common import run_render_sink
 
 COMPARISON_RENDER_SPEC = {
     "name": "hep.render.comparison",

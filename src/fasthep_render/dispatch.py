@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Any
 
+from fasthep_render.hist.transforms import apply_render_transforms
 from fasthep_render.model import RenderOutcome
 from fasthep_render.registry import RenderRegistry, resolve_render_registry
 from fasthep_render.render_types import RenderCommonSpec
-from fasthep_render.transforms import apply_render_transforms
 
 
 def render_by_registry(

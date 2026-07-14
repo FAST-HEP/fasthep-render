@@ -6,8 +6,8 @@ mpl.use("Agg")
 
 import hist
 
-from fasthep_render.sinks.comparison import run_comparison_render
-from fasthep_render.sinks.hist1d import run_hist1d_render
+from fasthep_render.hist.comparison import run_comparison_render
+from fasthep_render.hist.hist1d import run_hist1d_render
 
 
 def _hist1d() -> hist.Hist:

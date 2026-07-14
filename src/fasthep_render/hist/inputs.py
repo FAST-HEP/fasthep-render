@@ -4,8 +4,8 @@ from fasthep_render.render_types import RenderCommonSpec
 
 
 def resolve_single_hist_input(
-    common: RenderCommonSpec,
-    params: Any,
+    _common: RenderCommonSpec,
+    _params: Any,
     context: dict[str, Any],
 ) -> dict[str, Any]:
     explicit_inputs = dict(context.get("explicit_inputs") or {})

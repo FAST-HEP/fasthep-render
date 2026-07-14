@@ -10,7 +10,7 @@ import yaml
 from hepflow.utils import write_pickle
 
 import fasthep_render.api as render_api
-from fasthep_render.api import render_spec_file
+from fasthep_render.api import render_spec_file, run_render_sink
 from fasthep_render.model import RenderOutcome as FlowRenderOutcome
 from fasthep_render.model import RenderStatus
 
@@ -29,6 +29,10 @@ def test_render_spec_file_resolves_op_from_impl(
     assert outcome.status == RenderStatus.RENDERED
     assert outcome.output_path == out
     assert out.is_file()
+
+
+def test_run_render_sink_is_public_api() -> None:
+    assert callable(run_render_sink)
 
 
 def test_render_spec_file_resolves_op_from_nested_spec(

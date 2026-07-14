@@ -9,7 +9,8 @@ import mplhep as mh
 from hepflow.model.issues import FlowIssue, IssueLevel
 from mplhep.comp import data_model
 
-from fasthep_render.common import (
+from fasthep_render.api import run_render_sink
+from fasthep_render.hist.common import (
     auto_legend_ncol,
     find_dataset_axis_name,
     get_dataset_categories,
@@ -17,10 +18,9 @@ from fasthep_render.common import (
     resolve_color_for_dataset,
     resolve_label,
 )
+from fasthep_render.hist.inputs import resolve_single_hist_input
 from fasthep_render.model import RenderOutcome, RenderStatus
 from fasthep_render.render_types import RenderCommonSpec, RenderTypeSpec
-from fasthep_render.sinks._common import run_render_sink
-from fasthep_render.types.common import resolve_single_hist_input
 
 DATA_MC_RENDER_SPEC = {
     "name": "hep.render.data_mc",

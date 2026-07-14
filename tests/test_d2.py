@@ -7,10 +7,9 @@ import pytest
 from fasthep_toolbench.command import CommandResult
 from hepflow.build_layout import BuildPaths
 
-from fasthep_render import compile_hooks
 from fasthep_render.api import render_path, render_spec_file
+from fasthep_render.graph import compile_hooks, d2
 from fasthep_render.model import RenderStatus
-from fasthep_render.renderers import d2
 
 
 def test_render_spec_file_renders_d2_product(

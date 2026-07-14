@@ -27,6 +27,8 @@ dependencies = [
     "fasthep-flow",
     "fasthep-toolbench",
     "hist",
+    "jinja2",
+    "markdown-it-py",
     "matplotlib",
     "mplhep",
     "numpy",
