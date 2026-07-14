@@ -35,6 +35,9 @@ def test_report_template_renders_markdown_and_html(tmp_path: Path) -> None:
     html = html_path.read_text(encoding="utf-8")
     assert "# Provenance Report" in markdown
     assert "cms.pileup.2024" in markdown
+    assert "/cvmfs/pu.json.gz" in markdown
+    assert "## Executed Stages" in markdown
+    assert "stage.PileupWeights" in markdown
     assert "<html" in html
     assert "Provenance Report" in html
 
@@ -81,7 +84,16 @@ def _context() -> dict:
                 "requested_era": "RunIII2024Summer24",
                 "selected_era": "2023_Summer23",
                 "fallback": True,
+                "path": "/cvmfs/pu.json.gz",
                 "correction": "Collisions2023",
+                "reason": "No 2024 payload is available.",
+            }
+        ],
+        "executed_stages": [
+            {
+                "node_id": "stage.PileupWeights",
+                "datasets": ["dy"],
+                "outputs": [{"port": "stream", "type": "Array"}],
             }
         ],
         "executions": [

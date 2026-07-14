@@ -11,9 +11,9 @@
 
 | Package | Version |
 |---|---|
-{% for name, version in software_versions.items() %}
+{% for name, version in software_versions.items() -%}
 | {{ name }} | {{ version }} |
-{% else %}
+{% else -%}
 | none recorded | |
 {% endfor %}
 
@@ -21,20 +21,30 @@
 
 | Field | Value |
 |---|---|
-{% for name, value in environment.items() %}
+{% for name, value in environment.items() -%}
 | {{ name }} | {{ value }} |
-{% else %}
+{% else -%}
 | none recorded | |
 {% endfor %}
 
 ## Resources
 
-| Resource | Requested | Selected | Fallback | Correction |
-|---|---|---|---|---|
-{% for resource in resources %}
-| {{ resource.id }} | {{ resource.requested_era or "" }} | {{ resource.selected_era or "" }} | {{ resource.fallback }} | {{ resource.correction or "" }} |
-{% else %}
-| none recorded | | | | |
+| Resource | Requested | Selected | Fallback | Correction | Path | Reason |
+|---|---|---|---|---|---|---|
+{% for resource in resources -%}
+| {{ resource.id }} | {{ resource.requested_era or "" }} | {{ resource.selected_era or "" }} | {{ resource.fallback }} | {{ resource.correction or "" }} | {{ resource.path or "" }} | {{ resource.reason or "" }} |
+{% else -%}
+| none recorded | | | | | | |
+{% endfor %}
+
+## Executed Stages
+
+| Stage | Datasets | Outputs |
+|---|---|---|
+{% for stage in executed_stages -%}
+| {{ stage.node_id }} | {{ stage.datasets | join(", ") }} | {% for output in stage.outputs %}`{{ output.port }}` {{ output.type }}{% if not loop.last %}, {% endif %}{% endfor %} |
+{% else -%}
+| none recorded | | |
 {% endfor %}
 
 ## Operations
@@ -77,9 +87,9 @@ No runtime operation records were captured.
 
 | Artifact | Kind | Producer |
 |---|---|---|
-{% for artifact in artifacts %}
+{% for artifact in artifacts -%}
 | {{ artifact.path }} | {{ artifact.kind }} | {{ artifact.node_id }} |
-{% else %}
+{% else -%}
 | none recorded | | |
 {% endfor %}
 
