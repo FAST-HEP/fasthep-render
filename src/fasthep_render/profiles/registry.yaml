@@ -43,6 +43,10 @@ registry:
       spec: fasthep_render.tables.cutflow_csv:CUTFLOW_CSV_RENDER_SPEC
       impl: fasthep_render.tables.cutflow_csv:run_cutflow_csv_render
 
+    hep.render.schema_validation:
+      spec: fasthep_render.reports.schema_validation:SCHEMA_VALIDATION_RENDER_SPEC
+      impl: fasthep_render.reports.schema_validation:run_schema_validation_render
+
     hep.report.template:
       spec: fasthep_render.reports.template:REPORT_TEMPLATE_SPEC
       impl: fasthep_render.reports.template:run_report_template

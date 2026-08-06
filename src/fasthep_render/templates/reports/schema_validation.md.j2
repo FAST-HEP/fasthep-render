@@ -1,0 +1,84 @@
+# {{ title }}
+
+This report compares schema-comparison products with `reference = legacy` and
+`target = FAST-HEP`.
+
+These first-pass inputs are structurally similar, not equivalent productions:
+FAST-HEP uses Run 3 2024 / NanoAODv15-derived inputs, while legacy uses Run 3
+2022 / NanoAODv12-derived inputs. Differences are diagnostic in this workflow;
+no pass/fail threshold is applied yet.
+{% if note %}
+
+{{ note }}
+{% endif %}
+
+## Overview
+
+| Comparison | Common | Compatible | Incompatible common | Missing from FAST-HEP | Additional in FAST-HEP |
+|---|---:|---:|---:|---:|---:|
+{% for comparison in comparisons -%}
+| {{ comparison.label }} | {{ comparison.counts.common }} | {{ comparison.counts.compatible }} | {{ comparison.counts.incompatible }} | {{ comparison.counts.only_in_reference }} | {{ comparison.counts.only_in_target }} |
+{% endfor %}
+
+{% for comparison in comparisons %}
+## {{ comparison.label }}
+
+- Comparison name: `{{ comparison.name }}`
+- Reference: {{ comparison.reference_label }} (`{{ comparison.reference }}`)
+- Target: {{ comparison.target_label }} (`{{ comparison.target }}`)
+- Reference identity: legacy
+- Target identity: FAST-HEP
+
+### Summary
+
+| Metric | Value |
+|---|---:|
+| Reference field count | {{ comparison.counts.reference }} |
+| Target field count | {{ comparison.counts.target }} |
+| Common field count | {{ comparison.counts.common }} |
+| Compatible field count | {{ comparison.counts.compatible }} |
+| Incompatible common field count | {{ comparison.counts.incompatible }} |
+| Missing from FAST-HEP | {{ comparison.counts.only_in_reference }} |
+| Additional in FAST-HEP | {{ comparison.counts.only_in_target }} |
+| Common / reference | {{ comparison.ratios.common_over_reference.label }} |
+| Compatible / common | {{ comparison.ratios.compatible_over_common.label }} |
+
+### Missing from FAST-HEP
+
+{% if comparison.only_in_reference %}
+{% for field in comparison.only_in_reference -%}
+- `{{ field }}`
+{% endfor %}
+{% else -%}
+No fields are missing from FAST-HEP.
+{% endif %}
+
+### Additional in FAST-HEP
+
+{% if comparison.only_in_target %}
+{% for field in comparison.only_in_target -%}
+- `{{ field }}`
+{% endfor %}
+{% else -%}
+No additional fields are present in FAST-HEP.
+{% endif %}
+
+### Incompatible Common Fields
+
+{% if comparison.incompatible_fields %}
+| Field | Reference type | Target type | Reference shape | Target shape |
+|---|---|---|---|---|
+{% for field in comparison.incompatible_fields -%}
+| `{{ field.field }}` | {{ field.reference_type | default("") }} | {{ field.target_type | default("") }} | {{ field.reference_shape | default("") }} | {{ field.target_shape | default("") }} |
+{% endfor %}
+{% else -%}
+No common fields are incompatible.
+{% endif %}
+
+### Compatible Fields
+
+{{ comparison.compatible_count }} compatible common fields are present. The full
+compatible-field list remains in the structured comparison JSON artifact and is
+not printed here to keep this report compact.
+
+{% endfor %}

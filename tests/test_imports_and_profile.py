@@ -21,6 +21,7 @@ def test_load_registry_profile_resource() -> None:
 
     assert "hep.render.hist1d" in text
     assert "fasthep_render.hist.hist1d:run_hist1d_render" in text
+    assert "hep.render.schema_validation" in text
     assert "fasthep_render.graph.d2:render_d2" in text
     assert "fasthep_render.graph.compile_hooks:render_graph_d2_hook" in text
 
@@ -51,6 +52,12 @@ def test_load_render_specs_and_impls() -> None:
             "fasthep_render.tables.cutflow_csv:CUTFLOW_CSV_RENDER_SPEC",
             "fasthep_render.tables.cutflow_csv:run_cutflow_csv_render",
         ),
+        (
+            "fasthep_render.reports.schema_validation:"
+            "SCHEMA_VALIDATION_RENDER_SPEC",
+            "fasthep_render.reports.schema_validation:"
+            "run_schema_validation_render",
+        ),
     ]
 
     for spec_ref, impl_ref in refs:
@@ -67,6 +74,7 @@ def test_flow_loads_render_profile(tmp_path) -> None:
     assert "hep.render.heatmap2d" in cfg["registry"]["sinks"]
     assert "hep.render.comparison" in cfg["registry"]["sinks"]
     assert "hep.render.cutflow_csv" in cfg["registry"]["sinks"]
+    assert "hep.render.schema_validation" in cfg["registry"]["sinks"]
     assert "hep.render.project" in cfg["registry"]["sinks"]
     assert "d2" in cfg["registry"]["render"]
     assert "fasthep.render.graph_d2" in cfg["registry"]["compile_hooks"]
