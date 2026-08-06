@@ -40,6 +40,7 @@ def run_schema_validation_render(
         target,
         labels=dict(spec.get("comparisons") or {}),
         note=str(spec.get("note") or ""),
+        input_products=dict(ctx.get("input_products") or {}),
     )
     template_text = _load_template(str(spec.get("template") or ""))
     markdown = _render_markdown(template_text, render_model)
@@ -86,6 +87,7 @@ def prepare_schema_validation_context(
     *,
     labels: dict[str, Any] | None = None,
     note: str = "",
+    input_products: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     labels = dict(labels or {})
     comparisons = []
@@ -107,7 +109,7 @@ def prepare_schema_validation_context(
         "title": "Schema Validation Report",
         "note": note,
         "comparisons": comparisons,
-        "input_products": _input_products(raw),
+        "input_products": _input_products(input_products or {}),
     }
 
 
@@ -197,12 +199,10 @@ def _incompatible_fields(
 
 def _input_products(raw: dict[str, Any]) -> list[dict[str, str]]:
     products = []
-    for name, comparison in raw.items():
-        if not isinstance(comparison, dict):
+    for name, product_raw in raw.items():
+        if not isinstance(product_raw, dict):
             continue
-        product = dict(comparison.get("_product") or {})
-        if not product:
-            continue
+        product = dict(product_raw)
         products.append(
             {
                 "name": str(name),

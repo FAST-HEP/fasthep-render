@@ -71,15 +71,7 @@ def test_schema_validation_render_writes_markdown_html_and_manifest_metadata(
 
     outputs = run_schema_validation_render(
         {
-            "mc": {
-                **_comparison(),
-                "_product": {
-                    "node_id": "stage.CompareMCSchemas",
-                    "port": "comparison",
-                    "kind": "schema_comparison",
-                    "path": "artifacts/comparisons/CompareMCSchemas.json",
-                },
-            },
+            "mc": _comparison(),
             "data": _empty_comparison(),
         },
         spec={
@@ -92,7 +84,17 @@ def test_schema_validation_render_writes_markdown_html_and_manifest_metadata(
                 {"path": "reports/schema-validation.html", "format": "html"},
             ],
         },
-        ctx={"outdir": str(tmp_path)},
+        ctx={
+            "outdir": str(tmp_path),
+            "input_products": {
+                "mc": {
+                    "node_id": "stage.CompareMCSchemas",
+                    "port": "comparison",
+                    "kind": "schema_comparison",
+                    "path": "artifacts/comparisons/CompareMCSchemas.json",
+                }
+            },
+        },
         meta={"node_id": "render.SchemaValidationReport.0"},
     )
 
