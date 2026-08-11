@@ -42,7 +42,7 @@ def test_report_template_renders_markdown_and_html(tmp_path: Path) -> None:
     assert "Provenance Report" in html
 
 
-def test_report_template_resolves_relative_to_author(tmp_path: Path) -> None:
+def test_report_template_resolves_relative_to_workflow(tmp_path: Path) -> None:
     template = tmp_path / "local-report.md.j2"
     template.write_text("# Local report\n\nRun: {{ run.id }}\n", encoding="utf-8")
     output = tmp_path / "reports" / "local.md"
@@ -52,7 +52,7 @@ def test_report_template_resolves_relative_to_author(tmp_path: Path) -> None:
         source="provenance",
         template="local-report.md.j2",
         outputs=[{"path": str(output), "format": "markdown"}],
-        ctx={"author_dir": str(tmp_path)},
+        ctx={"workflow_dir": str(tmp_path)},
     )
 
     assert output.read_text(encoding="utf-8") == "# Local report\n\nRun: run-1\n"
@@ -65,7 +65,7 @@ def test_report_template_rejects_unknown_template(tmp_path: Path) -> None:
             source="provenance",
             template="missing.md.j2",
             outputs=[{"path": str(tmp_path / "out.md"), "format": "markdown"}],
-            ctx={"author_dir": str(tmp_path)},
+            ctx={"workflow_dir": str(tmp_path)},
         )
 
 

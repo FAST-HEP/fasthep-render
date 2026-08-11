@@ -41,7 +41,7 @@ def run_report_template(
         template_id,
         source=source,
         registry=dict(ctx.get("report_templates") or {}),
-        author_dir=ctx.get("author_dir"),
+        workflow_dir=ctx.get("workflow_dir"),
     )
     markdown = _render_markdown(template_text, report_context)
 
@@ -88,7 +88,7 @@ def _load_template(
     *,
     source: str,
     registry: dict[str, Any],
-    author_dir: Any,
+    workflow_dir: Any,
 ) -> str:
     entry = registry.get(template)
     if isinstance(entry, dict):
@@ -103,14 +103,14 @@ def _load_template(
             raise ValueError(f"Report template {template!r} has no path")
         return _read_template_path(path)
 
-    if isinstance(author_dir, str) and author_dir.strip():
-        candidate = Path(author_dir) / template
+    if isinstance(workflow_dir, str) and workflow_dir.strip():
+        candidate = Path(workflow_dir) / template
         if candidate.exists():
             return candidate.read_text(encoding="utf-8")
 
     raise ValueError(
         f"Report template {template!r} was not registered and was not found "
-        "relative to author.yaml"
+        "relative to workflow.yaml"
     )
 
 
