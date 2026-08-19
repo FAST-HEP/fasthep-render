@@ -14,7 +14,7 @@ SCHEMA_VALIDATION_RENDER_SPEC = {
     "version": "1.0",
     "params": {
         "spec": {"type": "mapping", "required": False},
-        "outputs": {"type": "list", "required": True},
+        "outputs": {"type": "list", "required": False},
     },
     "result": {"kind": "artifact", "formats": ["markdown", "html"]},
 }

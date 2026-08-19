@@ -22,6 +22,9 @@ COMPARISON_RENDER_SPEC = {
         "spec": {"type": "mapping", "required": False},
         "out": {"type": "string", "required": False},
     },
+    "input": {
+        "inactive_inputs": "omit",
+    },
     "result": {"kind": "artifact", "format": "png"},
 }
 
