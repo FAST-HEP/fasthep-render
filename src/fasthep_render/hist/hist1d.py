@@ -77,6 +77,15 @@ def _find_dataset_axis_name(h: Any) -> str | None:
     return None
 
 
+def _has_data_category(h: Any, dataset_axis_name: str | None) -> bool:
+    if dataset_axis_name is None:
+        return False
+    try:
+        return any(str(ds) == "data" for ds in h.axes[dataset_axis_name])
+    except Exception:
+        return False
+
+
 def _find_physics_axis_name(h: Any, dataset_axis_name: str | None) -> str:
     names = [getattr(ax, "name", None) for ax in getattr(h, "axes", [])]
     physics = [n for n in names if n and n != dataset_axis_name]
@@ -104,6 +113,7 @@ def render_hist1d(
 
     dataset_axis_name = _find_dataset_axis_name(h)
     xname = _find_physics_axis_name(h, dataset_axis_name)
+    has_data = _has_data_category(h, dataset_axis_name)
 
     fig, ax = plt.subplots(
         figsize=tuple(common.figure.size),
@@ -119,18 +129,25 @@ def render_hist1d(
     else:
         datasets = list(h.axes[dataset_axis_name])
 
-        if params.sort_datasets == "data_first" and "data" in datasets:
-            datasets = ["data"] + [d for d in datasets if d != "data"]
+        if params.sort_datasets == "data_first" and has_data:
+            datasets = [
+                ds for ds in datasets if str(ds) == "data"
+            ] + [ds for ds in datasets if str(ds) != "data"]
 
-        for i, ds in enumerate(datasets):
+        mc_color_idx = 0
+        for ds in datasets:
+            ds_name = str(ds)
+            is_data = ds_name == "data"
             h_ds = h[{dataset_axis_name: ds}]
-            label = resolve_label(common, str(ds))
+            label = resolve_label(common, ds_name)
             color = resolve_color_for_dataset(
                 common,
-                str(ds),
-                is_data=(str(ds) == "data"),
-                mc_index=i,
+                ds_name,
+                is_data=is_data,
+                mc_index=mc_color_idx,
             )
+            if not is_data:
+                mc_color_idx += 1
             mh.histplot(
                 h_ds,
                 ax=ax,
@@ -163,7 +180,7 @@ def render_hist1d(
     if common.axes.y.limits:
         ax.set_ylim(*common.axes.y.limits)
 
-    label_experiment(exp, ax=ax, data=True, lumi=common.style.lumi)
+    label_experiment(exp, ax=ax, data=has_data, lumi=common.style.lumi)
 
     fig.savefig(out_path, bbox_inches="tight")
     plt.close(fig)

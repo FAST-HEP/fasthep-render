@@ -48,6 +48,12 @@ def test_cutflow_csv_renderer_writes_multi_dataset_csv(tmp_path: Path) -> None:
                     "All",
                     "NIsoMuon >= 2",
                     {"data": (20.0, 10.0, 20, 10), "dy": (40.5, 20.5, 40, 20)},
+                ),
+                (
+                    "All[1]",
+                    "All",
+                    "Muon_pt > 25",
+                    {"data": (10.0, 6.0, 10, 6), "dy": (20.5, 8.5, 20, 8)},
                 )
             ],
         ),
@@ -56,11 +62,32 @@ def test_cutflow_csv_renderer_writes_multi_dataset_csv(tmp_path: Path) -> None:
     )
 
     with out.open(encoding="utf-8") as handle:
-        rows = list(csv.DictReader(handle))
-    assert [row["dataset"] for row in rows] == ["data", "dy"]
+        reader = csv.DictReader(handle)
+        rows = list(reader)
+    assert reader.fieldnames == [
+        "selection",
+        "cut",
+        "dataset",
+        "n_in",
+        "n_out",
+        "n_unweighted_in",
+        "n_unweighted_out",
+        "sumw_in",
+        "sumw_out",
+        "sumw2_in",
+        "sumw2_out",
+        "efficiency",
+    ]
+    assert [row["cut"] for row in rows] == [
+        "NIsoMuon >= 2",
+        "NIsoMuon >= 2",
+        "Muon_pt > 25",
+        "Muon_pt > 25",
+    ]
+    assert [row["dataset"] for row in rows] == ["data", "dy", "data", "dy"]
     assert "default" not in {row["dataset"] for row in rows}
-    assert [row["n_out"] for row in rows] == ["10.0", "20.5"]
-    assert [row["n_unweighted_out"] for row in rows] == ["10", "20"]
+    assert [row["n_out"] for row in rows] == ["10.0", "20.5", "6.0", "8.5"]
+    assert [row["n_unweighted_out"] for row in rows] == ["10", "20", "6", "8"]
 
 
 def test_cutflow_csv_renderer_rejects_invalid_cutflow(tmp_path: Path) -> None:

@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import hist
+import pytest
+
 from conftest import DataMcBundle
 from fasthep_render.hist.data_mc import run_data_mc_render
 
@@ -55,3 +58,36 @@ def test_data_mc_render_writes_stacked_png(
     assert result.path == str(out)
     assert out.is_file()
     assert out.stat().st_size > 0
+
+
+def test_data_mc_render_requires_configured_data_category(
+    tmp_path, data_mc_bundle: DataMcBundle
+) -> None:
+    out = tmp_path / "missing_data.png"
+    h_no_data: hist.Hist = hist.Hist(
+        hist.axis.StrCategory(
+            ["zjets", "ttbar", "signal"],
+            name="dataset",
+            label="Dataset",
+        ),
+        *data_mc_bundle.combined.axes[1:],
+        storage=hist.storage.Weight(),
+    )
+
+    with pytest.raises(ValueError, match="data dataset 'data' not present"):
+        run_data_mc_render(
+            h_no_data,
+            spec={
+                "axes": {
+                    "x": {"name": "mass", "label": "m(ll) [GeV]"},
+                    "y": {"name": "events", "label": "Events"},
+                },
+                "style": {"experiment": None},
+                "data_mc": {
+                    "data": "data",
+                    "backgrounds": ["zjets", "ttbar"],
+                    "signals": ["signal"],
+                },
+            },
+            output_path=str(out),
+        )
