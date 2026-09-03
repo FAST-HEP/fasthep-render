@@ -53,8 +53,8 @@ def test_load_render_specs_and_impls() -> None:
             "fasthep_render.tables.cutflow_csv:run_cutflow_csv_render",
         ),
         (
-            "fasthep_render.reports.schema_validation: SCHEMA_VALIDATION_RENDER_SPEC",
-            "fasthep_render.reports.schema_validation: run_schema_validation_render",
+            "fasthep_render.reports.schema_validation:SCHEMA_VALIDATION_RENDER_SPEC",
+            "fasthep_render.reports.schema_validation:run_schema_validation_render",
         ),
     ]
 
