@@ -165,7 +165,7 @@ def render_hist1d(
         )
         ax.legend(
             loc=common.legend.loc,
-            ncol=ncol,
+            ncols=ncol,
             frameon=common.legend.frameon,
         )
 

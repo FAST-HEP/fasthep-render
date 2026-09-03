@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
 from enum import StrEnum
-from typing import Any, Final, Literal
+from typing import Any, Final, Literal, TypeAlias
 
 from hepflow.model.issues import FlowIssue, IssueLevel
 from hepflow.utils import now_iso
@@ -120,10 +120,23 @@ class AxesSpec:
             ratio=AxisSpec(**(d.get("ratio") or {})) if d.get("ratio") else None,
         )
 
+LegendLocation: TypeAlias = Literal[
+    "best",
+    "upper right",
+    "upper left",
+    "lower left",
+    "lower right",
+    "right",
+    "center left",
+    "center right",
+    "lower center",
+    "upper center",
+    "center",
+]
 
 @dataclass(frozen=True)
 class LegendSpec:
-    loc: str = "upper right"
+    loc: LegendLocation = "upper right"
     ncol: int | None = None  # if None, renderer can auto-pick
     frameon: bool = False
     fontsize: float | None = None
