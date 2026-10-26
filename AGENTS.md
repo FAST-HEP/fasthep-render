@@ -141,3 +141,10 @@ mock tool execution rather than requiring `d2` to be installed.
 Prefer structural assertions on files, metadata, registry entries, and rendered
 output manifests. Avoid brittle pixel comparisons unless a visual regression
 test is intentional and documented.
+
+## Documentation and Changelog
+
+User-facing changes — new features, behavior changes, bug fixes, breaking changes — must add an
+entry to `CHANGELOG.md` under `## [Unreleased]`, in the matching [Keep a
+Changelog](https://keepachangelog.com/en/1.1.0/) category (Added, Changed, Deprecated, Removed,
+Fixed, Security). This repository has no `docs/` yet.
