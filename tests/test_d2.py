@@ -197,7 +197,7 @@ def test_graph_d2_compile_hook_skips_a_large_graph_with_a_warning(
 
 
 def test_graph_d2_compile_hook_has_a_default_size_limit() -> None:
-    assert compile_hooks.DEFAULT_MAX_D2_BYTES == 200_000
+    assert compile_hooks.DEFAULT_MAX_D2_BYTES == 50_000
 
 
 def test_render_compile_graph_renders_regardless_of_size(

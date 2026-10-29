@@ -10,8 +10,9 @@ from fasthep_render.api import render_path
 from fasthep_render.model import RenderStatus
 
 # Rendering a large graph.d2 to SVG takes minutes (a 487 KB graph took about 4 minutes),
-# so the compile hook skips graphs above this size; `fasthep render graph` renders them.
-DEFAULT_MAX_D2_BYTES = 200_000
+# so the compile hook skips graphs above this size (typical graphs are below 10 kB);
+# `fasthep render graph` renders them.
+DEFAULT_MAX_D2_BYTES = 50_000
 
 GRAPH_D2_RENDER_HOOK_SPEC = {
     "name": "fasthep.render.graph_d2",
