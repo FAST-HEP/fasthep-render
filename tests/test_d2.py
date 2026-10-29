@@ -164,3 +164,63 @@ def test_graph_d2_compile_hook_requests_shared_renderer(
     assert seen["kwargs"]["plan_path"] == tmp_path / "compile" / "plan.yaml"
     assert result["graph_render"]["status"] == "rendered"
     assert not (tmp_path / "render" / "specs" / "graph_d2.yaml").exists()
+
+
+def _graph_build(tmp_path: Path, size: int) -> Path:
+    graph_dir = tmp_path / "graph"
+    graph_dir.mkdir()
+    (graph_dir / "graph.d2").write_text('"a" -> "b"\n' + "#" * size, encoding="utf-8")
+    (tmp_path / "compile").mkdir()
+    (tmp_path / "compile" / "plan.yaml").write_text("nodes: []\n", encoding="utf-8")
+    return graph_dir
+
+
+def test_graph_d2_compile_hook_skips_a_large_graph_with_a_warning(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _graph_build(tmp_path, size=2_000)
+
+    class Ctx:
+        build_paths = BuildPaths(root=tmp_path)
+
+    def fail_render_path(*args: Any, **kwargs: Any) -> Any:
+        raise AssertionError("a large graph must not be rendered at compile time")
+
+    monkeypatch.setattr(compile_hooks, "render_path", fail_render_path)
+
+    with pytest.warns(UserWarning, match=f"fasthep render graph {tmp_path}"):
+        result = compile_hooks.render_graph_d2_hook(Ctx(), max_d2_bytes=1_000)
+
+    assert result["graph_render"]["status"] == "skipped"
+    assert "fasthep render graph" in result["graph_render"]["message"]
+
+
+def test_graph_d2_compile_hook_has_a_default_size_limit() -> None:
+    assert compile_hooks.DEFAULT_MAX_D2_BYTES == 200_000
+
+
+def test_render_compile_graph_renders_regardless_of_size(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    graph_dir = _graph_build(tmp_path, size=2_000)
+    seen: dict[str, Any] = {}
+
+    class Outcome:
+        def __init__(self) -> None:
+            self.status = RenderStatus.RENDERED
+            self.message = None
+            self.output_path = graph_dir / "graph.svg"
+            self.meta: dict[str, Any] = {}
+
+    def fake_render_path(*args: Any, **kwargs: Any) -> Outcome:
+        seen["args"] = args
+        return Outcome()
+
+    monkeypatch.setattr(compile_hooks, "render_path", fake_render_path)
+
+    result = compile_hooks.render_compile_graph(tmp_path)
+
+    assert seen["args"] == ("d2", graph_dir / "graph.d2", graph_dir / "graph.svg")
+    assert result["status"] == "rendered"

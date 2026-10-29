@@ -12,6 +12,10 @@ Add new entries under `## [Unreleased]`, in the category they belong to. At rele
 
 ### Added
 
+- The `fasthep.render.graph_d2` compile hook skips graphs larger than `max_d2_bytes` (hook parameter,
+  default 200 kB) with a warning that names the command to render them (`fasthep render graph
+  <build dir>`); rendering a large graph took minutes of every compile. `render_compile_graph` renders
+  the graph of a compile output directory regardless of size.
 - Allowed `hist1d` plots to have optional data (no data overlay required).
 
 ## [2026.08.1] - 2026-08-19
