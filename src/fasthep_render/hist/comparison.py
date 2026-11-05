@@ -239,7 +239,12 @@ def _comparison_histograms(
     target_dataset = _dataset_for_eventtype(ctx, params.target_eventtype)
     variation = params.variation or params.variation_reference
     return (
-        h[{params.dataset_axis: data_dataset, params.variation_axis: params.variation_reference}],
+        h[
+            {
+                params.dataset_axis: data_dataset,
+                params.variation_axis: params.variation_reference,
+            }
+        ],
         h[{params.dataset_axis: target_dataset, params.variation_axis: variation}],
     )
 

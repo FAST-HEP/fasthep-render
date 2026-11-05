@@ -97,9 +97,7 @@ def render_project_then(
     ax_names = [getattr(ax, "name", None) for ax in getattr(h, "axes", [])]
     if axis_name not in ax_names:
         msg = f"project renderer axis '{axis_name}' not found in histogram axes: {ax_names}"
-        raise ValueError(
-            msg
-        )
+        raise ValueError(msg)
 
     dataset_axis_name = None
     if "dataset" in ax_names:
@@ -146,9 +144,7 @@ def render_project_then(
     entry = render_registry.renderers.get(downstream_op)
     if entry is None:
         msg = f"project renderer downstream op '{downstream_op}' is not registered"
-        raise ValueError(
-            msg
-        )
+        raise ValueError(msg)
 
     downstream_common = RenderCommonSpec.from_dict(downstream_spec)
     downstream_params = entry.spec.parse_params(downstream_spec)
@@ -164,9 +160,7 @@ def render_project_then(
 
 
 def _packaged_render_registry() -> dict[str, Any]:
-    registry_file = resources.files("fasthep_render.profiles").joinpath(
-        "registry.yaml"
-    )
+    registry_file = resources.files("fasthep_render.profiles").joinpath("registry.yaml")
     with registry_file.open(encoding="utf-8") as handle:
         doc = yaml.safe_load(handle) or {}
     registry = doc.get("registry")

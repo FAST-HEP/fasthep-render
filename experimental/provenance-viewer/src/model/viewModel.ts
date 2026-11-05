@@ -3,6 +3,8 @@
 
 import type {
   ArtifactSearchEntry,
+  BoundaryEntity,
+  Collapsed,
   ProvenanceGraph,
   RunIndex,
   SummaryEntity,
@@ -18,23 +20,35 @@ export function searchArtifacts(index: RunIndex, query: string): ArtifactSearchE
   });
 }
 
-/** Groups collapsed by default: recorded variations once the graph is large. */
-export function defaultCollapsed(graph: ProvenanceGraph, threshold = 200): Set<string> {
-  if (graph.nodes.length <= threshold) return new Set();
-  return new Set(graph.groups.filter((g) => g.kind === "variation").map((g) => g.id));
+/**
+ * Initial collapse. Recorded variation groups once the graph is large; dataset
+ * groups; and the interior of every linear run of four or more steps (the first
+ * and last step stay visible).
+ */
+export function defaultCollapsed(graph: ProvenanceGraph, threshold = 200): Collapsed {
+  const out: Collapsed = new Map();
+  const large = graph.nodes.length > threshold;
+  for (const g of graph.groups) {
+    const n = g.node_ids.length;
+    if (g.kind === "variation" && large) out.set(g.id, { lo: 0, hi: n });
+    else if (g.kind === "datasets") out.set(g.id, { lo: 0, hi: n });
+    else if (g.kind === "chain" && n >= 4) out.set(g.id, { lo: 1, hi: n - 1 });
+  }
+  return out;
 }
 
 /**
- * Visible view: every collapsed group becomes one summary node; an entity that is
- * in several collapsed groups belongs to the first. Edges are re-pointed at the
- * summaries, self loops dropped and duplicates merged. Nothing is invented.
+ * Visible view: the hidden range of every collapsed group becomes one summary node.
+ * An entity in several collapsed groups belongs to the first. Edges are re-pointed
+ * at the summaries, self loops dropped and duplicates merged. Nothing is invented.
  */
-export function coarseView(graph: ProvenanceGraph, collapsed: Set<string>): VisibleView {
+export function coarseView(graph: ProvenanceGraph, collapsed: Collapsed): VisibleView {
   const owner = new Map<string, string>();
   const hidden = new Map<string, number>();
   for (const g of graph.groups) {
-    if (!collapsed.has(g.id)) continue;
-    for (const id of g.node_ids) {
+    const range = collapsed.get(g.id);
+    if (!range) continue;
+    for (const id of g.node_ids.slice(range.lo, range.hi)) {
       if (!owner.has(id)) {
         owner.set(id, g.id);
         hidden.set(g.id, (hidden.get(g.id) ?? 0) + 1);
@@ -53,6 +67,7 @@ export function coarseView(graph: ProvenanceGraph, collapsed: Set<string>): Visi
       groupKind: g.kind,
       origin: g.origin,
       hiddenCount: count,
+      linear: g.kind === "chain",
     });
   }
   const visibleId = (id: string) => (owner.has(id) ? `summary:${owner.get(id)}` : id);
@@ -68,6 +83,67 @@ export function coarseView(graph: ProvenanceGraph, collapsed: Set<string>): Visi
     edges.push({ source, target });
   }
   return { nodes, edges };
+}
+
+/** Reveal one step from the dataset-facing end of a linear run. */
+export function revealFromSource(collapsed: Collapsed, groupId: string): Collapsed {
+  const r = collapsed.get(groupId);
+  if (!r) return collapsed;
+  const next = new Map(collapsed);
+  if (r.lo + 1 >= r.hi) next.delete(groupId);
+  else next.set(groupId, { lo: r.lo + 1, hi: r.hi });
+  return next;
+}
+
+/** Reveal one step from the artifact-facing end of a linear run. */
+export function revealFromArtifact(collapsed: Collapsed, groupId: string): Collapsed {
+  const r = collapsed.get(groupId);
+  if (!r) return collapsed;
+  const next = new Map(collapsed);
+  if (r.hi - 1 <= r.lo) next.delete(groupId);
+  else next.set(groupId, { lo: r.lo, hi: r.hi - 1 });
+  return next;
+}
+
+export function expandGroup(collapsed: Collapsed, groupId: string): Collapsed {
+  if (!collapsed.has(groupId)) return collapsed;
+  const next = new Map(collapsed);
+  next.delete(groupId);
+  return next;
+}
+
+/**
+ * Focused view of one group: all its members (no collapse) plus one boundary
+ * stand-in per outside neighbour, so the connections entering and leaving stay visible.
+ */
+export function focusView(graph: ProvenanceGraph, groupId: string): VisibleView | undefined {
+  const group = graph.groups.find((g) => g.id === groupId);
+  if (!group) return undefined;
+  const members = new Set(group.node_ids);
+  const nodes: VisibleView["nodes"] = graph.nodes.filter((n) => members.has(n.id));
+  const boundary = new Map<string, BoundaryEntity>();
+  const edges: VisibleView["edges"] = [];
+  const seen = new Set<string>();
+  const add = (source: string, target: string) => {
+    const key = `${source}\u0000${target}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      edges.push({ source, target });
+    }
+  };
+  const stand = (id: string, direction: "in" | "out") => {
+    const key = `outside:${direction}:${id}`;
+    if (!boundary.has(key)) boundary.set(key, { kind: "boundary", id: key, label: id, direction });
+    return key;
+  };
+  for (const e of graph.edges) {
+    const s = members.has(e.source);
+    const t = members.has(e.target);
+    if (s && t) add(e.source, e.target);
+    else if (t) add(stand(e.source, "in"), e.target);
+    else if (s) add(e.source, stand(e.target, "out"));
+  }
+  return { nodes: [...nodes, ...boundary.values()], edges };
 }
 
 export interface Route {

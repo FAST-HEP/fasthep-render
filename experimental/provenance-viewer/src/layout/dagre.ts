@@ -10,7 +10,8 @@ export interface Placed {
 }
 
 export function sizeOf(n: VisibleEntity): { width: number; height: number } {
-  if (n.kind === "summary") return { width: 280, height: 76 };
+  if (n.kind === "summary") return { width: 280, height: n.linear ? 104 : 92 };
+  if (n.kind === "boundary") return { width: 240, height: 40 };
   if (n.kind === "dataset") return { width: 240, height: 64 };
   return { width: 240, height: 56 };
 }

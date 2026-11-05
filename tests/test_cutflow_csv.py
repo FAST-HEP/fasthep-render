@@ -54,7 +54,7 @@ def test_cutflow_csv_renderer_writes_multi_dataset_csv(tmp_path: Path) -> None:
                     "All",
                     "Muon_pt > 25",
                     {"data": (10.0, 6.0, 10, 6), "dy": (20.5, 8.5, 20, 8)},
-                )
+                ),
             ],
         ),
         spec={"op": "hep.render.cutflow_csv"},

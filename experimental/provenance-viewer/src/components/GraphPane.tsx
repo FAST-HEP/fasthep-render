@@ -8,34 +8,69 @@ import {
   Position,
   ReactFlow,
   ReactFlowProvider,
+  type Viewport,
   useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { record } from "../data/metrics";
-import { layout } from "../layout/dagre";
-import type { VisibleEntity, VisibleView } from "../model/types";
+import { type Placed, layout } from "../layout/dagre";
+import { stabilise } from "../layout/stabilise";
+import type { Resource, VisibleEntity, VisibleView } from "../model/types";
 
-type Data = { entity: VisibleEntity; selected: boolean; onExpand: (groupId: string) => void };
+export interface Actions {
+  fromSource: (groupId: string) => void;
+  fromArtifact: (groupId: string) => void;
+  expand: (groupId: string) => void;
+  focus: (groupId: string) => void;
+}
+
+type Data = {
+  entity: VisibleEntity;
+  selected: boolean;
+  actions: Actions;
+  corrections: number;
+  fallback: boolean;
+};
 
 const ROLE_MARK: Record<string, string> = { source: "SRC", transform: "OP", sink: "SINK", observer: "OBS" };
 
 function EntityNode({ data }: NodeProps<Node<Data>>) {
   const e = data.entity;
   const cls = ["node", `node-${e.kind}`, e.kind === "processing" ? `role-${e.role}` : "", data.selected ? "selected" : ""];
+  const a = data.actions;
   return (
     <div className={cls.join(" ")}>
       <Handle type="target" position={Position.Top} isConnectable={false} />
       {e.kind === "summary" ? (
         <>
-          <div className="node-title">{e.hiddenCount} steps hidden</div>
+          <div className="node-title">{e.hiddenCount} {e.linear ? "steps" : "entities"} hidden</div>
           <div className="node-sub">
             {e.groupKind}: {e.label} ({e.origin})
           </div>
-          <button type="button" className="expand" onClick={() => data.onExpand(e.groupId)}>
-            Expand {e.hiddenCount}
-          </button>
+          <div className="actions">
+            {e.linear && (
+              <button type="button" aria-label={`Reveal one step from the dataset side of ${e.label}`} onClick={(ev) => { ev.stopPropagation(); a.fromSource(e.groupId); }}>
+                Reveal from top
+              </button>
+            )}
+            <button type="button" aria-label={`Show all ${e.hiddenCount} hidden in ${e.label}`} onClick={(ev) => { ev.stopPropagation(); a.expand(e.groupId); }}>
+              Show all
+            </button>
+            {e.linear && (
+              <button type="button" aria-label={`Reveal one step from the artifact side of ${e.label}`} onClick={(ev) => { ev.stopPropagation(); a.fromArtifact(e.groupId); }}>
+                Reveal from bottom
+              </button>
+            )}
+            {!e.linear && (
+              <button type="button" aria-label={`Focus on ${e.label}`} onClick={(ev) => { ev.stopPropagation(); a.focus(e.groupId); }}>
+                Focus
+              </button>
+            )}
+          </div>
         </>
+      ) : e.kind === "boundary" ? (
+        <div className="node-sub">{e.direction === "in" ? "from" : "to"} {e.label} (outside this group)</div>
       ) : e.kind === "dataset" ? (
         <>
           <div className="node-title">DATA {e.label}</div>
@@ -49,6 +84,12 @@ function EntityNode({ data }: NodeProps<Node<Data>>) {
             <span className="mark">{ROLE_MARK[e.role] ?? e.role}</span> {e.label}
           </div>
           <div className="node-sub">{e.implementation ?? "Not recorded"}</div>
+          {(data.corrections > 0 || data.fallback) && (
+            <div className="badges">
+              {data.corrections > 0 && <span className="badge">{data.corrections} correction{data.corrections > 1 ? "s" : ""}</span>}
+              {data.fallback && <span className="badge warnbadge">fallback recorded</span>}
+            </div>
+          )}
         </>
       )}
       <Handle type="source" position={Position.Bottom} isConnectable={false} />
@@ -60,25 +101,43 @@ const nodeTypes = { entity: EntityNode };
 
 function Inner(props: {
   view: VisibleView;
+  resources: Record<string, Resource>;
   selectedId?: string;
+  initialViewport?: Viewport;
+  actions: Actions;
   onSelect: (id: string) => void;
-  onExpand: (groupId: string) => void;
+  onViewport: (v: Viewport) => void;
 }) {
-  const { view, selectedId, onSelect, onExpand } = props;
+  const { view, resources, selectedId, initialViewport, actions, onSelect, onViewport } = props;
   const flow = useReactFlow();
-  const { placed, ms: layoutMs } = useMemo(() => layout(view), [view]);
+  const prev = useRef<Map<string, Placed>>();
+  const { placed: raw, ms: layoutMs } = useMemo(() => layout(view), [view]);
+  const placed = useMemo(() => stabilise(prev.current, raw), [raw]);
+
+  useEffect(() => {
+    prev.current = new Map(placed.map((p) => [p.id, p]));
+  }, [placed]);
 
   const nodes: Node<Data>[] = useMemo(
     () =>
-      view.nodes.map((entity, i) => ({
-        id: entity.id,
-        type: "entity",
-        position: { x: placed[i].x, y: placed[i].y },
-        width: placed[i].width,
-        height: placed[i].height,
-        data: { entity, selected: entity.id === selectedId, onExpand },
-      })),
-    [view, placed, selectedId, onExpand],
+      view.nodes.map((entity, i) => {
+        const ids = entity.kind === "processing" ? (entity.resource_ids ?? []) : [];
+        return {
+          id: entity.id,
+          type: "entity",
+          position: { x: placed[i].x, y: placed[i].y },
+          width: placed[i].width,
+          height: placed[i].height,
+          data: {
+            entity,
+            selected: entity.id === selectedId,
+            actions,
+            corrections: ids.length,
+            fallback: ids.some((r) => resources[r]?.fallback === true),
+          },
+        };
+      }),
+    [view, placed, selectedId, actions, resources],
   );
   const edges: Edge[] = useMemo(
     () => view.edges.map((e) => ({ id: `${e.source}>${e.target}`, source: e.source, target: e.target })),
@@ -91,16 +150,14 @@ function Inner(props: {
     record("layout:nodes", view.nodes.length, "count");
     record("layout:edges", view.edges.length, "count");
   }, [layoutMs, view]);
-
-  // Fit once per artifact (view identity changes on expansion; do not refit then).
   useEffect(() => {
     const t0 = performance.now();
-    requestAnimationFrame(() => {
-      record("render:first-frame", performance.now() - t0, "ms");
-    });
+    requestAnimationFrame(() => record("render:first-frame", performance.now() - t0, "ms"));
   }, []);
+
+  // Fit once when this pane opens; a restored viewport replaces the fit. Expansion never refits.
   useEffect(() => {
-    flow.fitView({ padding: 0.1 });
+    if (!initialViewport) flow.fitView({ padding: 0.1 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [flow]);
 
@@ -109,6 +166,8 @@ function Inner(props: {
       nodes={nodes}
       edges={edges}
       nodeTypes={nodeTypes}
+      defaultViewport={initialViewport}
+      onMoveEnd={(_, v) => onViewport(v)}
       onNodeClick={(_, n) => onSelect(n.id)}
       nodesDraggable={false}
       nodesConnectable={false}
@@ -123,15 +182,18 @@ function Inner(props: {
 }
 
 export function GraphPane(props: {
-  artifactKey: string;
+  paneKey: string;
   view: VisibleView;
+  resources: Record<string, Resource>;
   selectedId?: string;
+  initialViewport?: Viewport;
+  actions: Actions;
   onSelect: (id: string) => void;
-  onExpand: (groupId: string) => void;
+  onViewport: (v: Viewport) => void;
 }) {
-  // Remount per artifact so the viewport fits once and then stays put on expansion.
+  // Remount per artifact and per focus so the viewport fits once and stays put on expansion.
   return (
-    <ReactFlowProvider key={props.artifactKey}>
+    <ReactFlowProvider key={props.paneKey}>
       <Inner {...props} />
     </ReactFlowProvider>
   );

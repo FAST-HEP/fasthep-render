@@ -43,7 +43,21 @@ export interface ProcessingEntity {
   label: string;
   role: "source" | "transform" | "sink" | "observer" | string;
   implementation?: string | null;
+  resource_ids?: string[];
   variation?: string | null;
+}
+
+export interface Resource {
+  kind?: string;
+  requested_era?: string;
+  correction?: string;
+  correction_version?: number;
+  fallback?: boolean;
+  fallback_reason?: string;
+  reason?: string;
+  sha256?: string;
+  size_bytes?: number;
+  path?: string;
 }
 
 export interface DatasetEntity {
@@ -68,7 +82,7 @@ export interface Edge {
 
 export interface Group {
   id: string;
-  kind: "variation" | "chain" | "region";
+  kind: "variation" | "chain" | "region" | "datasets";
   label: string;
   origin: Origin;
   node_ids: string[];
@@ -84,12 +98,13 @@ export interface ProvenanceGraph {
   nodes: GraphEntity[];
   edges: Edge[];
   groups: Group[];
+  resources?: Record<string, Resource>;
 }
 
 export interface Details {
   schema_version: 1;
   artifact_id: string;
-  nodes: Record<string, { params?: unknown; outputs?: unknown; meta?: unknown }>;
+  nodes: Record<string, { operations?: unknown; params?: unknown; outputs?: unknown; meta?: unknown }>;
 }
 
 // Derived, visible view: summaries replace collapsed groups.
@@ -101,9 +116,22 @@ export interface SummaryEntity {
   groupKind: Group["kind"];
   origin: Origin;
   hiddenCount: number;
+  /** A linear run: can be revealed one step at a time from either end. */
+  linear: boolean;
 }
 
-export type VisibleEntity = GraphEntity | SummaryEntity;
+/** Stand-in for an entity outside the focused group, so connections stay visible. */
+export interface BoundaryEntity {
+  kind: "boundary";
+  id: string;
+  label: string;
+  direction: "in" | "out";
+}
+
+/** Hidden range [lo, hi) over a group's ordered node_ids. */
+export type Collapsed = Map<string, { lo: number; hi: number }>;
+
+export type VisibleEntity = GraphEntity | SummaryEntity | BoundaryEntity;
 
 export interface VisibleView {
   nodes: VisibleEntity[];

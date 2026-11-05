@@ -167,6 +167,7 @@
    "implementation": "root_tree",
    "kind": "processing",
    "label": "events",
+   "resource_ids": [],
    "role": "source",
    "variation": null
   },
@@ -175,6 +176,7 @@
    "implementation": "chip.detector_bad_ecal_crystal_22ee",
    "kind": "processing",
    "label": "DetectorMitigationBadEcal@Regrouped_RelativeSample_2022_down",
+   "resource_ids": [],
    "role": "transform",
    "variation": "Regrouped_RelativeSample_2022_down"
   },
@@ -183,6 +185,9 @@
    "implementation": "chip.detector_jet_veto_map",
    "kind": "processing",
    "label": "DetectorMitigationJetVeto@Regrouped_RelativeSample_2022_down",
+   "resource_ids": [
+    "cms.jet_veto_map"
+   ],
    "role": "transform",
    "variation": "Regrouped_RelativeSample_2022_down"
   },
@@ -191,6 +196,7 @@
    "implementation": "hep.selection.cutflow",
    "kind": "processing",
    "label": "DetectorMitigationSelection@Regrouped_RelativeSample_2022_down",
+   "resource_ids": [],
    "role": "transform",
    "variation": "Regrouped_RelativeSample_2022_down"
   },
@@ -199,6 +205,7 @@
    "implementation": "chip.gen_boson_finder",
    "kind": "processing",
    "label": "GenBosonFinder",
+   "resource_ids": [],
    "role": "transform",
    "variation": null
   },
@@ -207,6 +214,7 @@
    "implementation": "chip.generator_weight",
    "kind": "processing",
    "label": "GeneratorWeight",
+   "resource_ids": [],
    "role": "transform",
    "variation": null
   },
@@ -215,6 +223,9 @@
    "implementation": "chip.jet_jec",
    "kind": "processing",
    "label": "JetJEC_L1",
+   "resource_ids": [
+    "cms.jec.ak4puppi.l1.mc"
+   ],
    "role": "transform",
    "variation": null
   },
@@ -223,6 +234,10 @@
    "implementation": "chip.jet_jec",
    "kind": "processing",
    "label": "JetJEC_Nominal@Regrouped_RelativeSample_2022_down",
+   "resource_ids": [
+    "cms.jec.ak4puppi.Regrouped_RelativeSample_2022.mc",
+    "cms.jec.ak4puppi.full.mc"
+   ],
    "role": "transform",
    "variation": "Regrouped_RelativeSample_2022_down"
   },
@@ -231,6 +246,7 @@
    "implementation": "hep.align_schema",
    "kind": "processing",
    "label": "KeepEventIdentity",
+   "resource_ids": [],
    "role": "transform",
    "variation": null
   },
@@ -239,6 +255,7 @@
    "implementation": "chip.data_quality_mask",
    "kind": "processing",
    "label": "LumiMask",
+   "resource_ids": [],
    "role": "transform",
    "variation": null
   },
@@ -247,6 +264,7 @@
    "implementation": "hep.define",
    "kind": "processing",
    "label": "LumiMaskMC",
+   "resource_ids": [],
    "role": "transform",
    "variation": null
   },
@@ -255,6 +273,7 @@
    "implementation": "hep.selection.cutflow",
    "kind": "processing",
    "label": "METSelection@Regrouped_RelativeSample_2022_down",
+   "resource_ids": [],
    "role": "transform",
    "variation": "Regrouped_RelativeSample_2022_down"
   },
@@ -263,6 +282,7 @@
    "implementation": "chip.met_type1",
    "kind": "processing",
    "label": "METType1@Regrouped_RelativeSample_2022_down",
+   "resource_ids": [],
    "role": "transform",
    "variation": "Regrouped_RelativeSample_2022_down"
   },
@@ -271,6 +291,7 @@
    "implementation": "hep.selection.cutflow",
    "kind": "processing",
    "label": "NoiseFilterSelection",
+   "resource_ids": [],
    "role": "transform",
    "variation": null
   },
@@ -279,6 +300,7 @@
    "implementation": "chip.nominal_weight",
    "kind": "processing",
    "label": "NominalWeight",
+   "resource_ids": [],
    "role": "transform",
    "variation": null
   },
@@ -287,6 +309,7 @@
    "implementation": "chip.pdf_weights",
    "kind": "processing",
    "label": "PDFWeights",
+   "resource_ids": [],
    "role": "transform",
    "variation": null
   },
@@ -295,6 +318,9 @@
    "implementation": "chip.pileup_weights",
    "kind": "processing",
    "label": "PileupWeights",
+   "resource_ids": [
+    "cms.pileup"
+   ],
    "role": "transform",
    "variation": null
   },
@@ -303,6 +329,7 @@
    "implementation": "chip.scale_weights",
    "kind": "processing",
    "label": "ScaleWeights",
+   "resource_ids": [],
    "role": "transform",
    "variation": null
   },
@@ -352,6 +379,57 @@
    "source_node": "read.events"
   }
  ],
+ "resources": {
+  "cms.jec.ak4puppi.Regrouped_RelativeSample_2022.mc": {
+   "correction": "Summer22_22Sep2023_V2_MC_Regrouped_RelativeSample_2022_AK4PFPuppi",
+   "correction_version": 2,
+   "fallback": false,
+   "kind": "correctionlib",
+   "path": "<path>/jet_jerc.json.gz",
+   "requested_era": "2022_Summer22",
+   "sha256": "250b2c83d519361943aa95abeabac8fa4ee1f45ca1684ec9445f98e97f7c0876",
+   "size_bytes": 586380
+  },
+  "cms.jec.ak4puppi.full.mc": {
+   "correction": "Summer22_22Sep2023_V2_MC_L1L2L3Res_AK4PFPuppi",
+   "fallback": false,
+   "kind": "correctionlib",
+   "path": "<path>/jet_jerc.json.gz",
+   "requested_era": "2022_Summer22",
+   "sha256": "250b2c83d519361943aa95abeabac8fa4ee1f45ca1684ec9445f98e97f7c0876",
+   "size_bytes": 586380
+  },
+  "cms.jec.ak4puppi.l1.mc": {
+   "correction": "Summer22_22Sep2023_V2_MC_L1FastJet_AK4PFPuppi",
+   "correction_version": 2,
+   "fallback": false,
+   "kind": "correctionlib",
+   "path": "<path>/jet_jerc.json.gz",
+   "requested_era": "2022_Summer22",
+   "sha256": "250b2c83d519361943aa95abeabac8fa4ee1f45ca1684ec9445f98e97f7c0876",
+   "size_bytes": 586380
+  },
+  "cms.jet_veto_map": {
+   "correction": "Summer22_23Sep2023_RunCD_V1",
+   "correction_version": 2,
+   "fallback": false,
+   "kind": "correctionlib",
+   "path": "<path>/jetvetomaps.json.gz",
+   "requested_era": "2022_Summer22",
+   "sha256": "f4e0cb5394166157a28f2f304788acfbfc43c047cd63de3522fec26e834e9e4b",
+   "size_bytes": 254050
+  },
+  "cms.pileup": {
+   "correction": "Collisions2022_355100_357900_eraBCD_GoldenJson",
+   "correction_version": 0,
+   "fallback": false,
+   "kind": "correctionlib",
+   "path": "<path>/puWeights.json.gz",
+   "requested_era": "2022_Summer22",
+   "sha256": "5ab93045d188e1e002e9e24d6e602dcf75cb6019d616ff1c0df65bec0f98bb1a",
+   "size_bytes": 3598
+  }
+ },
  "run_id": "6f54be37-af23-41db-b5ba-67ac337e4c1b",
  "schema_version": 1
 }

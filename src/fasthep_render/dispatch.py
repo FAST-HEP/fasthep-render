@@ -19,9 +19,7 @@ def render_by_registry(
     spec_dict = dict(params.get("spec") or {})
 
     render_registry = (
-        render_registry
-        or ctx.get("render_registry")
-        or resolve_render_registry()
+        render_registry or ctx.get("render_registry") or resolve_render_registry()
     )
 
     entry = render_registry.renderers.get(op)

@@ -79,6 +79,63 @@
     "stage.DiMuonMass"
    ],
    "origin": "inferred"
+  },
+  {
+   "entry_edges": [],
+   "exit_edges": [
+    {
+     "source": "dataset:data",
+     "target": "read.events"
+    },
+    {
+     "source": "dataset:dy",
+     "target": "read.events"
+    },
+    {
+     "source": "dataset:qcd",
+     "target": "read.events"
+    },
+    {
+     "source": "dataset:single_top",
+     "target": "read.events"
+    },
+    {
+     "source": "dataset:ttbar",
+     "target": "read.events"
+    },
+    {
+     "source": "dataset:wjets",
+     "target": "read.events"
+    },
+    {
+     "source": "dataset:ww",
+     "target": "read.events"
+    },
+    {
+     "source": "dataset:wz",
+     "target": "read.events"
+    },
+    {
+     "source": "dataset:zz",
+     "target": "read.events"
+    }
+   ],
+   "id": "datasets:all",
+   "kind": "datasets",
+   "label": "9 datasets",
+   "node_ids": [
+    "dataset:data",
+    "dataset:dy",
+    "dataset:qcd",
+    "dataset:single_top",
+    "dataset:ttbar",
+    "dataset:wjets",
+    "dataset:ww",
+    "dataset:wz",
+    "dataset:zz"
+   ],
+   "origin": "source",
+   "source_ref": "read node params.datasets"
   }
  ],
  "nodes": [
@@ -87,6 +144,7 @@
    "implementation": "root_tree",
    "kind": "processing",
    "label": "events",
+   "resource_ids": [],
    "role": "source",
    "variation": null
   },
@@ -95,6 +153,7 @@
    "implementation": "hep.define",
    "kind": "processing",
    "label": "BasicVars",
+   "resource_ids": [],
    "role": "transform",
    "variation": null
   },
@@ -103,6 +162,7 @@
    "implementation": "hep.hist",
    "kind": "processing",
    "label": "DiMuonMass",
+   "resource_ids": [],
    "role": "transform",
    "variation": null
   },
@@ -111,6 +171,7 @@
    "implementation": "hep.di_object_mass",
    "kind": "processing",
    "label": "DiMuons",
+   "resource_ids": [],
    "role": "transform",
    "variation": null
   },
@@ -214,6 +275,7 @@
    "source_node": "read.events"
   }
  ],
+ "resources": {},
  "run_id": "136f1242-98e5-4e84-a893-1d4c98101073",
  "schema_version": 1
 }

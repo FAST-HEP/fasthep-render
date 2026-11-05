@@ -141,7 +141,9 @@ def _cutflow_rows(value: Any, *, include_dataset: bool) -> list[dict[str, Any]]:
     return _single_cutflow_rows(value, include_dataset=include_dataset)
 
 
-def _graph_cutflow_rows(value: dict[str, Any], *, include_dataset: bool) -> list[dict[str, Any]]:
+def _graph_cutflow_rows(
+    value: dict[str, Any], *, include_dataset: bool
+) -> list[dict[str, Any]]:
     nodes = value.get("nodes")
     if not isinstance(nodes, list):
         msg = "cutflow_csv renderer requires canonical cutflow 'nodes'"

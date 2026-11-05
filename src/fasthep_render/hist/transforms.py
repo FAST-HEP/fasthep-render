@@ -346,18 +346,14 @@ def apply_scale_transform_to_products(
             f"Unsupported scale transform mode for now: {scale.mode!r} "
             "(only 'overall' is implemented)"
         )
-        raise ValueError(
-            msg
-        )
+        raise ValueError(msg)
 
     if scale.factors_ref:
         msg = (
             "scale transform with factors_ref is not implemented yet "
             "(only inline factors are supported for now)"
         )
-        raise ValueError(
-            msg
-        )
+        raise ValueError(msg)
 
     h = products.get("hist")
     if h is None:

@@ -120,6 +120,7 @@ class AxesSpec:
             ratio=AxisSpec(**(d.get("ratio") or {})) if d.get("ratio") else None,
         )
 
+
 LegendLocation: TypeAlias = Literal[
     "best",
     "upper right",
@@ -133,6 +134,7 @@ LegendLocation: TypeAlias = Literal[
     "upper center",
     "center",
 ]
+
 
 @dataclass(frozen=True)
 class LegendSpec:
@@ -224,7 +226,6 @@ class DataMcInputs:
     ratio_ylabel: str = "Data/MC"
 
 
-
 @dataclass(frozen=True)
 class Heatmap2DSpec:
     # how to split outputs
@@ -265,6 +266,7 @@ class GroupTransformSpec:
       - "dataset_group" for automatic grouping from dataset metadata
       - dict[str, list[str]] mapping group name -> dataset names
     """
+
     by: str | dict[str, list[str]]
     kind: Final[str] = "group"
 

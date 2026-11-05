@@ -6,6 +6,7 @@
     "source_name": "events",
     "workflow_kind": "root_tree"
    },
+   "operations": null,
    "outputs": {
     "stream": "event_stream"
    },
@@ -65,6 +66,27 @@
     "variation_of": "stage.DetectorMitigationBadEcal",
     "workflow_op": "chip.detector_bad_ecal_crystal_22ee"
    },
+   "operations": [
+    {
+     "inputs": {
+      "symbols": [
+       "run",
+       "jec_Nominal_TypeIPuppiMET_pt",
+       "jec_Nominal_TypeIPuppiMET_phi",
+       "Jet_pt",
+       "Jet_eta",
+       "Jet_phi",
+       "Jet_neEmEF",
+       "Jet_chEmEF"
+      ]
+     },
+     "outputs": {
+      "symbols": [
+       "bad_ecal_crystal_22ee_selection"
+      ]
+     }
+    }
+   ],
    "outputs": {
     "stream": "event_stream"
    },
@@ -151,6 +173,30 @@
     "variation_of": "stage.DetectorMitigationJetVeto",
     "workflow_op": "chip.detector_jet_veto_map"
    },
+   "operations": [
+    {
+     "inputs": {
+      "resources": [
+       "cms.jet_veto_map"
+      ],
+      "symbols": [
+       "Jet_Nominal_pt",
+       "Jet_eta",
+       "Jet_phi",
+       "Jet_neEmEF",
+       "Jet_chEmEF",
+       "Muon_eta",
+       "Muon_phi",
+       "Muon_isPFcand"
+      ]
+     },
+     "outputs": {
+      "symbols": [
+       "jet_veto_maps_selection"
+      ]
+     }
+    }
+   ],
    "outputs": {
     "stream": "event_stream"
    },
@@ -228,6 +274,21 @@
     "variation_of": "stage.DetectorMitigationSelection",
     "workflow_op": "hep.selection.cutflow"
    },
+   "operations": [
+    {
+     "inputs": {
+      "symbols": [
+       "bad_ecal_crystal_22ee_selection",
+       "jet_veto_maps_selection"
+      ]
+     },
+     "outputs": {
+      "symbols": [
+       "DetectorMitigation_selection"
+      ]
+     }
+    }
+   ],
    "outputs": {
     "cutflow": "cutflow",
     "stream": "event_stream"
@@ -266,6 +327,7 @@
     "stage_id": "GenBosonFinder",
     "workflow_op": "chip.gen_boson_finder"
    },
+   "operations": null,
    "outputs": {
     "stream": "event_stream"
    },
@@ -304,6 +366,7 @@
     "stage_id": "GeneratorWeight",
     "workflow_op": "chip.generator_weight"
    },
+   "operations": null,
    "outputs": {
     "stream": "event_stream"
    },
@@ -339,6 +402,30 @@
     "stage_id": "JetJEC_L1",
     "workflow_op": "chip.jet_jec"
    },
+   "operations": [
+    {
+     "inputs": {
+      "resources": [
+       "cms.jec.ak4puppi.l1.mc"
+      ],
+      "symbols": [
+       "Jet_pt",
+       "Jet_eta",
+       "Jet_phi",
+       "Jet_rawFactor",
+       "Jet_area",
+       "Jet_muonSubtrFactor",
+       "Rho_fixedGridRhoFastjetAll",
+       "run"
+      ]
+     },
+     "outputs": {
+      "symbols": [
+       "Jet_L1_pt"
+      ]
+     }
+    }
+   ],
    "outputs": {
     "stream": "event_stream"
    },
@@ -431,6 +518,31 @@
     "variation_of": "stage.JetJEC_Nominal",
     "workflow_op": "chip.jet_jec"
    },
+   "operations": [
+    {
+     "inputs": {
+      "resources": [
+       "cms.jec.ak4puppi.full.mc",
+       "cms.jec.ak4puppi.Regrouped_RelativeSample_2022.mc"
+      ],
+      "symbols": [
+       "Jet_pt",
+       "Jet_eta",
+       "Jet_phi",
+       "Jet_rawFactor",
+       "Jet_area",
+       "Jet_muonSubtrFactor",
+       "Rho_fixedGridRhoFastjetAll",
+       "run"
+      ]
+     },
+     "outputs": {
+      "symbols": [
+       "Jet_Nominal_pt"
+      ]
+     }
+    }
+   ],
    "outputs": {
     "stream": "event_stream"
    },
@@ -486,6 +598,22 @@
     "stage_id": "KeepEventIdentity",
     "workflow_op": "hep.align_schema"
    },
+   "operations": [
+    {
+     "inputs": {
+      "symbols": [
+       "event",
+       "luminosityBlock"
+      ]
+     },
+     "outputs": {
+      "symbols": [
+       "event",
+       "luminosityBlock"
+      ]
+     }
+    }
+   ],
    "outputs": {
     "stream": "event_stream"
    },
@@ -506,6 +634,7 @@
     "stage_id": "LumiMask",
     "workflow_op": "chip.data_quality_mask"
    },
+   "operations": null,
    "outputs": {
     "stream": "event_stream"
    },
@@ -548,6 +677,7 @@
     "stage_id": "LumiMaskMC",
     "workflow_op": "hep.define"
    },
+   "operations": null,
    "outputs": {
     "stream": "event_stream"
    },
@@ -608,6 +738,20 @@
     "variation_of": "stage.METSelection",
     "workflow_op": "hep.selection.cutflow"
    },
+   "operations": [
+    {
+     "inputs": {
+      "symbols": [
+       "jec_Nominal_TypeIPuppiMET_pt"
+      ]
+     },
+     "outputs": {
+      "symbols": [
+       "jec_Nominal_TypeIPuppiMET_selection"
+      ]
+     }
+    }
+   ],
    "outputs": {
     "cutflow": "cutflow",
     "stream": "event_stream"
@@ -684,6 +828,34 @@
     "variation_of": "stage.METType1",
     "workflow_op": "chip.met_type1"
    },
+   "operations": [
+    {
+     "inputs": {
+      "symbols": [
+       "RawPuppiMET_pt",
+       "RawPuppiMET_phi",
+       "Jet_L1_pt",
+       "Jet_Nominal_pt",
+       "Jet_phi",
+       "Jet_eta",
+       "Jet_neEmEF",
+       "Jet_chEmEF"
+      ]
+     },
+     "outputs": {
+      "symbols": [
+       "jec_Nominal_rawPuppiMET_pt",
+       "jec_Nominal_rawPuppiMET_phi",
+       "jec_Nominal_rawPuppiMET_eta",
+       "jec_Nominal_rawPuppiMET_mass",
+       "jec_Nominal_TypeIPuppiMET_pt",
+       "jec_Nominal_TypeIPuppiMET_phi",
+       "jec_Nominal_TypeIPuppiMET_eta",
+       "jec_Nominal_TypeIPuppiMET_mass"
+      ]
+     }
+    }
+   ],
    "outputs": {
     "stream": "event_stream"
    },
@@ -736,6 +908,28 @@
     "stage_id": "NoiseFilterSelection",
     "workflow_op": "hep.selection.cutflow"
    },
+   "operations": [
+    {
+     "inputs": {
+      "symbols": [
+       "Flag_BadPFMuonDzFilter",
+       "Flag_BadPFMuonFilter",
+       "Flag_EcalDeadCellTriggerPrimitiveFilter",
+       "Flag_HBHENoiseFilter",
+       "Flag_HBHENoiseIsoFilter",
+       "Flag_ecalBadCalibFilter",
+       "Flag_eeBadScFilter",
+       "Flag_globalSuperTightHalo2016Filter",
+       "Flag_goodVertices"
+      ]
+     },
+     "outputs": {
+      "symbols": [
+       "Noise_filter_selection"
+      ]
+     }
+    }
+   ],
    "outputs": {
     "cutflow": "cutflow",
     "stream": "event_stream"
@@ -792,6 +986,7 @@
     "stage_id": "NominalWeight",
     "workflow_op": "chip.nominal_weight"
    },
+   "operations": null,
    "outputs": {
     "stream": "event_stream"
    },
@@ -831,6 +1026,7 @@
     "stage_id": "PDFWeights",
     "workflow_op": "chip.pdf_weights"
    },
+   "operations": null,
    "outputs": {
     "stream": "event_stream"
    },
@@ -869,6 +1065,25 @@
     "stage_id": "PileupWeights",
     "workflow_op": "chip.pileup_weights"
    },
+   "operations": [
+    {
+     "inputs": {
+      "resources": [
+       "cms.pileup"
+      ],
+      "symbols": [
+       "Pileup_nTrueInt"
+      ]
+     },
+     "outputs": {
+      "symbols": [
+       "weight_pu_nominal",
+       "weight_pu_up",
+       "weight_pu_down"
+      ]
+     }
+    }
+   ],
    "outputs": {
     "stream": "event_stream"
    },
@@ -909,6 +1124,7 @@
     "stage_id": "ScaleWeights",
     "workflow_op": "chip.scale_weights"
    },
+   "operations": null,
    "outputs": {
     "stream": "event_stream"
    },

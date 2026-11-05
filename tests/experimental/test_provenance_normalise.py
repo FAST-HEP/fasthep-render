@@ -133,3 +133,90 @@ def test_normalise_mini_bundle(tmp_path: Path) -> None:
     assert by_name["m"]["completeness"] == "unavailable"
     assert "graph_ref" not in by_name["m"]
     assert "box" not in json.dumps(index)
+
+
+def test_resources_operations_and_dataset_group(tmp_path: Path) -> None:
+    b = tmp_path / "run"
+    for d in ("graph", "artifacts/provenance", "artifacts/histograms"):
+        (b / d).mkdir(parents=True)
+    datasets = [
+        {
+            "name": f"d{i}",
+            "files": ["/home/u/f.root"],
+            "nevents": "5",
+            "eventtype": "mc",
+        }
+        for i in range(4)
+    ]
+    read = {
+        "id": "read.e",
+        "payload": f"GraphNode(id='read.e', role='source', impl='x', params={{'datasets': {datasets!r}}}, "
+        "outputs={}, meta={})",
+    }
+    (b / "graph/graph.json").write_text(
+        json.dumps(
+            {
+                "nodes": [read, _node("stage.h")],
+                "edges": [
+                    {
+                        "source": "read.e",
+                        "target": "stage.h",
+                        "output": "s",
+                        "input_name": "s",
+                    }
+                ],
+            }
+        )
+    )
+    (b / "artifacts/provenance/execution.json").write_text(
+        json.dumps(
+            {
+                "run_id": "r1",
+                "execution": {},
+                "partitions": [],
+                "executions": {
+                    "e1": {
+                        "node_id": "stage.h",
+                        "operations": [
+                            {"inputs": {"resources": ["r.x"]}, "outputs": {}}
+                        ],
+                    }
+                },
+                "resources": {
+                    "r.x": {
+                        "kind": "correctionlib",
+                        "selected": {
+                            "correction": "c",
+                            "fallback": True,
+                            "path": "/home/u/x.json",
+                        },
+                    },
+                    "r.unused": {"kind": "correctionlib"},
+                },
+            }
+        )
+    )
+    (b / "artifacts/provenance/manifest.json").write_text(json.dumps({"records": []}))
+    (b / "artifacts/histograms/manifest.json").write_text(
+        json.dumps(
+            {"histograms": [{"id": "h", "path": "h.pkl", "producer": "stage.h"}]}
+        )
+    )
+    normalise(b, tmp_path / "out")
+    ref = json.loads((tmp_path / "out/run-index.json").read_text())["artifacts"][0][
+        "graph_ref"
+    ]
+    graph = json.loads((tmp_path / "out" / ref).read_text())
+    proc = {n["id"]: n for n in graph["nodes"] if n["kind"] == "processing"}
+    assert proc["stage.h"]["resource_ids"] == ["r.x"]
+    assert set(graph["resources"]) == {"r.x"}  # only resources used by ancestors
+    assert graph["resources"]["r.x"]["fallback"] is True
+    assert graph["resources"]["r.x"]["path"] == "<path>/x.json"
+    group = next(g for g in graph["groups"] if g["kind"] == "datasets")
+    assert len(group["node_ids"]) == 4
+    details = json.loads(
+        (tmp_path / "out" / ref.replace("graph", "details")).read_text()
+    )
+    assert details["nodes"]["stage.h"]["operations"][0]["inputs"]["resources"] == [
+        "r.x"
+    ]

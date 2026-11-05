@@ -6,6 +6,7 @@
     "source_name": "events",
     "workflow_kind": "root_tree"
    },
+   "operations": null,
    "outputs": {
     "stream": "event_stream"
    },
@@ -32,6 +33,7 @@
     "style_ref": "dimuon_mass",
     "workflow_op": "hep.render.data_mc"
    },
+   "operations": null,
    "outputs": {
     "artifact": "artifact"
    },
@@ -154,6 +156,7 @@
     "stage_id": "BasicVars",
     "workflow_op": "hep.define"
    },
+   "operations": null,
    "outputs": {
     "stream": "event_stream"
    },
@@ -175,6 +178,7 @@
     "stage_id": "DiMuonMass",
     "workflow_op": "hep.hist"
    },
+   "operations": null,
    "outputs": {
     "hist": "histogram"
    },
@@ -206,6 +210,7 @@
     "stage_id": "DiMuons",
     "workflow_op": "hep.di_object_mass"
    },
+   "operations": null,
    "outputs": {
     "stream": "event_stream"
    },

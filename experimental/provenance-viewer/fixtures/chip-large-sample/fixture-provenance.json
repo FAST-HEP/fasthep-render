@@ -3,10 +3,10 @@
  "leaks_found": [],
  "measurements": {
   "artifacts": 1,
-  "normalise_seconds": 0.151,
+  "normalise_seconds": 0.16,
   "output_bytes": {
-   "artifacts/cutflow-b0cf6f46f3/details.json": 25850,
-   "artifacts/cutflow-b0cf6f46f3/graph.json": 10463,
+   "artifacts/cutflow-b0cf6f46f3/details.json": 29765,
+   "artifacts/cutflow-b0cf6f46f3/graph.json": 12852,
    "run-index.json": 1875
   }
  },
@@ -18,7 +18,7 @@
   "synthetic": []
  },
  "sanitization_counts": {
-  "absolute_path": 2
+  "absolute_path": 7
  },
  "sanitized": true,
  "schema_version": 1,

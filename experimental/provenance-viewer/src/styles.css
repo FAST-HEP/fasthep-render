@@ -44,3 +44,12 @@ html, body, #root { height: 100%; margin: 0; }
 .expand { margin-top: .2rem; font: inherit; font-size: .75rem; cursor: pointer; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
 @media (max-width: 900px) { .app { grid-template-columns: 1fr; grid-template-areas: "banner" "side" "graph" "details" "status"; grid-template-rows: auto auto 60vh auto auto; } }
+.actions { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .25rem; }
+.actions button, .crumb button { font: inherit; font-size: .72rem; padding: .1rem .4rem; cursor: pointer; }
+.crumb { position: absolute; z-index: 5; top: .5rem; left: .5rem; background: var(--panel); border: 1px solid var(--line); padding: .3rem .6rem; border-radius: 6px; font-size: .85rem; }
+.badges { display: flex; gap: .25rem; margin-top: .15rem; }
+.warnbadge { background: var(--warn); border-color: var(--op); }
+.node-boundary { border-style: dotted; background: var(--panel); height: 100%; display: flex; align-items: center; }
+.members { padding-left: 1rem; word-break: break-all; font-size: .8rem; }
+.react-flow__node { transition: transform .25s ease; }
+@media (prefers-reduced-motion: reduce) { .react-flow__node { transition: none; } }

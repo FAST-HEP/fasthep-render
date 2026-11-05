@@ -130,7 +130,9 @@ def test_schema_validation_render_writes_markdown_html_and_manifest_metadata(
     ]
 
 
-def test_schema_validation_render_does_not_mutate_comparison_product(tmp_path: Path) -> None:
+def test_schema_validation_render_does_not_mutate_comparison_product(
+    tmp_path: Path,
+) -> None:
     comparison = _comparison()
     before = json.loads(json.dumps(comparison, sort_keys=True))
 

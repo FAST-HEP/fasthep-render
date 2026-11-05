@@ -112,7 +112,9 @@ def render_data_mc(
 
     ds_axis = find_dataset_axis_name(h)
     if ds_axis is None:
-        msg = "data_mc render requires a category axis named 'dataset' or 'dataset_name'"
+        msg = (
+            "data_mc render requires a category axis named 'dataset' or 'dataset_name'"
+        )
         raise ValueError(msg)
     available = set(get_dataset_categories(h))
 
@@ -156,9 +158,7 @@ def render_data_mc(
 
     if data_id not in available:
         msg = f"data_mc: data dataset '{data_id}' not present in histogram categories: {sorted(available)}"
-        raise ValueError(
-            msg
-        )
+        raise ValueError(msg)
 
     hist_map: dict[str, Any] = {}
     label_map: dict[str, str] = {}
@@ -189,8 +189,7 @@ def render_data_mc(
         stack_draw_order = list(reversed(stack_draw_order))
 
     overlay_order = [
-        ds for ds in legend_order
-        if ds != data_id and ds not in stack_draw_order
+        ds for ds in legend_order if ds != data_id and ds not in stack_draw_order
     ]
 
     figsize = tuple(common.figure.size)
@@ -262,7 +261,9 @@ def render_data_mc(
     handle_by_label = {lab: hnd for hnd, lab in zip(handles, labels, strict=False)}
 
     ordered_labels = [label_map[ds] for ds in legend_order if ds in hist_map]
-    ordered_handles = [handle_by_label[lab] for lab in ordered_labels if lab in handle_by_label]
+    ordered_handles = [
+        handle_by_label[lab] for lab in ordered_labels if lab in handle_by_label
+    ]
 
     n_entries = len(ordered_handles)
     ncol = auto_legend_ncol(

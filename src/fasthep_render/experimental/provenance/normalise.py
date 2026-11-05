@@ -86,6 +86,26 @@ def _artifact_entries(bundle: Path) -> list[dict[str, Any]]:
     return out
 
 
+def _resource(raw: dict[str, Any]) -> dict[str, Any]:
+    """Flatten a recorded resource: top-level facts plus the selected file."""
+    out = {k: v for k, v in raw.items() if k != "selected"}
+    sel = raw.get("selected") or {}
+    for key in (
+        "correction",
+        "correction_version",
+        "fallback",
+        "sha256",
+        "size_bytes",
+        "path",
+    ):
+        if key in sel:
+            out[key] = sel[key]
+    for key in ("fallback_reason", "reason"):
+        if key in sel:
+            out[key] = sel[key]
+    return out
+
+
 def _ancestors(target: str, pred: dict[str, list[str]]) -> set[str]:
     seen, stack = {target}, [target]
     while stack:
@@ -126,6 +146,19 @@ def normalise(
     pred: dict[str, list[str]] = defaultdict(list)
     for e in edges:
         pred[e["target"]].append(e["source"])
+
+    node_resources: dict[str, list[str]] = defaultdict(list)
+    node_ops: dict[str, Any] = {}
+    for ex in execution.get("executions", {}).values():
+        nid = ex.get("node_id")
+        ops = ex.get("operations") or []
+        if nid not in node_ops and ops:
+            node_ops[nid] = ops
+        for op in ops:
+            for rid in (op.get("inputs") or {}).get("resources", []):
+                if rid not in node_resources[nid]:
+                    node_resources[nid].append(rid)
+    catalog = execution.get("resources", {})
 
     run_id = execution["run_id"]
     summary = {}
@@ -200,6 +233,7 @@ def normalise(
                         "label": nid.split(".", 1)[-1],
                         "role": p.get("role"),
                         "implementation": p.get("impl"),
+                        "resource_ids": sorted(node_resources.get(nid, [])),
                         "variation": (p.get("meta") or {})
                         .get("variation", {})
                         .get("name")
@@ -208,10 +242,29 @@ def normalise(
                     }
                 )
                 details[nid] = {
+                    "operations": clean(node_ops.get(nid)),
                     "params": clean(params),
                     "outputs": p.get("outputs"),
                     "meta": clean(p.get("meta", {})),
                 }
+            if len(datasets) >= 4:
+                groups.append(
+                    {
+                        "id": "datasets:all",
+                        "kind": "datasets",
+                        "label": f"{len(datasets)} datasets",
+                        "origin": "source",
+                        "source_ref": "read node params.datasets",
+                        "node_ids": [d["id"] for d in datasets],
+                        "entry_edges": [],
+                        "exit_edges": [
+                            {"source": d["id"], "target": d["source_node"]}
+                            for d in datasets
+                        ],
+                    }
+                )
+            used = sorted({r for n in anc for r in node_resources.get(n, [])})
+            resources = {rid: clean(_resource(catalog.get(rid, {}))) for rid in used}
             ds_edges = [
                 {"source": d["id"], "target": d["source_node"], "output": "dataset"}
                 for d in datasets
@@ -223,6 +276,7 @@ def normalise(
                 "nodes": graph_nodes + datasets,
                 "edges": sub_edges + ds_edges,
                 "groups": groups,
+                "resources": resources,
             }
             sizes[f"artifacts/{aid}/graph.json"] = _write(
                 out / f"artifacts/{aid}/graph.json", doc

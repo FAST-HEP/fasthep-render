@@ -56,8 +56,7 @@ def run_render_sink(
         dict(ctx.get("render_validation") or {}),
     )
     errors = [
-        issue for issue in issues
-        if str(getattr(issue, "level", "")).lower() == "error"
+        issue for issue in issues if str(getattr(issue, "level", "")).lower() == "error"
     ]
     if errors:
         msg = f"Render validation failed for {op}: {errors}"
@@ -253,9 +252,7 @@ def _resolve_output_path(
 
 
 def _render_registry_config() -> dict[str, Any]:
-    registry_file = resources.files("fasthep_render.profiles").joinpath(
-        "registry.yaml"
-    )
+    registry_file = resources.files("fasthep_render.profiles").joinpath("registry.yaml")
     with registry_file.open(encoding="utf-8") as handle:
         doc = yaml.safe_load(handle) or {}
     registry = doc.get("registry")

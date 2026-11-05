@@ -91,9 +91,7 @@ def _find_physics_axis_name(h: Any, dataset_axis_name: str | None) -> str:
     physics = [n for n in names if n and n != dataset_axis_name]
     if len(physics) != 1:
         msg = f"hist1d renderer requires exactly one non-dataset axis, found {physics}"
-        raise ValueError(
-            msg
-        )
+        raise ValueError(msg)
     return physics[0]
 
 
@@ -130,9 +128,9 @@ def render_hist1d(
         datasets = list(h.axes[dataset_axis_name])
 
         if params.sort_datasets == "data_first" and has_data:
-            datasets = [
-                ds for ds in datasets if str(ds) == "data"
-            ] + [ds for ds in datasets if str(ds) != "data"]
+            datasets = [ds for ds in datasets if str(ds) == "data"] + [
+                ds for ds in datasets if str(ds) != "data"
+            ]
 
         mc_color_idx = 0
         for ds in datasets:

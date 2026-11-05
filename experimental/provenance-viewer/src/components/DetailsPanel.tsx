@@ -1,4 +1,4 @@
-import type { ArtifactSearchEntry, Details, GraphEntity, SummaryEntity, VisibleEntity } from "../model/types";
+import type { ArtifactSearchEntry, Details, GraphEntity, ProvenanceGraph, Resource, SummaryEntity, VisibleEntity } from "../model/types";
 
 function Json({ value }: { value: unknown }) {
   if (value === undefined) return <div className="notrec">Not recorded</div>;
@@ -9,8 +9,9 @@ export function DetailsPanel(props: {
   artifact?: ArtifactSearchEntry;
   entity?: VisibleEntity;
   details?: Details | "loading" | "failed";
+  graph?: ProvenanceGraph;
 }) {
-  const { artifact, entity, details } = props;
+  const { artifact, entity, details, graph } = props;
   if (!artifact) return <aside className="details" />;
   const info = entity && entity.kind !== "summary" ? (details && typeof details === "object" ? details.nodes[entity.id] : undefined) : undefined;
   return (
@@ -28,14 +29,22 @@ export function DetailsPanel(props: {
           <p className="sub">{artifact.path}</p>
         </>
       )}
-      {entity?.kind === "summary" && <SummaryInfo e={entity} />}
-      {entity && entity.kind !== "summary" && (
+      {entity?.kind === "summary" && <SummaryInfo e={entity} graph={graph} />}
+      {entity?.kind === "boundary" && (
+        <p>Outside the focused group: {entity.label}. Return to the overview to see it in context.</p>
+      )}
+      {entity && entity.kind !== "summary" && entity.kind !== "boundary" && (
         <>
           <GraphInfo e={entity as GraphEntity} />
           {details === "loading" && <p>Loading details…</p>}
           {details === "failed" && <p className="warn">Details failed to load.</p>}
+          {entity.kind === "processing" && (
+            <Corrections ids={entity.resource_ids ?? []} resources={graph?.resources ?? {}} />
+          )}
           {entity.kind === "processing" && info && (
             <>
+              <h3>Declared operations</h3>
+              <Json value={info.operations} />
               <h3>Parameters</h3>
               <Json value={info.params} />
               <h3>Outputs</h3>
@@ -50,12 +59,55 @@ export function DetailsPanel(props: {
   );
 }
 
-function SummaryInfo({ e }: { e: SummaryEntity }) {
+function SummaryInfo({ e, graph }: { e: SummaryEntity; graph?: ProvenanceGraph }) {
+  const group = graph?.groups.find((g) => g.id === e.groupId);
+  const names = group?.node_ids.slice(0, 40) ?? [];
   return (
-    <p>
-      {e.hiddenCount} entities hidden in the {e.groupKind} group “{e.label}”. Origin: {e.origin}
-      {e.origin === "inferred" ? " (computed, not recorded by Flow)" : ""}.
-    </p>
+    <>
+      <p>
+        {e.hiddenCount} entities hidden in the {e.groupKind} group “{e.label}”. Origin: {e.origin}
+        {e.origin === "inferred" ? " (computed, not recorded by Flow)" : ""}.
+      </p>
+      <h3>Members</h3>
+      <ul className="members">
+        {names.map((n) => (
+          <li key={n}>{n}</li>
+        ))}
+        {group && group.node_ids.length > names.length && <li>… {group.node_ids.length - names.length} more</li>}
+      </ul>
+    </>
+  );
+}
+
+function Corrections({ ids, resources }: { ids: string[]; resources: Record<string, Resource> }) {
+  if (ids.length === 0) return null;
+  const nr = (v: unknown) => (v === undefined || v === null ? "Not recorded" : String(v));
+  return (
+    <>
+      <h3>Corrections and resources ({ids.length})</h3>
+      <ul className="members">
+        {ids.map((id) => {
+          const r = resources[id];
+          return (
+            <li key={id}>
+              <strong>{id}</strong>
+              {!r ? (
+                <div className="notrec">Resource record Not recorded</div>
+              ) : (
+                <div className="sub">
+                  {nr(r.kind)} · era {nr(r.requested_era)} · {nr(r.correction)} v{nr(r.correction_version)}
+                  <br />
+                  sha256 {r.sha256 ? r.sha256.slice(0, 12) : "Not recorded"} · {nr(r.path)}
+                  {r.fallback === true && (
+                    <div className="warn">Fallback recorded{r.fallback_reason ?? r.reason ? `: ${r.fallback_reason ?? r.reason}` : ""}</div>
+                  )}
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </>
   );
 }
 

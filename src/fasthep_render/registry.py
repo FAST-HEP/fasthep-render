@@ -58,7 +58,9 @@ def resolve_render_registry(
     extra = dict((registry_cfg or {}).get("renderers") or {})
     entries.update(extra)
     return RenderRegistry(
-        renderers={name: _load_render_entry(name, entry) for name, entry in entries.items()}
+        renderers={
+            name: _load_render_entry(name, entry) for name, entry in entries.items()
+        }
     )
 
 
