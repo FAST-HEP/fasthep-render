@@ -52,6 +52,34 @@ def _edges_of(
     return entry, exit_
 
 
+def add_variation_family(
+    groups: list[dict[str, Any]], edges: list[dict[str, Any]], minimum: int = 3
+) -> list[dict[str, Any]]:
+    """Put one ``variation_family`` group in front of three or more variation groups.
+
+    The variations are recorded; that they form one family of parallel branches is
+    derived, hence ``origin: inferred``. Listed first so it owns its members when
+    collapsed; expanding it reveals the variation groups.
+    """
+    variations = [g for g in groups if g["kind"] == "variation"]
+    if len(variations) < minimum:
+        return groups
+    members = sorted({n for g in variations for n in g["node_ids"]})
+    entry, exit_ = _edges_of(set(members), edges)
+    family = {
+        "id": "family:variations",
+        "kind": "variation_family",
+        "label": f"{len(variations)} variations",
+        "origin": "inferred",
+        "source_ref": "derived from the recorded meta.variation groups",
+        "child_groups": [g["id"] for g in variations],
+        "node_ids": members,
+        "entry_edges": entry,
+        "exit_edges": exit_,
+    }
+    return [family, *groups]
+
+
 def candidate_groups(
     node_ids: list[str],
     edges: list[dict[str, Any]],

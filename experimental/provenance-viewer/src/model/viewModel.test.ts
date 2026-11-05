@@ -84,7 +84,7 @@ describe("route", () => {
   });
 });
 
-import { expandGroup, focusView, revealFromArtifact, revealFromSource } from "./viewModel";
+import { expandGroup, focusSubgraph, revealFromArtifact, revealFromSource } from "./viewModel";
 
 describe("linear reveal and focus", () => {
   const chainGraph: ProvenanceGraph = {
@@ -128,13 +128,59 @@ describe("linear reveal and focus", () => {
   });
 
   it("focus keeps members and shows outside neighbours as boundary stand-ins", () => {
-    const v = focusView(chainGraph, "chain:c1");
-    expect(v?.nodes.filter((n) => n.kind === "boundary").map((n) => n.id).sort()).toEqual([
+    const sub = focusSubgraph(chainGraph, "chain:c1");
+    expect(sub?.nodes.filter((n) => n.kind === "boundary").map((n) => n.id).sort()).toEqual([
       "outside:in:s",
       "outside:out:side",
       "outside:out:t",
     ]);
-    expect(v?.nodes.filter((n) => n.kind !== "boundary")).toHaveLength(4);
-    expect(focusView(chainGraph, "missing")).toBeUndefined();
+    expect(sub?.nodes.filter((n) => n.kind !== "boundary")).toHaveLength(4);
+    expect(focusSubgraph(chainGraph, "missing")).toBeUndefined();
+  });
+});
+
+describe("hierarchical focus", () => {
+  const ids = ["r", "a1", "a2", "a3", "a4", "b1", "b2", "b3", "b4", "z"];
+  const g: ProvenanceGraph = {
+    schema_version: 1,
+    run_id: "r",
+    artifact_id: "x",
+    nodes: ids.map(proc),
+    edges: [
+      ...["a", "b"].flatMap((v) => [
+        { source: "r", target: `${v}1` },
+        { source: `${v}1`, target: `${v}2` },
+        { source: `${v}2`, target: `${v}3` },
+        { source: `${v}3`, target: `${v}4` },
+        { source: `${v}4`, target: "z" },
+      ]),
+    ],
+    groups: [
+      { id: "family:v", kind: "variation_family", label: "2 variations", origin: "inferred", node_ids: ["a1", "a2", "a3", "a4", "b1", "b2", "b3", "b4"], entry_edges: [], exit_edges: [], child_groups: ["variation:a", "variation:b"] },
+      { id: "variation:a", kind: "variation", label: "a", origin: "source", node_ids: ["a1", "a2", "a3", "a4"], entry_edges: [], exit_edges: [] },
+      { id: "variation:b", kind: "variation", label: "b", origin: "source", node_ids: ["b1", "b2", "b3", "b4"], entry_edges: [], exit_edges: [] },
+      { id: "chain:a1", kind: "chain", label: "chain a", origin: "inferred", node_ids: ["a1", "a2", "a3", "a4"], entry_edges: [], exit_edges: [] },
+    ],
+  };
+
+  it("collapses the whole family in the overview", () => {
+    const v = coarseView(g, defaultCollapsed(g, 5));
+    expect(v.nodes.map((n) => n.id)).toEqual(["r", "z", "summary:family:v"]);
+    expect(v.edges).toContainEqual({ source: "r", target: "summary:family:v" });
+    expect(v.edges).toContainEqual({ source: "summary:family:v", target: "z" });
+  });
+
+  it("focus on the family shows its variations as summaries, then one variation in full", () => {
+    const fam = focusSubgraph(g, "family:v");
+    expect(fam?.groups.map((x) => x.id)).toEqual(["variation:a", "variation:b", "chain:a1"]);
+    const famView = coarseView(fam as ProvenanceGraph, defaultCollapsed(fam as ProvenanceGraph, 5));
+    expect(famView.nodes.filter((n) => n.kind === "summary")).toHaveLength(2);
+    const one = focusSubgraph(fam as ProvenanceGraph, "variation:a");
+    expect(one?.nodes.filter((n) => n.kind === "boundary").map((n) => n.id).sort()).toEqual([
+      "outside:in:r",
+      "outside:out:z",
+    ]);
+    const oneView = coarseView(one as ProvenanceGraph, defaultCollapsed(one as ProvenanceGraph));
+    expect(oneView.nodes.filter((n) => n.kind === "summary")).toHaveLength(1);
   });
 });

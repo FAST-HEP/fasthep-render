@@ -16,6 +16,42 @@ export function sizeOf(n: VisibleEntity): { width: number; height: number } {
   return { width: 240, height: 56 };
 }
 
+/**
+ * Wrap ranks wider than `perRow` boxes into several rows. Parallel siblings (24
+ * variations, 9 datasets) would otherwise make one very wide rank and force the
+ * fit-to-view zoom down to unreadable. Lower ranks move down to make room.
+ */
+export function wrapWideRanks(placed: Placed[], perRow = 6, rowGap = 24): Placed[] {
+  const byRank = new Map<number, Placed[]>();
+  for (const p of placed) {
+    const key = Math.round(p.y + p.height / 2);
+    byRank.set(key, [...(byRank.get(key) ?? []), p]);
+  }
+  const out = new Map<string, Placed>();
+  let shift = 0;
+  for (const key of [...byRank.keys()].sort((a, b) => a - b)) {
+    const rank = (byRank.get(key) ?? []).sort((a, b) => a.x - b.x);
+    const rows = Math.ceil(rank.length / perRow);
+    const height = Math.max(...rank.map((p) => p.height));
+    if (rows === 1) {
+      for (const p of rank) out.set(p.id, { ...p, y: p.y + shift });
+      continue;
+    }
+    const centre = rank.reduce((s, p) => s + p.x + p.width / 2, 0) / rank.length;
+    for (let r = 0; r < rows; r += 1) {
+      const row = rank.slice(r * perRow, (r + 1) * perRow);
+      const rowWidth = row.reduce((s, p) => s + p.width, 0) + (row.length - 1) * 30;
+      let x = centre - rowWidth / 2;
+      for (const p of row) {
+        out.set(p.id, { ...p, x, y: p.y + shift + r * (height + rowGap) });
+        x += p.width + 30;
+      }
+    }
+    shift += (rows - 1) * (height + rowGap);
+  }
+  return placed.map((p) => out.get(p.id) ?? p);
+}
+
 /** Top-to-bottom layered layout. Positions are view state; never stored in the data. */
 export function layout(view: VisibleView): { placed: Placed[]; ms: number } {
   const t0 = performance.now();
@@ -30,5 +66,5 @@ export function layout(view: VisibleView): { placed: Placed[]; ms: number } {
     const { width, height } = sizeOf(n);
     return { id: n.id, x: p.x - width / 2, y: p.y - height / 2, width, height };
   });
-  return { placed, ms: performance.now() - t0 };
+  return { placed: wrapWideRanks(placed), ms: performance.now() - t0 };
 }

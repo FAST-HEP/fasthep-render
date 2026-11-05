@@ -31,7 +31,7 @@ export function defaultCollapsed(graph: ProvenanceGraph, threshold = 200): Colla
   for (const g of graph.groups) {
     const n = g.node_ids.length;
     if (g.kind === "variation" && large) out.set(g.id, { lo: 0, hi: n });
-    else if (g.kind === "datasets") out.set(g.id, { lo: 0, hi: n });
+    else if (g.kind === "datasets" || g.kind === "variation_family") out.set(g.id, { lo: 0, hi: n });
     else if (g.kind === "chain" && n >= 4) out.set(g.id, { lo: 1, hi: n - 1 });
   }
   return out;
@@ -71,7 +71,7 @@ export function coarseView(graph: ProvenanceGraph, collapsed: Collapsed): Visibl
     });
   }
   const visibleId = (id: string) => (owner.has(id) ? `summary:${owner.get(id)}` : id);
-  const nodes = [...graph.nodes.filter((n) => !owner.has(n.id)), ...summaries];
+  const nodes: VisibleView["nodes"] = [...graph.nodes.filter((n) => !owner.has(n.id)), ...summaries];
   const seen = new Set<string>();
   const edges: { source: string; target: string }[] = [];
   for (const e of graph.edges) {
@@ -113,16 +113,18 @@ export function expandGroup(collapsed: Collapsed, groupId: string): Collapsed {
 }
 
 /**
- * Focused view of one group: all its members (no collapse) plus one boundary
- * stand-in per outside neighbour, so the connections entering and leaving stay visible.
+ * Focus on one group: a graph of just its members, the groups that lie wholly
+ * inside it, and one boundary stand-in per outside neighbour, so the connections
+ * entering and leaving stay visible. The result is an ordinary graph: apply
+ * `defaultCollapsed` and `coarseView` to it, and focus again to go deeper.
  */
-export function focusView(graph: ProvenanceGraph, groupId: string): VisibleView | undefined {
+export function focusSubgraph(graph: ProvenanceGraph, groupId: string): ProvenanceGraph | undefined {
   const group = graph.groups.find((g) => g.id === groupId);
   if (!group) return undefined;
   const members = new Set(group.node_ids);
-  const nodes: VisibleView["nodes"] = graph.nodes.filter((n) => members.has(n.id));
+  const nodes: ProvenanceGraph["nodes"] = graph.nodes.filter((n) => members.has(n.id));
   const boundary = new Map<string, BoundaryEntity>();
-  const edges: VisibleView["edges"] = [];
+  const edges: ProvenanceGraph["edges"] = [];
   const seen = new Set<string>();
   const add = (source: string, target: string) => {
     const key = `${source}\u0000${target}`;
@@ -131,9 +133,11 @@ export function focusView(graph: ProvenanceGraph, groupId: string): VisibleView 
       edges.push({ source, target });
     }
   };
+  const labels = new Map(graph.nodes.map((n) => [n.id, n.kind === "boundary" ? n.label : n.id]));
   const stand = (id: string, direction: "in" | "out") => {
-    const key = `outside:${direction}:${id}`;
-    if (!boundary.has(key)) boundary.set(key, { kind: "boundary", id: key, label: id, direction });
+    const label = labels.get(id) ?? id; // an existing stand-in keeps its original name
+    const key = `outside:${direction}:${label}`;
+    if (!boundary.has(key)) boundary.set(key, { kind: "boundary", id: key, label, direction });
     return key;
   };
   for (const e of graph.edges) {
@@ -143,7 +147,8 @@ export function focusView(graph: ProvenanceGraph, groupId: string): VisibleView 
     else if (t) add(stand(e.source, "in"), e.target);
     else if (s) add(e.source, stand(e.target, "out"));
   }
-  return { nodes: [...nodes, ...boundary.values()], edges };
+  const groups = graph.groups.filter((g) => g.id !== groupId && g.node_ids.every((n) => members.has(n)));
+  return { ...graph, nodes: [...nodes, ...boundary.values()], edges, groups };
 }
 
 export interface Route {

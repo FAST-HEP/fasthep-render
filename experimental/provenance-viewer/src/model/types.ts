@@ -82,20 +82,21 @@ export interface Edge {
 
 export interface Group {
   id: string;
-  kind: "variation" | "chain" | "region" | "datasets";
+  kind: "variation" | "variation_family" | "chain" | "region" | "datasets";
   label: string;
   origin: Origin;
   node_ids: string[];
   entry_edges: { source: string; target: string }[];
   exit_edges: { source: string; target: string }[];
   merge_node?: string;
+  child_groups?: string[];
 }
 
 export interface ProvenanceGraph {
   schema_version: 1;
   run_id: string;
   artifact_id: string;
-  nodes: GraphEntity[];
+  nodes: (GraphEntity | BoundaryEntity)[];
   edges: Edge[];
   groups: Group[];
   resources?: Record<string, Resource>;

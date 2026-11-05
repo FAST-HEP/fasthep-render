@@ -11,7 +11,10 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     import fasthep_render.experimental as exp
     from fasthep_render.experimental.provenance.graph_repr import parse_graph_node
-    from fasthep_render.experimental.provenance.groups import candidate_groups
+    from fasthep_render.experimental.provenance.groups import (
+        add_variation_family,
+        candidate_groups,
+    )
     from fasthep_render.experimental.provenance.normalise import normalise
     from fasthep_render.experimental.provenance.sanitize import Sanitizer
 
@@ -220,3 +223,25 @@ def test_resources_operations_and_dataset_group(tmp_path: Path) -> None:
     assert details["nodes"]["stage.h"]["operations"][0]["inputs"]["resources"] == [
         "r.x"
     ]
+
+
+def test_variation_family_owns_all_variation_members_and_comes_first() -> None:
+    ids = ["r", "a1", "a2", "b1", "b2", "c1", "c2", "z"]
+    edges = [{"source": "r", "target": x} for x in ("a1", "b1", "c1")]
+    edges += [
+        {"source": s, "target": t}
+        for s, t in [("a1", "a2"), ("b1", "b2"), ("c1", "c2")]
+    ]
+    edges += [{"source": x, "target": "z"} for x in ("a2", "b2", "c2")]
+    variations = {n: {"name": n[0]} for n in ids if n[0] in "abc"}
+    groups = add_variation_family(candidate_groups(ids, edges, variations), edges)
+    assert groups[0]["id"] == "family:variations"
+    assert groups[0]["origin"] == "inferred"
+    assert groups[0]["child_groups"] == ["variation:a", "variation:b", "variation:c"]
+    assert len(groups[0]["node_ids"]) == 6
+    # fewer than three variations: no family
+    two = {n: v for n, v in variations.items() if v["name"] != "c"}
+    assert all(
+        g["kind"] != "variation_family"
+        for g in add_variation_family(candidate_groups(ids, edges, two), edges)
+    )

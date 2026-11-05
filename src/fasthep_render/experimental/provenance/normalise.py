@@ -11,7 +11,7 @@ from typing import Any
 
 from . import SCHEMA_VERSION
 from .graph_repr import parse_graph_node
-from .groups import candidate_groups
+from .groups import add_variation_family, candidate_groups
 from .sanitize import Sanitizer, find_leaks
 
 # manifest key per artifacts/<dir>/manifest.json; each entry has a producer node id
@@ -203,7 +203,9 @@ def normalise(
                 for n in anc
                 if isinstance(nodes[n].get("meta", {}).get("variation"), dict)
             }
-            groups = candidate_groups(sorted(anc), sub_edges, variations)
+            groups = add_variation_family(
+                candidate_groups(sorted(anc), sub_edges, variations), sub_edges
+            )
             graph_nodes = []
             details: dict[str, Any] = {}
             datasets = []

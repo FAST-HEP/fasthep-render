@@ -6,12 +6,12 @@ import { Sidebar } from "./components/Sidebar";
 import { StatusBar } from "./components/StatusBar";
 import { loadDetails, loadGraph, loadRunIndex, loadRuns } from "./data/loader";
 import { startLongTaskObserver } from "./data/metrics";
-import type { Collapsed, Details, ProvenanceGraph, RunIndex, RunsFile } from "./model/types";
+import type { Collapsed, Details, Group, ProvenanceGraph, RunIndex, RunsFile } from "./model/types";
 import {
   coarseView,
   defaultCollapsed,
   expandGroup,
-  focusView,
+  focusSubgraph,
   formatRoute,
   parseRoute,
   revealFromArtifact,
@@ -39,7 +39,8 @@ export function App() {
   const [details, setDetails] = useState<Details | "loading" | "failed" | undefined>();
   const [query, setQuery] = useState("");
   const [collapsed, setCollapsed] = useState<Collapsed>(new Map());
-  const [focus, setFocus] = useState<string | undefined>();
+  const [focusPath, setFocusPath] = useState<string[]>([]);
+  const [focusCollapsed, setFocusCollapsed] = useState<Collapsed>(new Map());
   const viewports = useRef(new Map<string, Viewport>());
   const [selectedId, setSelectedId] = useState<string | undefined>();
 
@@ -68,7 +69,7 @@ export function App() {
   useEffect(() => {
     setSelectedId(undefined);
     setDetails(undefined);
-    setFocus(undefined);
+    setFocusPath([]);
     viewports.current.clear();
     if (!route.runId || !artifact?.graph_ref) return setGraph({ state: "idle" });
     setGraph({ state: "loading" });
@@ -80,12 +81,28 @@ export function App() {
       .catch((e: Error) => setGraph({ state: "failed", message: e.message }));
   }, [route.runId, artifact]);
 
-  const view = useMemo(() => {
+  // The graph being shown: the artifact graph, or a focused subgraph of it (nested).
+  const shown = useMemo(() => {
     if (graph.state !== "ready") return undefined;
-    return (focus && focusView(graph.value, focus)) || coarseView(graph.value, collapsed);
-  }, [graph, collapsed, focus]);
-  const focusGroup = graph.state === "ready" ? graph.value.groups.find((g) => g.id === focus) : undefined;
-  const paneKey = `${route.runId}/${artifact?.id}/${focus ?? ""}`;
+    let g: ProvenanceGraph | undefined = graph.value;
+    for (const id of focusPath) g = g && focusSubgraph(g, id);
+    return g;
+  }, [graph, focusPath]);
+  const collapsedNow = focusPath.length ? focusCollapsed : collapsed;
+  const setCollapsedNow = focusPath.length ? setFocusCollapsed : setCollapsed;
+  const view = useMemo(() => (shown ? coarseView(shown, collapsedNow) : undefined), [shown, collapsedNow]);
+  const crumbs = useMemo(() => {
+    if (graph.state !== "ready") return [];
+    const out: { id: string; label: string }[] = [];
+    let g: ProvenanceGraph | undefined = graph.value;
+    for (const id of focusPath) {
+      const grp: Group | undefined = g?.groups.find((x) => x.id === id);
+      out.push({ id, label: grp ? `${grp.label} (${grp.node_ids.length})` : id });
+      g = g && focusSubgraph(g, id);
+    }
+    return out;
+  }, [graph, focusPath]);
+  const paneKey = `${route.runId}/${artifact?.id}/${focusPath.join(">")}`;
   const selected = view?.nodes.find((n) => n.id === selectedId);
 
   const select = useCallback(
@@ -100,14 +117,32 @@ export function App() {
     },
     [details, route.runId, artifact],
   );
+  const focusInto = useCallback(
+    (groupId: string) => {
+      if (!shown) return;
+      const sub = focusSubgraph(shown, groupId);
+      if (!sub) return;
+      setFocusCollapsed(defaultCollapsed(sub));
+      setFocusPath((p) => [...p, groupId]);
+    },
+    [shown],
+  );
+  const focusBack = (depth: number) => {
+    // depth 0 is the overview; deeper levels keep their own collapse defaults
+    const path = focusPath.slice(0, depth);
+    let g: ProvenanceGraph | undefined = graph.state === "ready" ? graph.value : undefined;
+    for (const id of path) g = g && focusSubgraph(g, id);
+    if (g && path.length) setFocusCollapsed(defaultCollapsed(g));
+    setFocusPath(path);
+  };
   const actions: Actions = useMemo(
     () => ({
-      fromSource: (id) => setCollapsed((c) => revealFromSource(c, id)),
-      fromArtifact: (id) => setCollapsed((c) => revealFromArtifact(c, id)),
-      expand: (id) => setCollapsed((c) => expandGroup(c, id)),
-      focus: setFocus,
+      fromSource: (id) => setCollapsedNow((c) => revealFromSource(c, id)),
+      fromArtifact: (id) => setCollapsedNow((c) => revealFromArtifact(c, id)),
+      expand: (id) => setCollapsedNow((c) => expandGroup(c, id)),
+      focus: focusInto,
     }),
-    [],
+    [setCollapsedNow, focusInto],
   );
   const go = (runId?: string, artifactId?: string) => {
     window.location.hash = formatRoute({ runId, artifactId });
@@ -147,19 +182,30 @@ export function App() {
         )}
         {graph.state === "loading" && <p className="empty">Loading lineage…</p>}
         {graph.state === "failed" && <p className="warn">Could not load the lineage: {graph.message}</p>}
-        {focusGroup && (
+        {crumbs.length > 0 && (
           <nav className="crumb" aria-label="Breadcrumb">
-            <button type="button" onClick={() => setFocus(undefined)}>
+            <button type="button" onClick={() => focusBack(0)}>
               Overview
             </button>
-            <span> › {focusGroup.kind}: {focusGroup.label} ({focusGroup.node_ids.length} entities)</span>
+            {crumbs.map((c, i) => (
+              <span key={c.id}>
+                {" › "}
+                {i === crumbs.length - 1 ? (
+                  c.label
+                ) : (
+                  <button type="button" onClick={() => focusBack(i + 1)}>
+                    {c.label}
+                  </button>
+                )}
+              </span>
+            ))}
           </nav>
         )}
         {view && artifact && (
           <GraphPane
             paneKey={paneKey}
             view={view}
-            resources={graph.state === "ready" ? (graph.value.resources ?? {}) : {}}
+            resources={shown?.resources ?? {}}
             selectedId={selectedId}
             initialViewport={viewports.current.get(paneKey)}
             actions={actions}
@@ -168,11 +214,11 @@ export function App() {
           />
         )}
       </main>
-      <DetailsPanel artifact={artifact} entity={selected} details={details} graph={graph.state === "ready" ? graph.value : undefined} />
+      <DetailsPanel artifact={artifact} entity={selected} details={details} graph={shown} />
       <StatusBar
         status={
           view
-            ? `${artifact?.name}: ${view.nodes.length} visible of ${graph.state === "ready" ? graph.value.nodes.length : 0} entities`
+            ? `${artifact?.name}: ${view.nodes.length} visible of ${graph.state === "ready" ? graph.value.nodes.length : 0} entities${crumbs.length ? " (focused)" : ""}`
             : "Ready"
         }
       />

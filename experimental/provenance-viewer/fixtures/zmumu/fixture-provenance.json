@@ -3,7 +3,7 @@
  "leaks_found": [],
  "measurements": {
   "artifacts": 2,
-  "normalise_seconds": 0.002,
+  "normalise_seconds": 0.004,
   "output_bytes": {
    "artifacts/histogram-c6e0053027/details.json": 1773,
    "artifacts/histogram-c6e0053027/graph.json": 5351,
