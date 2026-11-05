@@ -84,3 +84,9 @@ def test_every_file_is_listed_or_known(run: Path) -> None:
         expected |= {a.get("graph_ref"), a.get("details_ref")} - {None}
     found = {str(f.relative_to(run)) for f in run.rglob("*") if f.is_file()}
     assert found == expected
+
+
+def test_runs_json_lists_exactly_the_fixture_runs() -> None:
+    runs = _json(FIXTURES / "runs.json")
+    assert runs["schema_version"] == 1
+    assert sorted(r["id"] for r in runs["runs"]) == sorted(p.name for p in RUNS)

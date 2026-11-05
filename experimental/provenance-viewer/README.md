@@ -15,3 +15,19 @@ python -m fasthep_render.experimental.provenance.cli BUNDLE OUT [--only NAME]
 
 `tests/experimental/test_provenance_fixtures.py` fails on machine-specific content, dangling references or
 unlisted files.
+
+## Run the viewer (M2)
+
+Node comes from this folder's own `pixi.toml` (conda-forge `nodejs`):
+
+```bash
+cd experimental/provenance-viewer
+pixi run install            # once
+pixi run dev                # serves fixtures/ at http://localhost:5173
+pixi run test               # view-model unit tests
+VIEWER_DATA_DIR=/path/to/normalised pixi run dev   # local, gitignored large-case output
+python scripts/make-runs-json.py /path/to/normalised   # list runs for VIEWER_DATA_DIR
+```
+
+URL is `#/<run>/<artifact>`. The status bar shows loaded bytes, layout time, first frame and long tasks;
+`window.__viewerMetrics()` returns every measurement.

@@ -1,0 +1,13 @@
+{
+ "schema_version": 1,
+ "runs": [
+  {
+   "id": "chip-large-sample",
+   "label": "chip-large-sample"
+  },
+  {
+   "id": "zmumu",
+   "label": "zmumu"
+  }
+ ]
+}
