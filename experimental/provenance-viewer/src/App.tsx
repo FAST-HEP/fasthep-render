@@ -4,7 +4,9 @@ import { DetailsPanel } from "./components/DetailsPanel";
 import { type Actions, GraphPane } from "./components/GraphPane";
 import { RunDetails } from "./components/RunDetails";
 import { Sidebar } from "./components/Sidebar";
+import { TextView } from "./components/TextView";
 import { StatusBar } from "./components/StatusBar";
+import { toTextLineage } from "./model/textLineage";
 import { loadDetails, loadGraph, loadRunIndex, loadRuns } from "./data/loader";
 import { startLongTaskObserver } from "./data/metrics";
 import type { Collapsed, Details, Group, ProvenanceGraph, RunIndex, RunsFile } from "./model/types";
@@ -18,6 +20,7 @@ import {
   revealFromArtifact,
   revealFromSource,
   searchArtifacts,
+  visibleSelection,
 } from "./model/viewModel";
 
 type Load<T> = { state: "idle" } | { state: "loading" } | { state: "failed"; message: string } | { state: "ready"; value: T };
@@ -42,7 +45,7 @@ export function App() {
   const [collapsed, setCollapsed] = useState<Collapsed>(new Map());
   const [focusPath, setFocusPath] = useState<string[]>([]);
   const [focusCollapsed, setFocusCollapsed] = useState<Collapsed>(new Map());
-  const [tab, setTab] = useState<"lineage" | "run">("lineage");
+  const [tab, setTab] = useState<"lineage" | "text" | "run">("lineage");
   const viewports = useRef(new Map<string, Viewport>());
   const detailsRequest = useRef<AbortController>();
   const [selectedId, setSelectedId] = useState<string | undefined>();
@@ -110,8 +113,15 @@ export function App() {
     }
     return out;
   }, [graph, focusPath]);
+  const text = useMemo(
+    () =>
+      view && artifact
+        ? toTextLineage(view, artifact, (e) => (e.kind === "processing" ? (e.resource_ids ?? []) : []))
+        : undefined,
+    [view, artifact],
+  );
   const paneKey = `${route.runId}/${artifact?.id}/${focusPath.join(">")}`;
-  const selected = view?.nodes.find((n) => n.id === selectedId);
+  const selected = view ? visibleSelection(view, selectedId) : undefined;
 
   const select = useCallback(
     (id: string) => {
@@ -197,7 +207,10 @@ export function App() {
         )}
         {graph.state === "loading" && <p className="empty">Loading lineage…</p>}
         {graph.state === "failed" && <p className="warn">Could not load the lineage: {graph.message}</p>}
-        {tab === "lineage" && crumbs.length > 0 && (
+        {tab === "text" && text && (
+          <TextView text={text} selectedId={selectedId} actions={actions} onSelect={select} />
+        )}
+        {crumbs.length > 0 && tab !== "run" && (
           <nav className="crumb" aria-label="Breadcrumb">
             <button type="button" onClick={() => focusBack(0)}>
               Overview
@@ -234,6 +247,7 @@ export function App() {
         tab={tab}
         onTab={setTab}
         canShowRun={index.state === "ready"}
+        canShowText={text !== undefined}
         status={
           view
             ? `${artifact?.name}: ${view.nodes.length} visible of ${graph.state === "ready" ? graph.value.nodes.length : 0} entities${crumbs.length ? " (focused)" : ""}`

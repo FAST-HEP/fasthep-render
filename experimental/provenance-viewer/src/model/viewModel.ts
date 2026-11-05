@@ -166,3 +166,8 @@ export function formatRoute(route: Route): string {
   const parts = [route.runId, route.runId ? route.artifactId : undefined].filter(Boolean);
   return parts.length ? `#/${parts.join("/")}` : "#/";
 }
+
+/** The selected entity if it is currently visible; the selection itself survives hiding. */
+export function visibleSelection(view: VisibleView, selectedId?: string) {
+  return selectedId === undefined ? undefined : view.nodes.find((n) => n.id === selectedId);
+}

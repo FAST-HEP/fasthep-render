@@ -245,3 +245,57 @@ def test_variation_family_owns_all_variation_members_and_comes_first() -> None:
         g["kind"] != "variation_family"
         for g in add_variation_family(candidate_groups(ids, edges, two), edges)
     )
+
+
+def test_normalise_is_deterministic(tmp_path: Path) -> None:
+    b = tmp_path / "run"
+    for d in ("graph", "artifacts/provenance", "artifacts/histograms"):
+        (b / d).mkdir(parents=True)
+    (b / "graph/graph.json").write_text(
+        json.dumps(
+            {
+                "nodes": [
+                    _node("read.e", "source"),
+                    _node("stage.h"),
+                    _node("stage.x"),
+                ],
+                "edges": [
+                    {
+                        "source": "read.e",
+                        "target": "stage.h",
+                        "output": "s",
+                        "input_name": "s",
+                    },
+                    {
+                        "source": "read.e",
+                        "target": "stage.x",
+                        "output": "s",
+                        "input_name": "s",
+                    },
+                ],
+            }
+        )
+    )
+    (b / "artifacts/provenance/execution.json").write_text(
+        json.dumps({"run_id": "r1", "execution": {}, "partitions": []})
+    )
+    (b / "artifacts/provenance/manifest.json").write_text(json.dumps({"records": []}))
+    (b / "artifacts/histograms/manifest.json").write_text(
+        json.dumps(
+            {"histograms": [{"id": "h", "path": "h.pkl", "producer": "stage.h"}]}
+        )
+    )
+    normalise(b, tmp_path / "one")
+    normalise(b, tmp_path / "two")
+    files = sorted(
+        p.relative_to(tmp_path / "one")
+        for p in (tmp_path / "one").rglob("*")
+        if p.is_file()
+    )
+    assert files
+    for rel in files:
+        if rel.name == "fixture-provenance.json":
+            continue  # holds wall-clock measurements
+        assert (tmp_path / "one" / rel).read_bytes() == (
+            tmp_path / "two" / rel
+        ).read_bytes(), rel

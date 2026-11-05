@@ -1,3 +1,4 @@
+import { recorded } from "../model/format";
 import type { ArtifactSearchEntry, Details, GraphEntity, ProvenanceGraph, Resource, SummaryEntity, VisibleEntity } from "../model/types";
 
 function Json({ value }: { value: unknown }) {
@@ -90,7 +91,7 @@ function SummaryInfo({ e, graph }: { e: SummaryEntity; graph?: ProvenanceGraph }
 
 function Corrections({ ids, resources }: { ids: string[]; resources: Record<string, Resource> }) {
   if (ids.length === 0) return null;
-  const nr = (v: unknown) => (v === undefined || v === null ? "Not recorded" : String(v));
+  
   return (
     <>
       <h3>Corrections and resources ({ids.length})</h3>
@@ -104,9 +105,9 @@ function Corrections({ ids, resources }: { ids: string[]; resources: Record<stri
                 <div className="notrec">Resource record Not recorded</div>
               ) : (
                 <div className="sub">
-                  {nr(r.kind)} · era {nr(r.requested_era)} · {nr(r.correction)} v{nr(r.correction_version)}
+                  {recorded(r.kind)} · era {recorded(r.requested_era)} · {recorded(r.correction)} v{recorded(r.correction_version)}
                   <br />
-                  sha256 {r.sha256 ? r.sha256.slice(0, 12) : "Not recorded"} · {nr(r.path)}
+                  sha256 {r.sha256 ? r.sha256.slice(0, 12) : "Not recorded"} · {recorded(r.path)}
                   {r.fallback === true && (
                     <div className="warn">Fallback recorded{r.fallback_reason ?? r.reason ? `: ${r.fallback_reason ?? r.reason}` : ""}</div>
                   )}

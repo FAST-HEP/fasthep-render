@@ -16,6 +16,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { record } from "../data/metrics";
 import { type Placed, layout } from "../layout/dagre";
 import { stabilise } from "../layout/stabilise";
+import { hiddenLabel } from "../model/format";
 import type { Resource, VisibleEntity, VisibleView } from "../model/types";
 
 export interface Actions {
@@ -44,7 +45,7 @@ function EntityNode({ data }: NodeProps<Node<Data>>) {
       <Handle type="target" position={Position.Top} isConnectable={false} />
       {e.kind === "summary" ? (
         <>
-          <div className="node-title">{e.hiddenCount} {e.linear ? "steps" : "entities"} hidden</div>
+          <div className="node-title">{hiddenLabel(e.hiddenCount, e.linear)}</div>
           <div className="node-sub">
             {e.groupKind}: {e.label} ({e.origin})
           </div>

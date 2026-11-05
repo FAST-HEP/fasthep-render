@@ -14,11 +14,12 @@ function sub(l: () => void) {
 
 export function StatusBar(props: {
   status: string;
-  tab: "lineage" | "run";
-  onTab: (t: "lineage" | "run") => void;
+  tab: "lineage" | "text" | "run";
+  onTab: (t: "lineage" | "text" | "run") => void;
+  canShowText: boolean;
   canShowRun: boolean;
 }) {
-  const { status, tab, onTab, canShowRun } = props;
+  const { status, tab, onTab, canShowRun, canShowText } = props;
   const metrics = useSyncExternalStore(sub, getSnapshot);
   const last = (n: string) => metrics.filter((m) => m.name === n).at(-1);
   const bytes = metrics.filter((m) => m.name.endsWith(":bytes")).reduce((s, m) => s + m.value, 0);
@@ -30,6 +31,9 @@ export function StatusBar(props: {
       <span className="tabs">
         <button type="button" aria-pressed={tab === "lineage"} onClick={() => onTab("lineage")}>
           Artifact lineage
+        </button>
+        <button type="button" aria-pressed={tab === "text"} disabled={!canShowText} onClick={() => onTab("text")}>
+          Text view
         </button>
         <button type="button" aria-pressed={tab === "run"} disabled={!canShowRun} onClick={() => onTab("run")}>
           Run details

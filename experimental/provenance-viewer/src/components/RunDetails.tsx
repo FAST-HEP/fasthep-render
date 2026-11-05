@@ -1,6 +1,7 @@
+import { recorded } from "../model/format";
 import type { RunIndex } from "../model/types";
 
-const nr = (v: unknown) => (v === undefined || v === null || v === "" ? "Not recorded" : String(v));
+
 
 function Table({ rows }: { rows: [string, unknown][] }) {
   return (
@@ -9,7 +10,7 @@ function Table({ rows }: { rows: [string, unknown][] }) {
         {rows.map(([k, v]) => (
           <tr key={k}>
             <th scope="row">{k}</th>
-            <td className={v === undefined || v === null ? "notrec" : ""}>{nr(v)}</td>
+            <td className={v === undefined || v === null ? "notrec" : ""}>{recorded(v)}</td>
           </tr>
         ))}
       </tbody>
@@ -44,7 +45,7 @@ export function RunDetails({ index }: { index: RunIndex }) {
         <ul className="members">
           {resources.map(([id, s]) => (
             <li key={id}>
-              <strong>{id}</strong> {nr(s.kind)} · era {nr(s.requested_era)}
+              <strong>{id}</strong> {recorded(s.kind)} · era {recorded(s.requested_era)}
               {s.fallback === true && <span className="badge warnbadge">fallback recorded</span>}
             </li>
           ))}
