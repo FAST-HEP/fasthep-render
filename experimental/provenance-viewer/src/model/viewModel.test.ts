@@ -84,7 +84,7 @@ describe("route", () => {
   });
 });
 
-import { expandGroup, focusSubgraph, revealFromArtifact, revealFromSource } from "./viewModel";
+import { expandGroup, focusSubgraph, revealFromArtifact, revealFromSource, visibleIdFor } from "./viewModel";
 
 describe("linear reveal and focus", () => {
   const chainGraph: ProvenanceGraph = {
@@ -136,6 +136,23 @@ describe("linear reveal and focus", () => {
     ]);
     expect(sub?.nodes.filter((n) => n.kind !== "boundary")).toHaveLength(4);
     expect(focusSubgraph(chainGraph, "missing")).toBeUndefined();
+  });
+});
+
+describe("visibleIdFor", () => {
+  it("finds an entity, or the summary it is hidden in, or nothing", () => {
+    const ids = ["s", "c1", "c2", "c3", "c4", "t"];
+    const g: ProvenanceGraph = {
+      schema_version: 1, run_id: "r", artifact_id: "a",
+      nodes: ids.map(proc),
+      edges: ids.slice(1).map((id, i) => ({ source: ids[i], target: id })),
+      groups: [{ id: "chain:c1", kind: "chain", label: "chain", origin: "inferred", node_ids: ["c1", "c2", "c3", "c4"], entry_edges: [], exit_edges: [] }],
+    };
+    const view = coarseView(g, defaultCollapsed(g));
+    expect(visibleIdFor(view, g, "s")).toBe("s");
+    expect(visibleIdFor(view, g, "c2")).toBe("summary:chain:c1");
+    expect(visibleIdFor(view, g, "c1")).toBe("c1");
+    expect(visibleIdFor(view, g, "elsewhere")).toBeUndefined();
   });
 });
 

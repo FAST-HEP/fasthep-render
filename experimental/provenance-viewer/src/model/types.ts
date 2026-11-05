@@ -110,7 +110,7 @@ export interface ProvenanceGraph {
 export interface Details {
   schema_version: 1;
   artifact_id: string;
-  nodes: Record<string, { resolved?: unknown; operations?: unknown; params?: unknown; outputs?: unknown; meta?: unknown }>;
+  nodes: Record<string, { execution_count?: number | null; resolved?: unknown; operations?: unknown; params?: unknown; outputs?: unknown; meta?: unknown }>;
 }
 
 // Derived, visible view: summaries replace collapsed groups.

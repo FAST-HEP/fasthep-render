@@ -249,7 +249,7 @@ export function App() {
           />
         )}
       </main>
-      <DetailsPanel artifact={artifact} entity={selected} details={details} graph={shown} runId={route.runId} />
+      <DetailsPanel artifact={artifact} entity={selected} details={details} graph={shown} view={view} runId={route.runId} onSelect={select} />
       <StatusBar
         tab={tab}
         onTab={setTab}

@@ -207,6 +207,12 @@ def normalise(
             for rid in (op.get("inputs") or {}).get("resources", []):
                 if rid not in node_resources[nid]:
                     node_resources[nid].append(rid)
+    executions_per_node: dict[str, int] = defaultdict(int)
+    for ex in [
+        *execution.get("executions", {}).values(),
+        *execution.get("node_executions", []),
+    ]:
+        executions_per_node[ex.get("node_id")] += 1
     catalog = execution.get("resources", {})
     resolved = _resolved_by_plan(bundle)
 
@@ -294,6 +300,8 @@ def normalise(
                     }
                 )
                 details[nid] = {
+                    # None (not 0) when the run recorded no execution of this node
+                    "execution_count": executions_per_node.get(nid) or None,
                     "resolved": clean(resolved.get(nid)),
                     "operations": clean(node_ops.get(nid)),
                     "params": clean(params),

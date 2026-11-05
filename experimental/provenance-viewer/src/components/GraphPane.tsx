@@ -2,6 +2,7 @@ import {
   Background,
   Controls,
   type Edge,
+  MarkerType,
   Handle,
   type Node,
   type NodeProps,
@@ -160,7 +161,12 @@ function Inner(props: {
     [view, placed, selectedId, actions, resources],
   );
   const edges: Edge[] = useMemo(
-    () => view.edges.map((e) => ({ id: `${e.source}>${e.target}`, source: e.source, target: e.target })),
+    () => view.edges.map((e) => ({
+        id: `${e.source}>${e.target}`,
+        source: e.source,
+        target: e.target,
+        markerEnd: { type: MarkerType.ArrowClosed, width: 14, height: 14, color: "var(--accent)" },
+      })),
     [view],
   );
 

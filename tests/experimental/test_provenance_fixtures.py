@@ -159,6 +159,23 @@ def test_zmumu_node_resolves_through_the_plan_and_plot_has_its_path() -> None:
     assert details["operations"] is None  # not recorded at run time for this run
 
 
+def test_execution_count_is_recorded_or_absent_never_zero() -> None:
+    chip = FIXTURES / "chip-large-sample"
+    ref = _json(chip / "run-index.json")["artifacts"][0]["details_ref"]
+    counts = [n["execution_count"] for n in _json(chip / ref)["nodes"].values()]
+    assert 1 in counts  # nodes that ran in the one recorded partition
+    assert 0 not in counts  # a run that recorded nothing is null, not 0
+    zmumu = FIXTURES / "zmumu"
+    zref = next(
+        a["details_ref"]
+        for a in _json(zmumu / "run-index.json")["artifacts"]
+        if "details_ref" in a
+    )
+    assert all(
+        n["execution_count"] is None for n in _json(zmumu / zref)["nodes"].values()
+    )
+
+
 def test_runs_json_lists_exactly_the_fixture_runs() -> None:
     runs = _json(FIXTURES / "runs.json")
     assert runs["schema_version"] == 1

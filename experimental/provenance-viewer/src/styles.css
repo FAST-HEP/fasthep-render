@@ -1,11 +1,12 @@
 :root {
-  --bg: #fff; --fg: #1a1a1a; --muted: #666; --line: #d0d0d0; --panel: #f6f6f6;
+  --bg: #fff; --bar: #f6f6f6; --tint: #fdeee0; --fg: #1a1a1a; --muted: #666; --line: #d0d0d0; --panel: #f6f6f6;
   --accent: #e8590c; --src: #1c7ed6; --op: #f59f00; --sink: #2f9e44; --obs: #7048e8;
   --warn: #fff4e6;
   font-family: system-ui, sans-serif; color: var(--fg); background: var(--bg);
 }
 @media (prefers-color-scheme: dark) {
-  :root { --bg: #16171a; --fg: #e8e8e8; --muted: #9a9a9a; --line: #3a3b40; --panel: #1f2024; --warn: #3a2a15; }
+  /* sampled from dashboard-mockup-dark.png */
+  :root { --bg: #171c21; --fg: #e8eaed; --muted: #9aa5af; --line: #3f454b; --panel: #1e2329; --bar: #111418; --accent: #fd8302; --warn: #3b2818; --tint: #403026; }
 }
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; margin: 0; }
@@ -113,3 +114,13 @@ a { color: var(--accent); }
 .node.sample svg { color: var(--c); flex: none; }
 
 .contents { display: contents; }
+
+/* palette from the mockup: dark bars, accent-coloured edges, tinted active result */
+.banner, .status { background: var(--bar); }
+.results button.active { background: var(--tint); border-color: var(--accent); }
+.react-flow__edge-path { stroke: var(--accent); stroke-width: 1.5; }
+.inputs button { display: flex; align-items: center; gap: .4rem; width: 100%; text-align: left; background: var(--bg); color: inherit; border: 1px solid var(--line); border-radius: 4px; padding: .25rem .4rem; font: inherit; cursor: pointer; }
+.inputs button span:nth-of-type(1) { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.inputs button:disabled { opacity: .6; cursor: default; }
+.inputs button:not(:disabled):hover { border-color: var(--accent); }
+.inputs button svg { flex: none; color: var(--muted); }

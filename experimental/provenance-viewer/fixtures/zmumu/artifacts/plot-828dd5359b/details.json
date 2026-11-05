@@ -2,6 +2,7 @@
  "artifact_id": "plot-828dd5359b",
  "nodes": {
   "read.events": {
+   "execution_count": null,
    "meta": {
     "source_name": "events",
     "workflow_kind": "root_tree"
@@ -42,6 +43,7 @@
    }
   },
   "render.DiMuonMass.0": {
+   "execution_count": 1,
    "meta": {
     "stage_id": "DiMuonMass",
     "style_ref": "dimuon_mass",
@@ -187,6 +189,7 @@
    }
   },
   "stage.BasicVars": {
+   "execution_count": null,
    "meta": {
     "stage_id": "BasicVars",
     "workflow_op": "hep.define"
@@ -230,6 +233,7 @@
    }
   },
   "stage.DiMuonMass": {
+   "execution_count": null,
    "meta": {
     "stage_id": "DiMuonMass",
     "workflow_op": "hep.hist"
@@ -283,6 +287,7 @@
    }
   },
   "stage.DiMuons": {
+   "execution_count": null,
    "meta": {
     "stage_id": "DiMuons",
     "workflow_op": "hep.di_object_mass"

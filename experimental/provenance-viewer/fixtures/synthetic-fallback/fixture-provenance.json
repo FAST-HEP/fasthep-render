@@ -5,9 +5,9 @@
   "artifacts": 3,
   "normalise_seconds": 0.001,
   "output_bytes": {
-   "artifacts/histogram-882125767d/details.json": 767,
+   "artifacts/histogram-882125767d/details.json": 873,
    "artifacts/histogram-882125767d/graph.json": 2753,
-   "artifacts/histogram-eb5f68d0bb/details.json": 651,
+   "artifacts/histogram-eb5f68d0bb/details.json": 729,
    "artifacts/histogram-eb5f68d0bb/graph.json": 2439,
    "run-index.json": 1981
   }

@@ -1,4 +1,4 @@
-import { Copy, ExternalLink, FileText, TriangleAlert } from "lucide-react";
+import { ChevronRight, Cog, Copy, ExternalLink, FileText, TriangleAlert } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { artifactIcon, completenessIcon, entityIcon, entityTypeLabel } from "../icons";
 import { recorded } from "../model/format";
@@ -10,7 +10,9 @@ import type {
   Resource,
   SummaryEntity,
   VisibleEntity,
+  VisibleView,
 } from "../model/types";
+import { visibleIdFor } from "../model/viewModel";
 import { ValueTree } from "./ValueTree";
 
 function Section(props: { title: string; count?: number; children: ReactNode; open?: boolean }) {
@@ -38,9 +40,11 @@ export function DetailsPanel(props: {
   entity?: VisibleEntity;
   details?: Details | "loading" | "failed";
   graph?: ProvenanceGraph;
+  view?: VisibleView;
   runId?: string;
+  onSelect?: (id: string) => void;
 }) {
-  const { artifact, entity, details, graph, runId } = props;
+  const { artifact, entity, details, graph, view, runId, onSelect } = props;
   const [asText, setAsText] = useState(false);
   if (!artifact) return <aside className="details" />;
 
@@ -94,12 +98,28 @@ export function DetailsPanel(props: {
           <GraphInfo e={entity} />
           {inputs.length > 0 && (
             <Section title="Inputs" count={inputs.length}>
-              <ul className="plain">
-                {inputs.map((id) => (
-                  <li key={id} title={id}>
-                    {labelOf(id)}
-                  </li>
-                ))}
+              <ul className="plain inputs">
+                {inputs.map((id) => {
+                  const target = view && graph ? visibleIdFor(view, graph, id) : undefined;
+                  const node = graph?.nodes.find((x) => x.id === id);
+                  const InIcon = node ? entityIcon(node) : Cog;
+                  const hidden = target !== undefined && target !== id;
+                  return (
+                    <li key={id}>
+                      <button
+                        type="button"
+                        disabled={target === undefined || !onSelect}
+                        title={hidden ? `${id} (hidden in a summary; selects the summary)` : id}
+                        onClick={() => target && onSelect?.(target)}
+                      >
+                        <InIcon size={16} aria-hidden="true" />
+                        <span>{labelOf(id)}</span>
+                        {hidden && <span className="sub">hidden</span>}
+                        <ChevronRight size={14} aria-hidden="true" />
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </Section>
           )}
@@ -123,6 +143,26 @@ export function DetailsPanel(props: {
               </Section>
               <Section title="Outputs">
                 <ValueTree value={info.outputs} />
+              </Section>
+              <Section title="Execution" open={false}>
+                <table className="valuetree">
+                  <tbody>
+                    {(
+                      [
+                        ["Recorded executions", info.execution_count],
+                        ["Executor", undefined],
+                        ["Start time", undefined],
+                        ["Duration", undefined],
+                      ] as [string, unknown][]
+                    ).map(([k, v]) => (
+                      <tr key={k}>
+                        <th scope="row" style={{ paddingLeft: "0.4rem" }}>{k}</th>
+                        <td className={v === undefined || v === null ? "notrec" : ""}>{recorded(v)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="sub">Software, host and environment of the whole run are under Run details.</p>
               </Section>
               <Section title="Meta" open={false}>
                 <ValueTree value={info.meta} />

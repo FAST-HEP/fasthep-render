@@ -2,6 +2,7 @@
  "artifact_id": "cutflow-b0cf6f46f3",
  "nodes": {
   "read.events": {
+   "execution_count": null,
    "meta": {
     "source_name": "events",
     "workflow_kind": "root_tree"
@@ -34,6 +35,7 @@
    }
   },
   "stage.DetectorMitigationBadEcal@Regrouped_RelativeSample_2022_down": {
+   "execution_count": 1,
    "meta": {
     "applies_to": {
      "eventtypes": [
@@ -162,6 +164,7 @@
    }
   },
   "stage.DetectorMitigationJetVeto@Regrouped_RelativeSample_2022_down": {
+   "execution_count": 1,
    "meta": {
     "applies_to": {
      "eventtypes": [
@@ -284,6 +287,7 @@
    }
   },
   "stage.DetectorMitigationSelection@Regrouped_RelativeSample_2022_down": {
+   "execution_count": 1,
    "meta": {
     "applies_to": {
      "eventtypes": [
@@ -398,6 +402,7 @@
    }
   },
   "stage.GenBosonFinder": {
+   "execution_count": null,
    "meta": {
     "applies_to": {
      "eventtype": "mc"
@@ -458,6 +463,7 @@
    }
   },
   "stage.GeneratorWeight": {
+   "execution_count": null,
    "meta": {
     "applies_to": {
      "eventtype": "mc"
@@ -518,6 +524,7 @@
    }
   },
   "stage.JetJEC_L1": {
+   "execution_count": 1,
    "meta": {
     "stage_id": "JetJEC_L1",
     "workflow_op": "chip.jet_jec"
@@ -613,6 +620,7 @@
    }
   },
   "stage.JetJEC_Nominal@Regrouped_RelativeSample_2022_down": {
+   "execution_count": 1,
    "meta": {
     "applies_to": {
      "eventtypes": [
@@ -756,6 +764,7 @@
    }
   },
   "stage.KeepEventIdentity": {
+   "execution_count": 1,
    "meta": {
     "stage_id": "KeepEventIdentity",
     "workflow_op": "hep.align_schema"
@@ -810,6 +819,7 @@
    }
   },
   "stage.LumiMask": {
+   "execution_count": null,
    "meta": {
     "applies_to": {
      "eventtype": "data"
@@ -874,6 +884,7 @@
    }
   },
   "stage.LumiMaskMC": {
+   "execution_count": null,
    "meta": {
     "applies_to": {
      "eventtype": "mc"
@@ -917,6 +928,7 @@
    }
   },
   "stage.METSelection@Regrouped_RelativeSample_2022_down": {
+   "execution_count": 1,
    "meta": {
     "applies_to": {
      "eventtypes": [
@@ -1029,6 +1041,7 @@
    }
   },
   "stage.METType1@Regrouped_RelativeSample_2022_down": {
+   "execution_count": 1,
    "meta": {
     "applies_to": {
      "eventtypes": [
@@ -1172,6 +1185,7 @@
    }
   },
   "stage.NoiseFilterSelection": {
+   "execution_count": 1,
    "meta": {
     "stage_id": "NoiseFilterSelection",
     "workflow_op": "hep.selection.cutflow"
@@ -1269,6 +1283,7 @@
    }
   },
   "stage.NominalWeight": {
+   "execution_count": null,
    "meta": {
     "applies_to": {
      "eventtype": "mc"
@@ -1330,6 +1345,7 @@
    }
   },
   "stage.PDFWeights": {
+   "execution_count": null,
    "meta": {
     "applies_to": {
      "eventtype": "mc"
@@ -1390,6 +1406,7 @@
    }
   },
   "stage.PileupWeights": {
+   "execution_count": 1,
    "meta": {
     "applies_to": {
      "eventtype": "mc"
@@ -1470,6 +1487,7 @@
    }
   },
   "stage.ScaleWeights": {
+   "execution_count": null,
    "meta": {
     "applies_to": {
      "eventtype": "mc"

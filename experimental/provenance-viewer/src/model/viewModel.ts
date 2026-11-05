@@ -171,3 +171,16 @@ export function formatRoute(route: Route): string {
 export function visibleSelection(view: VisibleView, selectedId?: string) {
   return selectedId === undefined ? undefined : view.nodes.find((n) => n.id === selectedId);
 }
+
+/**
+ * The visible entity that stands for `id`: the entity itself, or the summary it is
+ * currently hidden in. Undefined when it is in neither (for example outside a focused group).
+ */
+export function visibleIdFor(view: VisibleView, graph: ProvenanceGraph, id: string): string | undefined {
+  if (view.nodes.some((n) => n.id === id)) return id;
+  for (const n of view.nodes) {
+    if (n.kind !== "summary") continue;
+    if (graph.groups.find((g) => g.id === n.groupId)?.node_ids.includes(id)) return n.id;
+  }
+  return undefined;
+}

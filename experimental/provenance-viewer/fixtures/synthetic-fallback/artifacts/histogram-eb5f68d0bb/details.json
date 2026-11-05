@@ -2,6 +2,7 @@
  "artifact_id": "histogram-eb5f68d0bb",
  "nodes": {
   "read.events": {
+   "execution_count": null,
    "meta": {},
    "operations": null,
    "outputs": {},
@@ -9,6 +10,7 @@
    "resolved": null
   },
   "stage.Calibrate": {
+   "execution_count": 1,
    "meta": {},
    "operations": [
     {
@@ -25,6 +27,7 @@
    "resolved": null
   },
   "stage.Select": {
+   "execution_count": 1,
    "meta": {},
    "operations": [
     {
