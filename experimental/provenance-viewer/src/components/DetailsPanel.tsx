@@ -10,8 +10,9 @@ export function DetailsPanel(props: {
   entity?: VisibleEntity;
   details?: Details | "loading" | "failed";
   graph?: ProvenanceGraph;
+  runId?: string;
 }) {
-  const { artifact, entity, details, graph } = props;
+  const { artifact, entity, details, graph, runId } = props;
   if (!artifact) return <aside className="details" />;
   const info = entity && entity.kind !== "summary" ? (details && typeof details === "object" ? details.nodes[entity.id] : undefined) : undefined;
   return (
@@ -27,6 +28,14 @@ export function DetailsPanel(props: {
           </p>
           <p>{artifact.completeness_note}</p>
           <p className="sub">{artifact.path}</p>
+          {artifact.preview_ref && runId && (
+            <p>
+              <a href={`${runId}/${artifact.preview_ref}`} target="_blank" rel="noreferrer">
+                Open the existing plot ({artifact.preview_ref.split("/").pop()})
+              </a>
+              {artifact.preview_note && <span className="sub"> {artifact.preview_note}</span>}
+            </p>
+          )}
         </>
       )}
       {entity?.kind === "summary" && <SummaryInfo e={entity} graph={graph} />}

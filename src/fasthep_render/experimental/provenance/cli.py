@@ -25,9 +25,18 @@ def main(argv: list[str] | None = None) -> int:
         metavar="NAME",
         help="keep only artifacts with this name (repeatable); for small fixtures",
     )
+    p.add_argument(
+        "--synthetic",
+        metavar="NOTE",
+        help="mark the run as synthetic (invented to exercise UI states) with this note",
+    )
     args = p.parse_args(argv)
     report = normalise(
-        args.bundle, args.out, sanitize=not args.no_sanitize, only=tuple(args.only)
+        args.bundle,
+        args.out,
+        sanitize=not args.no_sanitize,
+        only=tuple(args.only),
+        synthetic=args.synthetic,
     )
     print(json.dumps(report["measurements"], indent=1))  # noqa: T201
     return 1 if report["leaks_found"] and not args.no_sanitize else 0

@@ -1,0 +1,134 @@
+{
+ "artifact_id": "histogram-882125767d",
+ "edges": [
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "read.events",
+   "target": "stage.Select"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.Select",
+   "target": "stage.Calibrate"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.Calibrate",
+   "target": "stage.Fill"
+  },
+  {
+   "output": "dataset",
+   "source": "dataset:demo_data",
+   "target": "read.events"
+  },
+  {
+   "output": "dataset",
+   "source": "dataset:demo_mc",
+   "target": "read.events"
+  }
+ ],
+ "groups": [
+  {
+   "entry_edges": [],
+   "exit_edges": [],
+   "id": "chain:read.events",
+   "kind": "chain",
+   "label": "4 steps from read.events",
+   "node_ids": [
+    "read.events",
+    "stage.Select",
+    "stage.Calibrate",
+    "stage.Fill"
+   ],
+   "origin": "inferred"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "read.events",
+   "implementation": "root_tree",
+   "kind": "processing",
+   "label": "events",
+   "resource_ids": [],
+   "role": "source",
+   "variation": null
+  },
+  {
+   "id": "stage.Calibrate",
+   "implementation": null,
+   "kind": "processing",
+   "label": "Calibrate",
+   "resource_ids": [
+    "demo.jec"
+   ],
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "id": "stage.Fill",
+   "implementation": "demo.hist",
+   "kind": "processing",
+   "label": "Fill",
+   "resource_ids": [],
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "id": "stage.Select",
+   "implementation": "demo.select",
+   "kind": "processing",
+   "label": "Select",
+   "resource_ids": [
+    "demo.lumimask"
+   ],
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "dataset_type": "data",
+   "event_count": "1000",
+   "file_count": 1,
+   "group": null,
+   "id": "dataset:demo_data",
+   "kind": "dataset",
+   "label": "demo_data",
+   "meta": {},
+   "source_node": "read.events"
+  },
+  {
+   "dataset_type": "mc",
+   "event_count": "5000",
+   "file_count": 1,
+   "group": null,
+   "id": "dataset:demo_mc",
+   "kind": "dataset",
+   "label": "demo_mc",
+   "meta": {},
+   "source_node": "read.events"
+  }
+ ],
+ "resources": {
+  "demo.jec": {
+   "correction": "demo_jec",
+   "correction_version": 3,
+   "fallback": true,
+   "fallback_reason": "requested era 2023 not available; used 2022",
+   "kind": "correctionlib",
+   "path": "demo/jec_2022.json.gz",
+   "requested_era": "2023",
+   "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "demo.lumimask": {
+   "fallback": false,
+   "kind": "data_quality_mask",
+   "path": "demo/mask.json",
+   "requested_era": "2022",
+   "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  }
+ },
+ "run_id": "00000000-0000-4000-8000-000000000001",
+ "schema_version": 1
+}

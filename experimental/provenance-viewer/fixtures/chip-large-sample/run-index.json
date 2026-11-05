@@ -45,13 +45,101 @@
    "cms.jet_veto_map",
    "cms.pileup"
   ],
+  "resource_summary": {
+   "chip.nlo_kfactor.zjets.ewk.run3": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "Run3"
+   },
+   "cms.jec.ak4puppi.Regrouped_Absolute.mc": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.jec.ak4puppi.Regrouped_Absolute_2022.mc": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.jec.ak4puppi.Regrouped_BBEC1.mc": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.jec.ak4puppi.Regrouped_BBEC1_2022.mc": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.jec.ak4puppi.Regrouped_EC2.mc": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.jec.ak4puppi.Regrouped_EC2_2022.mc": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.jec.ak4puppi.Regrouped_FlavorQCD.mc": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.jec.ak4puppi.Regrouped_HF.mc": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.jec.ak4puppi.Regrouped_HF_2022.mc": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.jec.ak4puppi.Regrouped_RelativeBal.mc": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.jec.ak4puppi.Regrouped_RelativeSample_2022.mc": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.jec.ak4puppi.Total.mc": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.jec.ak4puppi.full.mc": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.jec.ak4puppi.l1.mc": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.jet_veto_map": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   },
+   "cms.pileup": {
+    "fallback": false,
+    "kind": "correctionlib",
+    "requested_era": "2022_Summer22"
+   }
+  },
   "software": {
    "fasthep-carpenter": "2026.10.2",
    "fasthep-cli": "2026.10.3.dev1+g8f2fc9220",
    "fasthep-curator": "2026.10.1",
    "fasthep-flow": "2026.10.1",
    "fasthep-render": "2026.10.1"
-  }
+  },
+  "synthetic_note": null
  },
  "schema_version": 1
 }

@@ -1,0 +1,48 @@
+{
+ "artifact_id": "histogram-882125767d",
+ "nodes": {
+  "read.events": {
+   "meta": {},
+   "operations": null,
+   "outputs": {},
+   "params": {}
+  },
+  "stage.Calibrate": {
+   "meta": {},
+   "operations": [
+    {
+     "inputs": {
+      "resources": [
+       "demo.jec"
+      ]
+     },
+     "outputs": {}
+    }
+   ],
+   "outputs": {},
+   "params": {}
+  },
+  "stage.Fill": {
+   "meta": {},
+   "operations": null,
+   "outputs": {},
+   "params": {}
+  },
+  "stage.Select": {
+   "meta": {},
+   "operations": [
+    {
+     "inputs": {
+      "resources": [
+       "demo.lumimask"
+      ]
+     },
+     "outputs": {}
+    }
+   ],
+   "outputs": {},
+   "params": {}
+  }
+ },
+ "schema_version": 1
+}

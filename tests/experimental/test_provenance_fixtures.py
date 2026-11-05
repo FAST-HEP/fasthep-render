@@ -2,10 +2,16 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
+import warnings
 from pathlib import Path
 
 import pytest
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    from fasthep_render.experimental.provenance.normalise import normalise
 
 FIXTURES = (
     Path(__file__).resolve().parents[2] / "experimental/provenance-viewer/fixtures"
@@ -22,15 +28,19 @@ def _json(path: Path) -> dict:
 
 
 def test_fixtures_present() -> None:
-    assert {p.name for p in RUNS} >= {"zmumu", "chip-large-sample"}
+    assert {p.name for p in RUNS} >= {
+        "zmumu",
+        "chip-large-sample",
+        "synthetic-fallback",
+    }
 
 
 @pytest.mark.parametrize("run", RUNS, ids=lambda p: p.name)
 def test_no_machine_specific_content(run: Path) -> None:
     for f in run.rglob("*"):
         if f.is_file():
-            text = f.read_text()
-            hits = [s for s in FORBIDDEN if s in text]
+            data = f.read_bytes()  # binary previews are checked too
+            hits = [s for s in FORBIDDEN if s.encode() in data]
             assert not hits, f"{f.relative_to(FIXTURES)} contains {hits}"
     assert _json(run / "fixture-provenance.json")["leaks_found"] == []
 
@@ -81,9 +91,61 @@ def test_every_file_is_listed_or_known(run: Path) -> None:
     index = _json(run / "run-index.json")
     expected = {"run-index.json", "fixture-provenance.json", "FIXTURE.md"}
     for a in index["artifacts"]:
-        expected |= {a.get("graph_ref"), a.get("details_ref")} - {None}
+        expected |= {a.get("graph_ref"), a.get("details_ref"), a.get("preview_ref")} - {
+            None
+        }
     found = {str(f.relative_to(run)) for f in run.rglob("*") if f.is_file()}
     assert found == expected
+
+
+def test_preview_files_exist_and_are_small() -> None:
+    previews = 0
+    for run in RUNS:
+        for a in _json(run / "run-index.json")["artifacts"]:
+            if "preview_ref" in a:
+                previews += 1
+                assert (run / a["preview_ref"]).stat().st_size <= 1_000_000
+    assert previews >= 2  # the Z-mumu histogram and its plot
+
+
+def test_synthetic_run_is_labelled_and_exercises_every_state() -> None:
+    run = FIXTURES / "synthetic-fallback"
+    index = _json(run / "run-index.json")
+    assert index["run"]["synthetic_note"]
+    assert "SYNTHETIC" in (run / "FIXTURE.md").read_text()
+    assert {a["completeness"] for a in index["artifacts"]} == {
+        "complete",
+        "partial",
+        "unavailable",
+    }
+    graph = _json(
+        run
+        / next(a["graph_ref"] for a in index["artifacts"] if a["name"] == "Selected")
+    )
+    assert any(r.get("fallback") is True for r in graph["resources"].values())
+    assert any(
+        n["kind"] == "processing" and n["implementation"] is None
+        for n in graph["nodes"]
+    )
+
+
+def test_synthetic_fixture_regenerates_identically(tmp_path: Path) -> None:
+    script = FIXTURES.parent / "scripts/make_synthetic_bundle.py"
+    spec = importlib.util.spec_from_file_location("make_synthetic_bundle", script)
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    module.main(tmp_path / "bundle")
+    note = _json(FIXTURES / "synthetic-fallback/run-index.json")["run"][
+        "synthetic_note"
+    ]
+    normalise(tmp_path / "bundle", tmp_path / "out", synthetic=note)
+    for f in (FIXTURES / "synthetic-fallback").rglob("*.json"):
+        rel = f.relative_to(FIXTURES / "synthetic-fallback")
+        if rel.name == "fixture-provenance.json":
+            continue  # carries the bundle label and measurements
+        assert (tmp_path / "out" / rel).read_text() == f.read_text(), rel
 
 
 def test_runs_json_lists_exactly_the_fixture_runs() -> None:

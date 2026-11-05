@@ -6,6 +6,10 @@
    "label": "chip-large-sample"
   },
   {
+   "id": "synthetic-fallback",
+   "label": "synthetic-fallback"
+  },
+  {
    "id": "zmumu",
    "label": "zmumu"
   }

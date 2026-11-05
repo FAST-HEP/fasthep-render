@@ -13,7 +13,8 @@ export function sizeOf(n: VisibleEntity): { width: number; height: number } {
   if (n.kind === "summary") return { width: 280, height: n.linear ? 104 : 92 };
   if (n.kind === "boundary") return { width: 240, height: 40 };
   if (n.kind === "dataset") return { width: 240, height: 64 };
-  return { width: 240, height: 56 };
+  // room for the correction badges below the implementation line
+  return { width: 240, height: n.kind === "processing" && (n.resource_ids?.length ?? 0) > 0 ? 80 : 56 };
 }
 
 /**

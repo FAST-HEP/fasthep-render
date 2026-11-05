@@ -53,3 +53,14 @@ html, body, #root { height: 100%; margin: 0; }
 .members { padding-left: 1rem; word-break: break-all; font-size: .8rem; }
 .react-flow__node { transition: transform .25s ease; }
 @media (prefers-reduced-motion: reduce) { .react-flow__node { transition: none; } }
+.tabs { display: flex; gap: .25rem; }
+.tabs button { font: inherit; font-size: .8rem; padding: .1rem .6rem; cursor: pointer; }
+.tabs button[aria-pressed="true"] { border-color: var(--accent); font-weight: 600; }
+.rundetails { padding: 1rem; overflow: auto; height: 100%; }
+.rundetails table { border-collapse: collapse; font-size: .85rem; }
+.rundetails th { text-align: left; padding-right: 1rem; color: var(--muted); font-weight: 500; vertical-align: top; }
+.rundetails td { word-break: break-all; }
+.graph { display: flex; flex-direction: column; }
+.graph > .react-flow { flex: 1; height: auto; min-height: 0; }
+.synthetic { margin: 0 !important; order: 2; }
+a { color: var(--accent); }

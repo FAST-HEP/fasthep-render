@@ -2,6 +2,7 @@ import type { Viewport } from "@xyflow/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DetailsPanel } from "./components/DetailsPanel";
 import { type Actions, GraphPane } from "./components/GraphPane";
+import { RunDetails } from "./components/RunDetails";
 import { Sidebar } from "./components/Sidebar";
 import { StatusBar } from "./components/StatusBar";
 import { loadDetails, loadGraph, loadRunIndex, loadRuns } from "./data/loader";
@@ -41,6 +42,7 @@ export function App() {
   const [collapsed, setCollapsed] = useState<Collapsed>(new Map());
   const [focusPath, setFocusPath] = useState<string[]>([]);
   const [focusCollapsed, setFocusCollapsed] = useState<Collapsed>(new Map());
+  const [tab, setTab] = useState<"lineage" | "run">("lineage");
   const viewports = useRef(new Map<string, Viewport>());
   const detailsRequest = useRef<AbortController>();
   const [selectedId, setSelectedId] = useState<string | undefined>();
@@ -179,6 +181,10 @@ export function App() {
         onArtifact={(id) => go(route.runId, id)}
       />
       <main className="graph">
+        {index.state === "ready" && index.value.run.synthetic_note && (
+          <p className="warn synthetic">SYNTHETIC RUN, not real provenance: {index.value.run.synthetic_note}</p>
+        )}
+        {tab === "run" && index.state === "ready" && <RunDetails index={index.value} />}
         {runs.state === "failed" && <p className="warn">Could not load runs.json: {runs.message}</p>}
         {index.state === "failed" && <p className="warn">Could not load the run: {index.message}</p>}
         {unknownArtifact && <p className="warn">Unknown artifact “{route.artifactId}” in this run.</p>}
@@ -191,7 +197,7 @@ export function App() {
         )}
         {graph.state === "loading" && <p className="empty">Loading lineage…</p>}
         {graph.state === "failed" && <p className="warn">Could not load the lineage: {graph.message}</p>}
-        {crumbs.length > 0 && (
+        {tab === "lineage" && crumbs.length > 0 && (
           <nav className="crumb" aria-label="Breadcrumb">
             <button type="button" onClick={() => focusBack(0)}>
               Overview
@@ -210,7 +216,7 @@ export function App() {
             ))}
           </nav>
         )}
-        {view && artifact && (
+        {tab === "lineage" && view && artifact && (
           <GraphPane
             paneKey={paneKey}
             view={view}
@@ -223,8 +229,11 @@ export function App() {
           />
         )}
       </main>
-      <DetailsPanel artifact={artifact} entity={selected} details={details} graph={shown} />
+      <DetailsPanel artifact={artifact} entity={selected} details={details} graph={shown} runId={route.runId} />
       <StatusBar
+        tab={tab}
+        onTab={setTab}
+        canShowRun={index.state === "ready"}
         status={
           view
             ? `${artifact?.name}: ${view.nodes.length} visible of ${graph.state === "ready" ? graph.value.nodes.length : 0} entities${crumbs.length ? " (focused)" : ""}`

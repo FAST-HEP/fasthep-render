@@ -1,0 +1,70 @@
+{
+ "artifacts": [
+  {
+   "ancestor_count": 3,
+   "completeness": "partial",
+   "completeness_note": "no provenance record; lineage derived from the compile graph",
+   "details_ref": "artifacts/histogram-eb5f68d0bb/details.json",
+   "graph_ref": "artifacts/histogram-eb5f68d0bb/graph.json",
+   "id": "histogram-eb5f68d0bb",
+   "kind": "histogram",
+   "name": "Calibrated",
+   "path": "artifacts/histograms/Calibrated.pkl",
+   "producer_id": "stage.Calibrate",
+   "run_id": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+   "completeness": "unavailable",
+   "completeness_note": "producer node not found in the graph",
+   "id": "histogram-c4d8ec1b26",
+   "kind": "histogram",
+   "name": "Orphan",
+   "path": "artifacts/histograms/Orphan.pkl",
+   "producer_id": "stage.Removed",
+   "run_id": "00000000-0000-4000-8000-000000000001"
+  },
+  {
+   "ancestor_count": 4,
+   "completeness": "complete",
+   "completeness_note": "provenance record and graph producer found",
+   "details_ref": "artifacts/histogram-882125767d/details.json",
+   "graph_ref": "artifacts/histogram-882125767d/graph.json",
+   "id": "histogram-882125767d",
+   "kind": "histogram",
+   "name": "Selected",
+   "path": "artifacts/histograms/Selected.pkl",
+   "producer_id": "stage.Fill",
+   "run_id": "00000000-0000-4000-8000-000000000001"
+  }
+ ],
+ "run": {
+  "execution": {
+   "python_version": "3.0.0"
+  },
+  "graph_edge_count": 3,
+  "graph_node_count": 4,
+  "id": "00000000-0000-4000-8000-000000000001",
+  "partition_count": 2,
+  "resource_ids": [
+   "demo.jec",
+   "demo.lumimask"
+  ],
+  "resource_summary": {
+   "demo.jec": {
+    "fallback": true,
+    "kind": "correctionlib",
+    "requested_era": "2023"
+   },
+   "demo.lumimask": {
+    "fallback": false,
+    "kind": "data_quality_mask",
+    "requested_era": "2022"
+   }
+  },
+  "software": {
+   "demo": "0.0.0"
+  },
+  "synthetic_note": "invented bundle: recorded fallback, node without implementation, partial and unavailable artifacts"
+ },
+ "schema_version": 1
+}

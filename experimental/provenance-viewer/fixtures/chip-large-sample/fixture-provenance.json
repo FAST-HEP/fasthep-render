@@ -3,11 +3,11 @@
  "leaks_found": [],
  "measurements": {
   "artifacts": 1,
-  "normalise_seconds": 0.149,
+  "normalise_seconds": 0.153,
   "output_bytes": {
    "artifacts/cutflow-b0cf6f46f3/details.json": 29765,
    "artifacts/cutflow-b0cf6f46f3/graph.json": 12852,
-   "run-index.json": 1875
+   "run-index.json": 4241
   }
  },
  "origin_summary": {

@@ -20,6 +20,8 @@ export interface ArtifactSearchEntry {
   completeness_note: string;
   graph_ref?: string;
   details_ref?: string;
+  preview_ref?: string;
+  preview_note?: string;
   ancestor_count?: number;
 }
 
@@ -31,6 +33,8 @@ export interface RunIndex {
     execution?: Record<string, string>;
     partition_count: number;
     resource_ids: string[];
+    resource_summary?: Record<string, { kind?: string | null; requested_era?: string | null; fallback?: boolean | null }>;
+    synthetic_note?: string | null;
     graph_node_count: number;
     graph_edge_count: number;
   };

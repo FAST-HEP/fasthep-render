@@ -3,13 +3,13 @@
  "leaks_found": [],
  "measurements": {
   "artifacts": 2,
-  "normalise_seconds": 0.004,
+  "normalise_seconds": 0.002,
   "output_bytes": {
    "artifacts/histogram-c6e0053027/details.json": 1773,
    "artifacts/histogram-c6e0053027/graph.json": 5351,
    "artifacts/plot-828dd5359b/details.json": 4080,
    "artifacts/plot-828dd5359b/graph.json": 5698,
-   "run-index.json": 1565
+   "run-index.json": 1813
   }
  },
  "origin_summary": {

@@ -1,0 +1,30 @@
+{
+ "bundle_label": "synth",
+ "leaks_found": [],
+ "measurements": {
+  "artifacts": 3,
+  "normalise_seconds": 0.001,
+  "output_bytes": {
+   "artifacts/histogram-882125767d/details.json": 683,
+   "artifacts/histogram-882125767d/graph.json": 2753,
+   "artifacts/histogram-eb5f68d0bb/details.json": 588,
+   "artifacts/histogram-eb5f68d0bb/graph.json": 2439,
+   "run-index.json": 1981
+  }
+ },
+ "origin_summary": {
+  "curated": [],
+  "inferred": "chain and region groups (computed here)",
+  "sanitized": "paths, host names, user names",
+  "source": "graph nodes, edges, dataset facts, meta.variation groups",
+  "synthetic": [
+   "invented bundle: recorded fallback, node without implementation, partial and unavailable artifacts"
+  ]
+ },
+ "sanitization_counts": {},
+ "sanitized": true,
+ "schema_version": 1,
+ "source_graph_sha256": "2dd5ee65c6b8b41b8a14e373283ddecedc37f7f7f9705ac2272b2d9f9fc4329b",
+ "subset_of_artifacts": null,
+ "tool": "fasthep_render.experimental.provenance.normalise"
+}
