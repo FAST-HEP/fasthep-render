@@ -137,19 +137,47 @@ _RESOLVED_KEYS = (
 )
 
 
+_ROLE_SECTION = {
+    "source": "sources",
+    "transform": "transforms",
+    "sink": "sinks",
+    "observer": "observers",
+}
+
+
 def _resolved_by_plan(bundle: Path) -> dict[str, dict[str, Any]]:
-    """What each node resolves to in the compile plan (without its parameters)."""
+    """What each node resolves to in the compile plan (without its parameters).
+
+    A plan node only names a registry key (``hep.hist``); the callable it runs is in
+    the plan's ``registry`` section and the profile that supplied it in
+    ``provenance.registry_changes``. Both are joined here.
+    """
     plan = bundle / "compile/plan.yaml"
     if not plan.exists():
         return {}
     loader = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
     data = yaml.load(plan.read_text(), Loader=loader)
+    registry = data.get("registry", {})
+    changes = (data.get("provenance") or {}).get("registry_changes") or {}
+    layer: dict[tuple[str, str], str] = {}
+    for kind in ("added", "replaced", "overridden"):  # later entries win
+        for c in changes.get(kind, []) or []:
+            layer[(c.get("section"), c.get("key"))] = c.get("layer")
     out: dict[str, dict[str, Any]] = {}
     for n in data.get("nodes", []):
-        item = {k: n[k] for k in _RESOLVED_KEYS if k in n}
+        item: dict[str, Any] = {"impl": n.get("impl")}
+        section = _ROLE_SECTION.get(n.get("role"), "")
+        entry = (registry.get(section) or {}).get(n.get("impl"))
+        if isinstance(entry, dict):
+            item["callable"] = entry.get("impl")
+            item["spec"] = entry.get("spec")
+            item["provided_by"] = layer.get((section, n.get("impl")))
         op = (n.get("meta") or {}).get("workflow_op")
         if op is not None:
             item["workflow_op"] = op
+        for k in _RESOLVED_KEYS:
+            if k != "impl" and k in n:
+                item[k] = n[k]
         out[n["id"]] = item
     return out
 

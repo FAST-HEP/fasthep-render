@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { recorded } from "./format";
+import { middleTruncate, recorded } from "./format";
 import { renderText, toTextLineage } from "./textLineage";
 import type { ProvenanceGraph, VisibleView } from "./types";
 import { coarseView, defaultCollapsed, focusSubgraph, revealFromSource, visibleSelection } from "./viewModel";
@@ -40,6 +40,18 @@ describe("recorded", () => {
     expect(recorded([])).toBe("(empty)");
     expect(recorded(0)).toBe("0");
     expect(recorded(false)).toBe("false");
+  });
+});
+
+describe("middleTruncate", () => {
+  it("keeps short text and keeps both ends of long text", () => {
+    expect(middleTruncate("hep.hist")).toBe("hep.hist");
+    const long = "fasthep_carpenter.operations.hist:run_hist_transform";
+    const out = middleTruncate(long, 30);
+    expect(out.length).toBe(30);
+    expect(out.startsWith("fasthep_ca")).toBe(true);
+    expect(out.endsWith("run_hist_transform")).toBe(true);
+    expect(out).toContain("…");
   });
 });
 

@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";
-import { recorded } from "../model/format";
+import { middleTruncate, recorded } from "../model/format";
 import { type TreeRow, toRows } from "../model/valueTree";
 
 function Row({ row, depth }: { row: TreeRow; depth: number }) {
@@ -19,7 +19,7 @@ function Row({ row, depth }: { row: TreeRow; depth: number }) {
             <span>{row.key}</span>
           )}
         </th>
-        <td title={row.full}>{row.text}</td>
+        <td title={row.full}>{middleTruncate(row.text)}</td>
       </tr>
       {open && row.children?.map((c) => <Row key={c.key} row={c} depth={depth + 1} />)}
     </>

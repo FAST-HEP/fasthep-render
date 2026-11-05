@@ -156,6 +156,15 @@ def test_zmumu_node_resolves_through_the_plan_and_plot_has_its_path() -> None:
     details = _json(run / hist["details_ref"])["nodes"]["stage.BasicVars"]
     assert details["resolved"]["impl"] == "hep.define"
     assert details["resolved"]["inputs"][0]["node_id"] == "read.events"
+    # the plan node names only the registry key; the callable comes from the plan's registry
+    assert (
+        details["resolved"]["callable"]
+        == "fasthep_carpenter.operations.define:run_define_transform"
+    )
+    assert details["resolved"]["provided_by"] == "fasthep_carpenter:registry"
+    hist = _json(run / hist["details_ref"])["nodes"]["stage.DiMuonMass"]["resolved"]
+    assert hist["impl"] == "hep.hist"
+    assert hist["callable"] == "fasthep_carpenter.operations.hist:run_hist_transform"
     assert details["operations"] is None  # not recorded at run time for this run
 
 

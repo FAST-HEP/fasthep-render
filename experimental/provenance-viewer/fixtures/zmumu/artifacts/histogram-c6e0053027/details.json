@@ -28,6 +28,7 @@
     "tree": "events"
    },
    "resolved": {
+    "callable": "fasthep_carpenter.sources.root_tree:run_root_tree_source",
     "impl": "root_tree",
     "input_scope": "global",
     "inputs": [],
@@ -39,7 +40,9 @@
     "partitioning": {
      "chunk_size": null,
      "mode": "dataset"
-    }
+    },
+    "provided_by": "fasthep_carpenter:registry",
+    "spec": "fasthep_carpenter.sources.root_tree:ROOT_TREE_SOURCE_SPEC"
    }
   },
   "stage.BasicVars": {
@@ -65,6 +68,7 @@
     ]
    },
    "resolved": {
+    "callable": "fasthep_carpenter.operations.define:run_define_transform",
     "impl": "hep.define",
     "input_scope": "partition",
     "inputs": [
@@ -83,6 +87,8 @@
      "chunk_size": null,
      "mode": "dataset"
     },
+    "provided_by": "fasthep_carpenter:registry",
+    "spec": "fasthep_carpenter.operations.define:DEFINE_SPEC",
     "workflow_op": "hep.define"
    }
   },
@@ -119,6 +125,7 @@
     "weight_expr": "EventWeight"
    },
    "resolved": {
+    "callable": "fasthep_carpenter.operations.hist:run_hist_transform",
     "impl": "hep.hist",
     "input_scope": "partition",
     "inputs": [
@@ -137,6 +144,8 @@
      "chunk_size": null,
      "mode": "dataset"
     },
+    "provided_by": "fasthep_carpenter:registry",
+    "spec": "fasthep_carpenter.operations.hist:HIST_SPEC",
     "workflow_op": "hep.hist"
    }
   },
@@ -155,6 +164,7 @@
     "mask": "IsoMuon_Idx"
    },
    "resolved": {
+    "callable": "fasthep_carpenter.operations.di_object_mass:run_di_object_mass_transform",
     "impl": "hep.di_object_mass",
     "input_scope": "partition",
     "inputs": [
@@ -173,6 +183,8 @@
      "chunk_size": null,
      "mode": "dataset"
     },
+    "provided_by": "fasthep_carpenter:registry",
+    "spec": "fasthep_carpenter.operations.di_object_mass:DI_OBJECT_MASS_SPEC",
     "workflow_op": "hep.di_object_mass"
    }
   }

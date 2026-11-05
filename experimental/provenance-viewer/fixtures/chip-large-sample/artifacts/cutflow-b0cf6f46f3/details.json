@@ -20,6 +20,7 @@
     "tree": "Events"
    },
    "resolved": {
+    "callable": "fasthep_carpenter.sources.root_tree:run_root_tree_source",
     "impl": "root_tree",
     "input_scope": "global",
     "inputs": [],
@@ -31,7 +32,9 @@
     "partitioning": {
      "chunk_size": 200000,
      "mode": "dataset_chunks"
-    }
+    },
+    "provided_by": "fasthep_carpenter:registry",
+    "spec": "fasthep_carpenter.sources.root_tree:ROOT_TREE_SOURCE_SPEC"
    }
   },
   "stage.DetectorMitigationBadEcal@Regrouped_RelativeSample_2022_down": {
@@ -142,6 +145,7 @@
     "preserve_legacy_eta_abs_bug": true
    },
    "resolved": {
+    "callable": "chip.impl.detector_mitigation:run_bad_ecal_crystal_22ee",
     "impl": "chip.detector_bad_ecal_crystal_22ee",
     "input_scope": "partition",
     "inputs": [
@@ -160,6 +164,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "../profiles/registry.yaml",
+    "spec": "chip.impl.detector_mitigation:BAD_ECAL_CRYSTAL_22EE_SPEC",
     "workflow_op": "chip.detector_bad_ecal_crystal_22ee"
    }
   },
@@ -265,6 +271,7 @@
     "resource": "cms.jet_veto_map"
    },
    "resolved": {
+    "callable": "chip.impl.detector_mitigation:run_jet_veto_map",
     "impl": "chip.detector_jet_veto_map",
     "input_scope": "partition",
     "inputs": [
@@ -283,6 +290,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "../profiles/registry.yaml",
+    "spec": "chip.impl.detector_mitigation:JET_VETO_MAP_SPEC",
     "workflow_op": "chip.detector_jet_veto_map"
    }
   },
@@ -379,6 +388,7 @@
     }
    },
    "resolved": {
+    "callable": "fasthep_carpenter.operations.cutflow:run_cutflow_transform",
     "impl": "hep.selection.cutflow",
     "input_scope": "partition",
     "inputs": [
@@ -398,6 +408,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "fasthep_carpenter:registry",
+    "spec": "fasthep_carpenter.operations.cutflow:CUTFLOW_SPEC",
     "workflow_op": "hep.selection.cutflow"
    }
   },
@@ -441,6 +453,7 @@
     }
    },
    "resolved": {
+    "callable": "chip.impl.gen_boson_finder:run_gen_boson_finder",
     "impl": "chip.gen_boson_finder",
     "input_scope": "partition",
     "inputs": [
@@ -459,6 +472,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "../profiles/registry.yaml",
+    "spec": "chip.impl.gen_boson_finder:GEN_BOSON_FINDER_SPEC",
     "workflow_op": "chip.gen_boson_finder"
    }
   },
@@ -502,6 +517,7 @@
     }
    },
    "resolved": {
+    "callable": "chip.impl.weights:run_generator_weight",
     "impl": "chip.generator_weight",
     "input_scope": "partition",
     "inputs": [
@@ -520,6 +536,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "../profiles/registry.yaml",
+    "spec": "chip.impl.weights:GENERATOR_WEIGHT_SPEC",
     "workflow_op": "chip.generator_weight"
    }
   },
@@ -598,6 +616,7 @@
     }
    },
    "resolved": {
+    "callable": "chip.impl.jec:run_jet_jec",
     "impl": "chip.jet_jec",
     "input_scope": "partition",
     "inputs": [
@@ -616,6 +635,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "../profiles/registry.yaml",
+    "spec": "chip.impl.jec:JET_JEC_SPEC",
     "workflow_op": "chip.jet_jec"
    }
   },
@@ -742,6 +763,7 @@
     }
    },
    "resolved": {
+    "callable": "chip.impl.jec:run_jet_jec",
     "impl": "chip.jet_jec",
     "input_scope": "partition",
     "inputs": [
@@ -760,6 +782,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "../profiles/registry.yaml",
+    "spec": "chip.impl.jec:JET_JEC_SPEC",
     "workflow_op": "chip.jet_jec"
    }
   },
@@ -797,6 +821,7 @@
     }
    },
    "resolved": {
+    "callable": "fasthep_carpenter.operations.align_schema:run_align_schema",
     "impl": "hep.align_schema",
     "input_scope": "partition",
     "inputs": [
@@ -815,6 +840,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "fasthep_carpenter:registry",
+    "spec": "fasthep_carpenter.operations.align_schema:ALIGN_SCHEMA_SPEC",
     "workflow_op": "hep.align_schema"
    }
   },
@@ -862,6 +889,7 @@
     "run_field": "run"
    },
    "resolved": {
+    "callable": "chip.impl.data_quality:run_data_quality_mask",
     "impl": "chip.data_quality_mask",
     "input_scope": "partition",
     "inputs": [
@@ -880,6 +908,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "../profiles/registry.yaml",
+    "spec": "chip.impl.data_quality:DATA_QUALITY_MASK_SPEC",
     "workflow_op": "chip.data_quality_mask"
    }
   },
@@ -906,6 +936,7 @@
     ]
    },
    "resolved": {
+    "callable": "fasthep_carpenter.operations.define:run_define_transform",
     "impl": "hep.define",
     "input_scope": "partition",
     "inputs": [
@@ -924,6 +955,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "fasthep_carpenter:registry",
+    "spec": "fasthep_carpenter.operations.define:DEFINE_SPEC",
     "workflow_op": "hep.define"
    }
   },
@@ -1018,6 +1051,7 @@
     }
    },
    "resolved": {
+    "callable": "fasthep_carpenter.operations.cutflow:run_cutflow_transform",
     "impl": "hep.selection.cutflow",
     "input_scope": "partition",
     "inputs": [
@@ -1037,6 +1071,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "fasthep_carpenter:registry",
+    "spec": "fasthep_carpenter.operations.cutflow:CUTFLOW_SPEC",
     "workflow_op": "hep.selection.cutflow"
    }
   },
@@ -1163,6 +1199,7 @@
     ]
    },
    "resolved": {
+    "callable": "chip.impl.jec:run_met_type1",
     "impl": "chip.met_type1",
     "input_scope": "partition",
     "inputs": [
@@ -1181,6 +1218,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "../profiles/registry.yaml",
+    "spec": "chip.impl.jec:MET_TYPE1_SPEC",
     "workflow_op": "chip.met_type1"
    }
   },
@@ -1260,6 +1299,7 @@
     }
    },
    "resolved": {
+    "callable": "fasthep_carpenter.operations.cutflow:run_cutflow_transform",
     "impl": "hep.selection.cutflow",
     "input_scope": "partition",
     "inputs": [
@@ -1279,6 +1319,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "fasthep_carpenter:registry",
+    "spec": "fasthep_carpenter.operations.cutflow:CUTFLOW_SPEC",
     "workflow_op": "hep.selection.cutflow"
    }
   },
@@ -1323,6 +1365,7 @@
     }
    },
    "resolved": {
+    "callable": "chip.impl.weights:run_nominal_weight",
     "impl": "chip.nominal_weight",
     "input_scope": "partition",
     "inputs": [
@@ -1341,6 +1384,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "../profiles/registry.yaml",
+    "spec": "chip.impl.weights:NOMINAL_WEIGHT_SPEC",
     "workflow_op": "chip.nominal_weight"
    }
   },
@@ -1384,6 +1429,7 @@
     }
    },
    "resolved": {
+    "callable": "chip.impl.weights:run_pdf_weights",
     "impl": "chip.pdf_weights",
     "input_scope": "partition",
     "inputs": [
@@ -1402,6 +1448,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "../profiles/registry.yaml",
+    "spec": "chip.impl.weights:PDF_WEIGHTS_SPEC",
     "workflow_op": "chip.pdf_weights"
    }
   },
@@ -1465,6 +1513,7 @@
     "resource": "cms.pileup"
    },
    "resolved": {
+    "callable": "chip.impl.weights:run_pileup_weights",
     "impl": "chip.pileup_weights",
     "input_scope": "partition",
     "inputs": [
@@ -1483,6 +1532,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "../profiles/registry.yaml",
+    "spec": "chip.impl.weights:PILEUP_WEIGHTS_SPEC",
     "workflow_op": "chip.pileup_weights"
    }
   },
@@ -1526,6 +1577,7 @@
     }
    },
    "resolved": {
+    "callable": "chip.impl.weights:run_scale_weights",
     "impl": "chip.scale_weights",
     "input_scope": "partition",
     "inputs": [
@@ -1544,6 +1596,8 @@
      "chunk_size": 200000,
      "mode": "dataset_chunks"
     },
+    "provided_by": "../profiles/registry.yaml",
+    "spec": "chip.impl.weights:SCALE_WEIGHTS_SPEC",
     "workflow_op": "chip.scale_weights"
    }
   }

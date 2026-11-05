@@ -3,9 +3,9 @@
  "leaks_found": [],
  "measurements": {
   "artifacts": 1,
-  "normalise_seconds": 1.57,
+  "normalise_seconds": 1.429,
   "output_bytes": {
-   "artifacts/cutflow-b0cf6f46f3/details.json": 38774,
+   "artifacts/cutflow-b0cf6f46f3/details.json": 41852,
    "artifacts/cutflow-b0cf6f46f3/graph.json": 12852,
    "run-index.json": 4241
   }
