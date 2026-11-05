@@ -148,6 +148,17 @@ def test_synthetic_fixture_regenerates_identically(tmp_path: Path) -> None:
         assert (tmp_path / "out" / rel).read_text() == f.read_text(), rel
 
 
+def test_zmumu_node_resolves_through_the_plan_and_plot_has_its_path() -> None:
+    run = FIXTURES / "zmumu"
+    index = _json(run / "run-index.json")
+    hist = next(a for a in index["artifacts"] if a["kind"] == "histogram")
+    assert hist["preview_path"] == "artifacts/plots/DiMuonMass.png"
+    details = _json(run / hist["details_ref"])["nodes"]["stage.BasicVars"]
+    assert details["resolved"]["impl"] == "hep.define"
+    assert details["resolved"]["inputs"][0]["node_id"] == "read.events"
+    assert details["operations"] is None  # not recorded at run time for this run
+
+
 def test_runs_json_lists_exactly_the_fixture_runs() -> None:
     runs = _json(FIXTURES / "runs.json")
     assert runs["schema_version"] == 1

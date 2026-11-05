@@ -31,3 +31,8 @@ python scripts/make-runs-json.py /path/to/normalised   # list runs for VIEWER_DA
 
 URL is `#/<run>/<artifact>`. The status bar shows loaded bytes, layout time, first frame and long tasks;
 `window.__viewerMetrics()` returns every measurement.
+
+## Icons and licences
+
+Icons come from [lucide-react](https://lucide.dev) (ISC licence, compatible with this repository's BSD
+licence); `src/icons.ts` maps every kind of entity, artifact and state to one. The legend is the Help tab.

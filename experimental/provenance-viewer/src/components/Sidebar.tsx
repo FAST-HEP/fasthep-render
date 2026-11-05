@@ -1,3 +1,4 @@
+import { artifactIcon, completenessIcon } from "../icons";
 import type { ArtifactSearchEntry, RunsFile } from "../model/types";
 
 export function Sidebar(props: {
@@ -37,21 +38,30 @@ export function Sidebar(props: {
             {props.results.length} of {props.total} artifacts
           </div>
           <ul className="results">
-            {props.results.map((a) => (
+            {props.results.map((a) => {
+              const KindIcon = artifactIcon(a.kind);
+              const StateIcon = completenessIcon(a.completeness);
+              return (
               <li key={a.id}>
                 <button
                   type="button"
                   className={a.id === props.artifactId ? "active" : ""}
                   onClick={() => props.onArtifact(a.id)}
                 >
-                  <strong>{a.name}</strong>
-                  <span className="sub">
-                    {a.kind} · {a.producer_id ?? "producer not recorded"}
+                  <KindIcon size={26} className="result-icon" aria-hidden="true" />
+                  <span className="result-text">
+                    <strong>{a.name}</strong>
+                    <span className="sub">
+                      {a.kind} · {a.producer_id ?? "producer not recorded"}
+                    </span>
+                    <span className={`badge ${a.completeness}`}>
+                      <StateIcon size={12} aria-hidden="true" /> {a.completeness}
+                    </span>
                   </span>
-                  <span className={`badge ${a.completeness}`}>{a.completeness}</span>
                 </button>
               </li>
-            ))}
+              );
+            })}
             {props.results.length === 0 && <li className="empty">No artifact matches this search.</li>}
           </ul>
         </>

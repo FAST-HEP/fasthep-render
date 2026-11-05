@@ -25,6 +25,20 @@
     },
     "stream_type": "event_stream",
     "tree": "events"
+   },
+   "resolved": {
+    "impl": "root_tree",
+    "input_scope": "global",
+    "inputs": [],
+    "materialize": "never",
+    "output_scope": "dataset",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": null,
+     "mode": "dataset"
+    }
    }
   },
   "stage.BasicVars": {
@@ -47,6 +61,27 @@
       "name": "IsoMuon_Idx"
      }
     ]
+   },
+   "resolved": {
+    "impl": "hep.define",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "read.events",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": null,
+     "mode": "dataset"
+    },
+    "workflow_op": "hep.define"
    }
   },
   "stage.DiMuonMass": {
@@ -79,6 +114,27 @@
     ],
     "storage": "weighted",
     "weight_expr": "EventWeight"
+   },
+   "resolved": {
+    "impl": "hep.hist",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.DiMuons",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "hist": "histogram"
+    },
+    "partitioning": {
+     "chunk_size": null,
+     "mode": "dataset"
+    },
+    "workflow_op": "hep.hist"
    }
   },
   "stage.DiMuons": {
@@ -93,6 +149,27 @@
    "params": {
     "collection": "Muon",
     "mask": "IsoMuon_Idx"
+   },
+   "resolved": {
+    "impl": "hep.di_object_mass",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.BasicVars",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": null,
+     "mode": "dataset"
+    },
+    "workflow_op": "hep.di_object_mass"
    }
   }
  },

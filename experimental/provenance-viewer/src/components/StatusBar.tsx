@@ -1,3 +1,4 @@
+import { CircleHelp, FileText, Info, Workflow } from "lucide-react";
 import { useSyncExternalStore } from "react";
 import { snapshot, subscribe } from "../data/metrics";
 
@@ -14,8 +15,8 @@ function sub(l: () => void) {
 
 export function StatusBar(props: {
   status: string;
-  tab: "lineage" | "text" | "run";
-  onTab: (t: "lineage" | "text" | "run") => void;
+  tab: "lineage" | "text" | "run" | "help";
+  onTab: (t: "lineage" | "text" | "run" | "help") => void;
   canShowText: boolean;
   canShowRun: boolean;
 }) {
@@ -30,13 +31,16 @@ export function StatusBar(props: {
     <footer className="status">
       <span className="tabs">
         <button type="button" aria-pressed={tab === "lineage"} onClick={() => onTab("lineage")}>
-          Artifact lineage
+          <Workflow size={16} aria-hidden="true" /> Artifact lineage
         </button>
         <button type="button" aria-pressed={tab === "text"} disabled={!canShowText} onClick={() => onTab("text")}>
-          Text view
+          <FileText size={16} aria-hidden="true" /> Text view
         </button>
         <button type="button" aria-pressed={tab === "run"} disabled={!canShowRun} onClick={() => onTab("run")}>
-          Run details
+          <Info size={16} aria-hidden="true" /> Run details
+        </button>
+        <button type="button" aria-pressed={tab === "help"} onClick={() => onTab("help")}>
+          <CircleHelp size={16} aria-hidden="true" /> Help
         </button>
       </span>
       <span>{status}</span>

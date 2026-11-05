@@ -17,6 +17,20 @@
     },
     "stream_type": "event_stream",
     "tree": "Events"
+   },
+   "resolved": {
+    "impl": "root_tree",
+    "input_scope": "global",
+    "inputs": [],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    }
    }
   },
   "stage.DetectorMitigationBadEcal@Regrouped_RelativeSample_2022_down": {
@@ -124,6 +138,27 @@
      ]
     },
     "preserve_legacy_eta_abs_bug": true
+   },
+   "resolved": {
+    "impl": "chip.detector_bad_ecal_crystal_22ee",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.METSelection@Regrouped_RelativeSample_2022_down",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "chip.detector_bad_ecal_crystal_22ee"
    }
   },
   "stage.DetectorMitigationJetVeto@Regrouped_RelativeSample_2022_down": {
@@ -225,6 +260,27 @@
     },
     "map_name": "jetvetomap",
     "resource": "cms.jet_veto_map"
+   },
+   "resolved": {
+    "impl": "chip.detector_jet_veto_map",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.DetectorMitigationBadEcal@Regrouped_RelativeSample_2022_down",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "chip.detector_jet_veto_map"
    }
   },
   "stage.DetectorMitigationSelection@Regrouped_RelativeSample_2022_down": {
@@ -317,6 +373,28 @@
       "jet_veto_maps_selection"
      ]
     }
+   },
+   "resolved": {
+    "impl": "hep.selection.cutflow",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.DetectorMitigationJetVeto@Regrouped_RelativeSample_2022_down",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "cutflow": "cutflow",
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "hep.selection.cutflow"
    }
   },
   "stage.GenBosonFinder": {
@@ -356,6 +434,27 @@
      "port_status": "implemented",
      "role": "generator"
     }
+   },
+   "resolved": {
+    "impl": "chip.gen_boson_finder",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "read.events",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "chip.gen_boson_finder"
    }
   },
   "stage.GeneratorWeight": {
@@ -395,6 +494,27 @@
      "port_status": "implemented",
      "role": "weight"
     }
+   },
+   "resolved": {
+    "impl": "chip.generator_weight",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.GenBosonFinder",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "chip.generator_weight"
    }
   },
   "stage.JetJEC_L1": {
@@ -469,6 +589,27 @@
      "data": "cms.jec.ak4puppi.l1.data",
      "mc": "cms.jec.ak4puppi.l1.mc"
     }
+   },
+   "resolved": {
+    "impl": "chip.jet_jec",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.NoiseFilterSelection",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "chip.jet_jec"
    }
   },
   "stage.JetJEC_Nominal@Regrouped_RelativeSample_2022_down": {
@@ -591,6 +732,27 @@
     "uncertainty_resources_by_eventtype": {
      "mc": "cms.jec.ak4puppi.Regrouped_RelativeSample_2022.mc"
     }
+   },
+   "resolved": {
+    "impl": "chip.jet_jec",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.JetJEC_L1",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "chip.jet_jec"
    }
   },
   "stage.KeepEventIdentity": {
@@ -624,6 +786,27 @@
       "luminosityBlock": null
      }
     }
+   },
+   "resolved": {
+    "impl": "hep.align_schema",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.LumiMaskMC",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "hep.align_schema"
    }
   },
   "stage.LumiMask": {
@@ -667,6 +850,27 @@
     "output_field": "lumiMask_selection",
     "resource": "cms.lumimask",
     "run_field": "run"
+   },
+   "resolved": {
+    "impl": "chip.data_quality_mask",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.NominalWeight",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "chip.data_quality_mask"
    }
   },
   "stage.LumiMaskMC": {
@@ -689,6 +893,27 @@
       "name": "lumiMask_selection"
      }
     ]
+   },
+   "resolved": {
+    "impl": "hep.define",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.LumiMask",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "hep.define"
    }
   },
   "stage.METSelection@Regrouped_RelativeSample_2022_down": {
@@ -779,6 +1004,28 @@
       "jec_Nominal_TypeIPuppiMET_pt >= 0"
      ]
     }
+   },
+   "resolved": {
+    "impl": "hep.selection.cutflow",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.METType1@Regrouped_RelativeSample_2022_down",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "cutflow": "cutflow",
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "hep.selection.cutflow"
    }
   },
   "stage.METType1@Regrouped_RelativeSample_2022_down": {
@@ -901,6 +1148,27 @@
      "jec_Nominal_TypeIPuppiMET_eta",
      "jec_Nominal_TypeIPuppiMET_mass"
     ]
+   },
+   "resolved": {
+    "impl": "chip.met_type1",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.JetJEC_Nominal@Regrouped_RelativeSample_2022_down",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "chip.met_type1"
    }
   },
   "stage.NoiseFilterSelection": {
@@ -976,6 +1244,28 @@
       "Flag_ecalBadCalibFilter"
      ]
     }
+   },
+   "resolved": {
+    "impl": "hep.selection.cutflow",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.KeepEventIdentity",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "cutflow": "cutflow",
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "hep.selection.cutflow"
    }
   },
   "stage.NominalWeight": {
@@ -1016,6 +1306,27 @@
      "port_status": "implemented",
      "role": "weight"
     }
+   },
+   "resolved": {
+    "impl": "chip.nominal_weight",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.ScaleWeights",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "chip.nominal_weight"
    }
   },
   "stage.PDFWeights": {
@@ -1055,6 +1366,27 @@
      "port_status": "implemented",
      "role": "weight"
     }
+   },
+   "resolved": {
+    "impl": "chip.pdf_weights",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.PileupWeights",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "chip.pdf_weights"
    }
   },
   "stage.PileupWeights": {
@@ -1114,6 +1446,27 @@
      "role": "weight"
     },
     "resource": "cms.pileup"
+   },
+   "resolved": {
+    "impl": "chip.pileup_weights",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.GeneratorWeight",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "chip.pileup_weights"
    }
   },
   "stage.ScaleWeights": {
@@ -1153,6 +1506,27 @@
      "port_status": "implemented",
      "role": "weight"
     }
+   },
+   "resolved": {
+    "impl": "chip.scale_weights",
+    "input_scope": "partition",
+    "inputs": [
+     {
+      "input_name": "stream",
+      "node_id": "stage.PDFWeights",
+      "output_name": "stream"
+     }
+    ],
+    "materialize": "never",
+    "output_scope": "partition",
+    "outputs": {
+     "stream": "event_stream"
+    },
+    "partitioning": {
+     "chunk_size": 200000,
+     "mode": "dataset_chunks"
+    },
+    "workflow_op": "chip.scale_weights"
    }
   }
  },

@@ -5,7 +5,8 @@
    "meta": {},
    "operations": null,
    "outputs": {},
-   "params": {}
+   "params": {},
+   "resolved": null
   },
   "stage.Calibrate": {
    "meta": {},
@@ -20,7 +21,8 @@
     }
    ],
    "outputs": {},
-   "params": {}
+   "params": {},
+   "resolved": null
   },
   "stage.Select": {
    "meta": {},
@@ -35,7 +37,8 @@
     }
    ],
    "outputs": {},
-   "params": {}
+   "params": {},
+   "resolved": null
   }
  },
  "schema_version": 1

@@ -16,6 +16,8 @@ import { useEffect, useMemo, useRef } from "react";
 import { record } from "../data/metrics";
 import { type Placed, layout } from "../layout/dagre";
 import { stabilise } from "../layout/stabilise";
+import { SlidersHorizontal, TriangleAlert } from "lucide-react";
+import { entityIcon } from "../icons";
 import { hiddenLabel } from "../model/format";
 import type { Resource, VisibleEntity, VisibleView } from "../model/types";
 
@@ -34,65 +36,82 @@ type Data = {
   fallback: boolean;
 };
 
-const ROLE_MARK: Record<string, string> = { source: "SRC", transform: "OP", sink: "SINK", observer: "OBS" };
 
 function EntityNode({ data }: NodeProps<Node<Data>>) {
   const e = data.entity;
   const cls = ["node", `node-${e.kind}`, e.kind === "processing" ? `role-${e.role}` : "", data.selected ? "selected" : ""];
   const a = data.actions;
+  const Icon = entityIcon(e);
+  const stop = (fn: () => void) => (ev: { stopPropagation: () => void }) => {
+    ev.stopPropagation();
+    fn();
+  };
   return (
     <div className={cls.join(" ")}>
       <Handle type="target" position={Position.Top} isConnectable={false} />
-      {e.kind === "summary" ? (
-        <>
-          <div className="node-title">{hiddenLabel(e.hiddenCount, e.linear)}</div>
-          <div className="node-sub">
-            {e.groupKind}: {e.label} ({e.origin})
-          </div>
-          <div className="actions">
-            {e.linear && (
-              <button type="button" aria-label={`Reveal one step from the dataset side of ${e.label}`} onClick={(ev) => { ev.stopPropagation(); a.fromSource(e.groupId); }}>
-                Reveal from top
-              </button>
-            )}
-            <button type="button" aria-label={`Show all ${e.hiddenCount} hidden in ${e.label}`} onClick={(ev) => { ev.stopPropagation(); a.expand(e.groupId); }}>
-              Show all
-            </button>
-            {e.linear && (
-              <button type="button" aria-label={`Reveal one step from the artifact side of ${e.label}`} onClick={(ev) => { ev.stopPropagation(); a.fromArtifact(e.groupId); }}>
-                Reveal from bottom
-              </button>
-            )}
-            {!e.linear && (
-              <button type="button" aria-label={`Focus on ${e.label}`} onClick={(ev) => { ev.stopPropagation(); a.focus(e.groupId); }}>
-                Focus
-              </button>
-            )}
-          </div>
-        </>
-      ) : e.kind === "boundary" ? (
-        <div className="node-sub">{e.direction === "in" ? "from" : "to"} {e.label} (outside this group)</div>
-      ) : e.kind === "dataset" ? (
-        <>
-          <div className="node-title">DATA {e.label}</div>
-          <div className="node-sub">
-            {e.dataset_type ?? "Not recorded"} · {e.event_count ?? "Not recorded"} events
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="node-title">
-            <span className="mark">{ROLE_MARK[e.role] ?? e.role}</span> {e.label}
-          </div>
-          <div className="node-sub">{e.implementation ?? "Not recorded"}</div>
-          {(data.corrections > 0 || data.fallback) && (
-            <div className="badges">
-              {data.corrections > 0 && <span className="badge">{data.corrections} correction{data.corrections > 1 ? "s" : ""}</span>}
-              {data.fallback && <span className="badge warnbadge">fallback recorded</span>}
+      <div className="node-row">
+        <Icon size={e.kind === "boundary" ? 18 : 26} className="node-icon" aria-hidden="true" />
+        <div className="node-text">
+          {e.kind === "summary" ? (
+            <>
+              <div className="node-title">{hiddenLabel(e.hiddenCount, e.linear)}</div>
+              <div className="node-sub" title={`${e.groupKind}: ${e.label} (${e.origin})`}>
+                {e.groupKind}: {e.label} ({e.origin})
+              </div>
+              <div className="actions">
+                {e.linear && (
+                  <button type="button" aria-label={`Reveal one step from the dataset side of ${e.label}`} onClick={stop(() => a.fromSource(e.groupId))}>
+                    Reveal from top
+                  </button>
+                )}
+                <button type="button" aria-label={`Show all ${e.hiddenCount} hidden in ${e.label}`} onClick={stop(() => a.expand(e.groupId))}>
+                  Show all
+                </button>
+                {e.linear && (
+                  <button type="button" aria-label={`Reveal one step from the artifact side of ${e.label}`} onClick={stop(() => a.fromArtifact(e.groupId))}>
+                    Reveal from bottom
+                  </button>
+                )}
+                {!e.linear && (
+                  <button type="button" aria-label={`Focus on ${e.label}`} onClick={stop(() => a.focus(e.groupId))}>
+                    Focus
+                  </button>
+                )}
+              </div>
+            </>
+          ) : e.kind === "boundary" ? (
+            <div className="node-sub" title={e.label}>
+              {e.direction === "in" ? "from" : "to"} {e.label} (outside this group)
             </div>
+          ) : e.kind === "dataset" ? (
+            <>
+              <div className="node-title" title={e.label}>{e.label}</div>
+              <div className="node-sub">
+                {e.dataset_type ?? "Not recorded"} · {e.event_count ?? "Not recorded"} events
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="node-title" title={e.id}>{e.label}</div>
+              <div className="node-sub" title={e.implementation ?? undefined}>{e.implementation ?? "Not recorded"}</div>
+              {(data.corrections > 0 || data.fallback) && (
+                <div className="badges">
+                  {data.corrections > 0 && (
+                    <span className="badge">
+                      <SlidersHorizontal size={11} aria-hidden="true" /> {data.corrections} correction{data.corrections > 1 ? "s" : ""}
+                    </span>
+                  )}
+                  {data.fallback && (
+                    <span className="badge warnbadge">
+                      <TriangleAlert size={11} aria-hidden="true" /> fallback recorded
+                    </span>
+                  )}
+                </div>
+              )}
+            </>
           )}
-        </>
-      )}
+        </div>
+      </div>
       <Handle type="source" position={Position.Bottom} isConnectable={false} />
     </div>
   );

@@ -2,6 +2,7 @@ import type { Viewport } from "@xyflow/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DetailsPanel } from "./components/DetailsPanel";
 import { type Actions, GraphPane } from "./components/GraphPane";
+import { HelpView } from "./components/HelpView";
 import { RunDetails } from "./components/RunDetails";
 import { Sidebar } from "./components/Sidebar";
 import { TextView } from "./components/TextView";
@@ -45,7 +46,7 @@ export function App() {
   const [collapsed, setCollapsed] = useState<Collapsed>(new Map());
   const [focusPath, setFocusPath] = useState<string[]>([]);
   const [focusCollapsed, setFocusCollapsed] = useState<Collapsed>(new Map());
-  const [tab, setTab] = useState<"lineage" | "text" | "run">("lineage");
+  const [tab, setTab] = useState<"lineage" | "text" | "run" | "help">("lineage");
   const viewports = useRef(new Map<string, Viewport>());
   const detailsRequest = useRef<AbortController>();
   const [selectedId, setSelectedId] = useState<string | undefined>();
@@ -199,6 +200,7 @@ export function App() {
         {index.state === "ready" && index.value.run.synthetic_note && (
           <p className="warn synthetic">SYNTHETIC RUN, not real provenance: {index.value.run.synthetic_note}</p>
         )}
+        {tab === "help" && <HelpView />}
         {tab === "run" && index.state === "ready" && <RunDetails index={index.value} />}
         {runs.state === "failed" && <p className="warn">Could not load runs.json: {runs.message}</p>}
         {index.state === "failed" && <p className="warn">Could not load the run: {index.message}</p>}
@@ -215,7 +217,7 @@ export function App() {
         {tab === "text" && text && (
           <TextView text={text} selectedId={selectedId} actions={actions} onSelect={select} />
         )}
-        {crumbs.length > 0 && tab !== "run" && (
+        {crumbs.length > 0 && (tab === "lineage" || tab === "text") && (
           <nav className="crumb" aria-label="Breadcrumb">
             <button type="button" onClick={() => focusBack(0)}>
               Overview

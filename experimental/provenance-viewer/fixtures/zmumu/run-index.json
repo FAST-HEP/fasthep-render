@@ -11,6 +11,7 @@
    "name": "DiMuonMass",
    "path": "artifacts/histograms/DiMuonMass.pkl",
    "preview_note": "plot DiMuonMass: graph edge stage.DiMuonMass to render.DiMuonMass.0",
+   "preview_path": "artifacts/plots/DiMuonMass.png",
    "preview_ref": "referenced-files/DiMuonMass.png",
    "producer_id": "stage.DiMuonMass",
    "run_id": "136f1242-98e5-4e84-a893-1d4c98101073"
@@ -25,6 +26,7 @@
    "kind": "plot",
    "name": "DiMuonMass",
    "path": "artifacts/plots/DiMuonMass.png",
+   "preview_path": "artifacts/plots/DiMuonMass.png",
    "preview_ref": "referenced-files/DiMuonMass.png",
    "producer_id": "render.DiMuonMass.0",
    "run_id": "136f1242-98e5-4e84-a893-1d4c98101073"

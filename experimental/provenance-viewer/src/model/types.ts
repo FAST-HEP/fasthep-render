@@ -21,6 +21,7 @@ export interface ArtifactSearchEntry {
   graph_ref?: string;
   details_ref?: string;
   preview_ref?: string;
+  preview_path?: string;
   preview_note?: string;
   ancestor_count?: number;
 }
@@ -109,7 +110,7 @@ export interface ProvenanceGraph {
 export interface Details {
   schema_version: 1;
   artifact_id: string;
-  nodes: Record<string, { operations?: unknown; params?: unknown; outputs?: unknown; meta?: unknown }>;
+  nodes: Record<string, { resolved?: unknown; operations?: unknown; params?: unknown; outputs?: unknown; meta?: unknown }>;
 }
 
 // Derived, visible view: summaries replace collapsed groups.

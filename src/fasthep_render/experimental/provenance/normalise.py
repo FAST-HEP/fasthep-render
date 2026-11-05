@@ -10,6 +10,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 from . import SCHEMA_VERSION
 from .graph_repr import parse_graph_node
 from .groups import add_variation_family, candidate_groups
@@ -124,6 +126,34 @@ def _copy_preview(bundle: Path, rel: str, out: Path) -> str | None:
     return ref
 
 
+_RESOLVED_KEYS = (
+    "impl",
+    "inputs",
+    "outputs",
+    "input_scope",
+    "output_scope",
+    "partitioning",
+    "materialize",
+)
+
+
+def _resolved_by_plan(bundle: Path) -> dict[str, dict[str, Any]]:
+    """What each node resolves to in the compile plan (without its parameters)."""
+    plan = bundle / "compile/plan.yaml"
+    if not plan.exists():
+        return {}
+    loader = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
+    data = yaml.load(plan.read_text(), Loader=loader)
+    out: dict[str, dict[str, Any]] = {}
+    for n in data.get("nodes", []):
+        item = {k: n[k] for k in _RESOLVED_KEYS if k in n}
+        op = (n.get("meta") or {}).get("workflow_op")
+        if op is not None:
+            item["workflow_op"] = op
+        out[n["id"]] = item
+    return out
+
+
 def _ancestors(target: str, pred: dict[str, list[str]]) -> set[str]:
     seen, stack = {target}, [target]
     while stack:
@@ -178,6 +208,7 @@ def normalise(
                 if rid not in node_resources[nid]:
                     node_resources[nid].append(rid)
     catalog = execution.get("resources", {})
+    resolved = _resolved_by_plan(bundle)
 
     run_id = execution["run_id"]
     summary = {}
@@ -263,6 +294,7 @@ def normalise(
                     }
                 )
                 details[nid] = {
+                    "resolved": clean(resolved.get(nid)),
                     "operations": clean(node_ops.get(nid)),
                     "params": clean(params),
                     "outputs": p.get("outputs"),
@@ -323,10 +355,12 @@ def normalise(
         ref = _copy_preview(bundle, e["path"], out)
         if ref:
             e["preview_ref"] = ref
+            e["preview_path"] = e["path"]
             for src_id in pred.get(e["producer_id"], []):
                 owner = by_producer.get(src_id)
                 if owner is not None and owner is not e and "preview_ref" not in owner:
                     owner["preview_ref"] = ref
+                    owner["preview_path"] = e["path"]
                     owner["preview_note"] = (
                         f"plot {e['name']}: graph edge {src_id} to {e['producer_id']}"
                     )
