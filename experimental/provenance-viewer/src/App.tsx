@@ -92,27 +92,32 @@ export function App() {
     return () => ctl.abort();
   }, [route.runId, artifact]);
 
+  // Only a graph that belongs to the selected artifact may be shown; during a switch the
+  // previous artifact's graph is still in state for a moment and must not be laid out.
+  const current: ProvenanceGraph | undefined =
+    graph.state === "ready" && graph.value.artifact_id === artifact?.id ? graph.value : undefined;
+
   // The graph being shown: the artifact graph, or a focused subgraph of it (nested).
   const shown = useMemo(() => {
-    if (graph.state !== "ready") return undefined;
-    let g: ProvenanceGraph | undefined = graph.value;
+    if (!current) return undefined;
+    let g: ProvenanceGraph | undefined = current;
     for (const id of focusPath) g = g && focusSubgraph(g, id);
     return g;
-  }, [graph, focusPath]);
+  }, [current, focusPath]);
   const collapsedNow = focusPath.length ? focusCollapsed : collapsed;
   const setCollapsedNow = focusPath.length ? setFocusCollapsed : setCollapsed;
   const view = useMemo(() => (shown ? coarseView(shown, collapsedNow) : undefined), [shown, collapsedNow]);
   const crumbs = useMemo(() => {
-    if (graph.state !== "ready") return [];
+    if (!current) return [];
     const out: { id: string; label: string }[] = [];
-    let g: ProvenanceGraph | undefined = graph.value;
+    let g: ProvenanceGraph | undefined = current;
     for (const id of focusPath) {
       const grp: Group | undefined = g?.groups.find((x) => x.id === id);
       out.push({ id, label: grp ? `${grp.label} (${grp.node_ids.length})` : id });
       g = g && focusSubgraph(g, id);
     }
     return out;
-  }, [graph, focusPath]);
+  }, [current, focusPath]);
   const text = useMemo(
     () =>
       view && artifact
@@ -151,7 +156,7 @@ export function App() {
   const focusBack = (depth: number) => {
     // depth 0 is the overview; deeper levels keep their own collapse defaults
     const path = focusPath.slice(0, depth);
-    let g: ProvenanceGraph | undefined = graph.state === "ready" ? graph.value : undefined;
+    let g: ProvenanceGraph | undefined = current;
     for (const id of path) g = g && focusSubgraph(g, id);
     if (g && path.length) setFocusCollapsed(defaultCollapsed(g));
     setFocusPath(path);
@@ -250,7 +255,7 @@ export function App() {
         canShowText={text !== undefined}
         status={
           view
-            ? `${artifact?.name}: ${view.nodes.length} visible of ${graph.state === "ready" ? graph.value.nodes.length : 0} entities${crumbs.length ? " (focused)" : ""}`
+            ? `${artifact?.name}: ${view.nodes.length} visible of ${current ? current.nodes.length : 0} entities${crumbs.length ? " (focused)" : ""}`
             : "Ready"
         }
       />
