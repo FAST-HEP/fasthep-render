@@ -42,6 +42,7 @@ export function App() {
   const [focusPath, setFocusPath] = useState<string[]>([]);
   const [focusCollapsed, setFocusCollapsed] = useState<Collapsed>(new Map());
   const viewports = useRef(new Map<string, Viewport>());
+  const detailsRequest = useRef<AbortController>();
   const [selectedId, setSelectedId] = useState<string | undefined>();
 
   useEffect(() => {
@@ -56,9 +57,11 @@ export function App() {
     setSelectedId(undefined);
     if (!route.runId) return setIndex({ state: "idle" });
     setIndex({ state: "loading" });
-    loadRunIndex(route.runId)
+    const ctl = new AbortController();
+    loadRunIndex(route.runId, ctl.signal)
       .then((value) => setIndex({ state: "ready", value }))
-      .catch((e: Error) => setIndex({ state: "failed", message: e.message }));
+      .catch((e: Error) => e.name !== "AbortError" && setIndex({ state: "failed", message: e.message }));
+    return () => ctl.abort(); // a slower earlier response must not overwrite a newer selection
   }, [route.runId]);
 
   const artifact = useMemo(
@@ -67,18 +70,21 @@ export function App() {
   );
 
   useEffect(() => {
+    detailsRequest.current?.abort(); // details of the previous artifact must not arrive late
     setSelectedId(undefined);
     setDetails(undefined);
     setFocusPath([]);
     viewports.current.clear();
     if (!route.runId || !artifact?.graph_ref) return setGraph({ state: "idle" });
     setGraph({ state: "loading" });
-    loadGraph(route.runId, artifact.graph_ref)
+    const ctl = new AbortController();
+    loadGraph(route.runId, artifact.graph_ref, ctl.signal)
       .then((value) => {
         setCollapsed(defaultCollapsed(value));
         setGraph({ state: "ready", value });
       })
-      .catch((e: Error) => setGraph({ state: "failed", message: e.message }));
+      .catch((e: Error) => e.name !== "AbortError" && setGraph({ state: "failed", message: e.message }));
+    return () => ctl.abort();
   }, [route.runId, artifact]);
 
   // The graph being shown: the artifact graph, or a focused subgraph of it (nested).
@@ -110,9 +116,12 @@ export function App() {
       setSelectedId(id);
       if (details === undefined && route.runId && artifact?.details_ref) {
         setDetails("loading");
-        loadDetails(route.runId, artifact.details_ref)
+        const ctl = new AbortController();
+        detailsRequest.current?.abort();
+        detailsRequest.current = ctl;
+        loadDetails(route.runId, artifact.details_ref, ctl.signal)
           .then(setDetails)
-          .catch(() => setDetails("failed"));
+          .catch((e: Error) => e.name !== "AbortError" && setDetails("failed"));
       }
     },
     [details, route.runId, artifact],
