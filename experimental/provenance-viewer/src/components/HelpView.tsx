@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import { ArrowRightFromLine, ArrowRightToLine, Boxes, Cog, Database, Eye, FileInput, HardDriveDownload, Layers, SlidersHorizontal, Split, TriangleAlert } from "lucide-react";
-import { completenessIcon } from "../icons";
+import { artifactIcon, completenessIcon } from "../icons";
 import type { Completeness } from "../model/types";
 
 function Sample(props: { icon: LucideIcon; className: string; label: string }) {
@@ -18,6 +18,15 @@ const STATES: [Completeness, string][] = [
   ["partial", "No record for this artifact; the lineage is derived from the compile graph."],
   ["unavailable", "The producer is not in the graph, so no lineage can be shown."],
   ["not_recorded", "A single fact was not recorded (shown as the words Not recorded)."],
+];
+
+// Artifact kinds as they appear in the sidebar; icons come from the same mapping the sidebar uses.
+const ARTIFACTS: [string, string, string][] = [
+  ["histogram", "Histogram", "A filled histogram, as written by a histogram step."],
+  ["plot", "Plot", "A rendered image of a product, such as a histogram. Its details show a preview."],
+  ["cutflow", "Cutflow", "Event counts after each selection step."],
+  ["table", "Table", "A table, such as a CSV export."],
+  ["root_tree", "Other file", "Any other written file, such as a skim (a ROOT tree)."],
 ];
 
 /** The legend: every shape, icon, badge and control the viewer uses, in one place. */
@@ -63,6 +72,22 @@ export function HelpView() {
         <span>The record says a fallback was used. Shown only when it was recorded.</span>
       </div>
 
+      <h3>Artifacts in the sidebar</h3>
+      <div className="legend">
+        {ARTIFACTS.map(([kind, label, text]) => {
+          const Icon = artifactIcon(kind);
+          return (
+            <div key={kind} className="contents">
+              <div className="node sample">
+                <Icon size={22} aria-hidden="true" />
+                <span>{label}</span>
+              </div>
+              <span>{text}</span>
+            </div>
+          );
+        })}
+      </div>
+
       <h3>Selection</h3>
       <p>The selected node keeps its colour and gets a thicker outline.</p>
 
@@ -73,7 +98,7 @@ export function HelpView() {
           return (
             <li key={c}>
               <span className={`badge ${c}`}>
-                <Icon size={12} aria-hidden="true" /> {c}
+                <Icon size={12} aria-hidden="true" /> {c.replace("_", " ")}
               </span>{" "}
               {text}
             </li>
