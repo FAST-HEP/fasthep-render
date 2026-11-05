@@ -1,0 +1,357 @@
+{
+ "artifact_id": "cutflow-b0cf6f46f3",
+ "edges": [
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "read.events",
+   "target": "stage.GenBosonFinder"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.GenBosonFinder",
+   "target": "stage.GeneratorWeight"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.GeneratorWeight",
+   "target": "stage.PileupWeights"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.PileupWeights",
+   "target": "stage.PDFWeights"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.PDFWeights",
+   "target": "stage.ScaleWeights"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.ScaleWeights",
+   "target": "stage.NominalWeight"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.NominalWeight",
+   "target": "stage.LumiMask"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.LumiMask",
+   "target": "stage.LumiMaskMC"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.LumiMaskMC",
+   "target": "stage.KeepEventIdentity"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.KeepEventIdentity",
+   "target": "stage.NoiseFilterSelection"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.NoiseFilterSelection",
+   "target": "stage.JetJEC_L1"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.JetJEC_L1",
+   "target": "stage.JetJEC_Nominal@Regrouped_RelativeSample_2022_down"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.JetJEC_Nominal@Regrouped_RelativeSample_2022_down",
+   "target": "stage.METType1@Regrouped_RelativeSample_2022_down"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.METType1@Regrouped_RelativeSample_2022_down",
+   "target": "stage.METSelection@Regrouped_RelativeSample_2022_down"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.METSelection@Regrouped_RelativeSample_2022_down",
+   "target": "stage.DetectorMitigationBadEcal@Regrouped_RelativeSample_2022_down"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.DetectorMitigationBadEcal@Regrouped_RelativeSample_2022_down",
+   "target": "stage.DetectorMitigationJetVeto@Regrouped_RelativeSample_2022_down"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.DetectorMitigationJetVeto@Regrouped_RelativeSample_2022_down",
+   "target": "stage.DetectorMitigationSelection@Regrouped_RelativeSample_2022_down"
+  },
+  {
+   "output": "dataset",
+   "source": "dataset:Zto2Nu-2Jets_PTNuNu-40to100_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8",
+   "target": "read.events"
+  }
+ ],
+ "groups": [
+  {
+   "entry_edges": [
+    {
+     "source": "stage.JetJEC_L1",
+     "target": "stage.JetJEC_Nominal@Regrouped_RelativeSample_2022_down"
+    }
+   ],
+   "exit_edges": [],
+   "id": "variation:Regrouped_RelativeSample_2022_down",
+   "kind": "variation",
+   "label": "Regrouped_RelativeSample_2022_down",
+   "node_ids": [
+    "stage.DetectorMitigationBadEcal@Regrouped_RelativeSample_2022_down",
+    "stage.DetectorMitigationJetVeto@Regrouped_RelativeSample_2022_down",
+    "stage.DetectorMitigationSelection@Regrouped_RelativeSample_2022_down",
+    "stage.JetJEC_Nominal@Regrouped_RelativeSample_2022_down",
+    "stage.METSelection@Regrouped_RelativeSample_2022_down",
+    "stage.METType1@Regrouped_RelativeSample_2022_down"
+   ],
+   "origin": "source",
+   "source_ref": "graph.json node meta.variation"
+  },
+  {
+   "entry_edges": [],
+   "exit_edges": [],
+   "id": "chain:read.events",
+   "kind": "chain",
+   "label": "18 steps from read.events",
+   "node_ids": [
+    "read.events",
+    "stage.GenBosonFinder",
+    "stage.GeneratorWeight",
+    "stage.PileupWeights",
+    "stage.PDFWeights",
+    "stage.ScaleWeights",
+    "stage.NominalWeight",
+    "stage.LumiMask",
+    "stage.LumiMaskMC",
+    "stage.KeepEventIdentity",
+    "stage.NoiseFilterSelection",
+    "stage.JetJEC_L1",
+    "stage.JetJEC_Nominal@Regrouped_RelativeSample_2022_down",
+    "stage.METType1@Regrouped_RelativeSample_2022_down",
+    "stage.METSelection@Regrouped_RelativeSample_2022_down",
+    "stage.DetectorMitigationBadEcal@Regrouped_RelativeSample_2022_down",
+    "stage.DetectorMitigationJetVeto@Regrouped_RelativeSample_2022_down",
+    "stage.DetectorMitigationSelection@Regrouped_RelativeSample_2022_down"
+   ],
+   "origin": "inferred"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "read.events",
+   "implementation": "root_tree",
+   "kind": "processing",
+   "label": "events",
+   "role": "source",
+   "variation": null
+  },
+  {
+   "id": "stage.DetectorMitigationBadEcal@Regrouped_RelativeSample_2022_down",
+   "implementation": "chip.detector_bad_ecal_crystal_22ee",
+   "kind": "processing",
+   "label": "DetectorMitigationBadEcal@Regrouped_RelativeSample_2022_down",
+   "role": "transform",
+   "variation": "Regrouped_RelativeSample_2022_down"
+  },
+  {
+   "id": "stage.DetectorMitigationJetVeto@Regrouped_RelativeSample_2022_down",
+   "implementation": "chip.detector_jet_veto_map",
+   "kind": "processing",
+   "label": "DetectorMitigationJetVeto@Regrouped_RelativeSample_2022_down",
+   "role": "transform",
+   "variation": "Regrouped_RelativeSample_2022_down"
+  },
+  {
+   "id": "stage.DetectorMitigationSelection@Regrouped_RelativeSample_2022_down",
+   "implementation": "hep.selection.cutflow",
+   "kind": "processing",
+   "label": "DetectorMitigationSelection@Regrouped_RelativeSample_2022_down",
+   "role": "transform",
+   "variation": "Regrouped_RelativeSample_2022_down"
+  },
+  {
+   "id": "stage.GenBosonFinder",
+   "implementation": "chip.gen_boson_finder",
+   "kind": "processing",
+   "label": "GenBosonFinder",
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "id": "stage.GeneratorWeight",
+   "implementation": "chip.generator_weight",
+   "kind": "processing",
+   "label": "GeneratorWeight",
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "id": "stage.JetJEC_L1",
+   "implementation": "chip.jet_jec",
+   "kind": "processing",
+   "label": "JetJEC_L1",
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "id": "stage.JetJEC_Nominal@Regrouped_RelativeSample_2022_down",
+   "implementation": "chip.jet_jec",
+   "kind": "processing",
+   "label": "JetJEC_Nominal@Regrouped_RelativeSample_2022_down",
+   "role": "transform",
+   "variation": "Regrouped_RelativeSample_2022_down"
+  },
+  {
+   "id": "stage.KeepEventIdentity",
+   "implementation": "hep.align_schema",
+   "kind": "processing",
+   "label": "KeepEventIdentity",
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "id": "stage.LumiMask",
+   "implementation": "chip.data_quality_mask",
+   "kind": "processing",
+   "label": "LumiMask",
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "id": "stage.LumiMaskMC",
+   "implementation": "hep.define",
+   "kind": "processing",
+   "label": "LumiMaskMC",
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "id": "stage.METSelection@Regrouped_RelativeSample_2022_down",
+   "implementation": "hep.selection.cutflow",
+   "kind": "processing",
+   "label": "METSelection@Regrouped_RelativeSample_2022_down",
+   "role": "transform",
+   "variation": "Regrouped_RelativeSample_2022_down"
+  },
+  {
+   "id": "stage.METType1@Regrouped_RelativeSample_2022_down",
+   "implementation": "chip.met_type1",
+   "kind": "processing",
+   "label": "METType1@Regrouped_RelativeSample_2022_down",
+   "role": "transform",
+   "variation": "Regrouped_RelativeSample_2022_down"
+  },
+  {
+   "id": "stage.NoiseFilterSelection",
+   "implementation": "hep.selection.cutflow",
+   "kind": "processing",
+   "label": "NoiseFilterSelection",
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "id": "stage.NominalWeight",
+   "implementation": "chip.nominal_weight",
+   "kind": "processing",
+   "label": "NominalWeight",
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "id": "stage.PDFWeights",
+   "implementation": "chip.pdf_weights",
+   "kind": "processing",
+   "label": "PDFWeights",
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "id": "stage.PileupWeights",
+   "implementation": "chip.pileup_weights",
+   "kind": "processing",
+   "label": "PileupWeights",
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "id": "stage.ScaleWeights",
+   "implementation": "chip.scale_weights",
+   "kind": "processing",
+   "label": "ScaleWeights",
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "dataset_type": "mc",
+   "event_count": "946736",
+   "file_count": 1,
+   "group": "QCD_Znunu",
+   "id": "dataset:Zto2Nu-2Jets_PTNuNu-40to100_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8",
+   "kind": "dataset",
+   "label": "Zto2Nu-2Jets_PTNuNu-40to100_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8",
+   "meta": {
+    "cross_section_source": "GenXSecAnalyzer",
+    "dataset_das": "/Zto2Nu-2Jets_PTNuNu-40to100_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22NanoAODv12-130X_mcRun3_2022_realistic_v5-v1/NANOAODSIM",
+    "dataset_version": "v12",
+    "era": "Run3Summer22",
+    "k_factor": 0.926,
+    "k_factor_source": "(3933*3)/(1.274e+04) (+-2.358e+01 pb) from https://twiki.cern.ch/twiki/bin/viewauth/CMS/MATRIXCrossSectionsat13p6TeV and GenXSecAnalyzer of Zto2Nu-2Jets_TuneCP5_13p6TeV_amcatnloFXFX-pythia8",
+    "migration": {
+     "cross_section_status": "matched",
+     "discovery": {
+      "combined": "../discovery/combined.json",
+      "cross_sections": "../discovery/cross_sections.json",
+      "datasets": "../discovery/datasets.json",
+      "files": "../discovery/files.json"
+     },
+     "matched_file": "QCD_Znunu.yaml",
+     "matched_group": "QCD_Znunu",
+     "primary_ds_name": "Zto2Nu-2Jets_PTNuNu-40to100_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8",
+     "refs": {
+      "cross_section": "cross_sections.json#/cross_sections/0",
+      "dataset": "datasets.json#/datasets/0",
+      "files": "files.json#/files/0"
+     },
+     "source": "legacy/pyRAT-custom",
+     "source_line": 2
+    },
+    "num_file": 1,
+    "num_lumi": 18941,
+    "parent": "/Zto2Nu-2Jets_PTNuNu-40to100_2J_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer22MiniAODv4-130X_mcRun3_2022_realistic_v5-v1/MINIAODSIM",
+    "size": 20597743381,
+    "tier": "NANOAODSIM",
+    "tree": "Events",
+    "xs": 333.6,
+    "year": 2022
+   },
+   "source_node": "read.events"
+  }
+ ],
+ "run_id": "6f54be37-af23-41db-b5ba-67ac337e4c1b",
+ "schema_version": 1
+}

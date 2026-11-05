@@ -1,0 +1,96 @@
+{
+ "artifact_id": "histogram-c6e0053027",
+ "nodes": {
+  "read.events": {
+   "meta": {
+    "source_name": "events",
+    "workflow_kind": "root_tree"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "branches": [
+     "EventWeight",
+     "Muon_Px",
+     "Muon_Py",
+     "Muon_Pz",
+     "Muon_E",
+     "Muon_Iso"
+    ],
+    "defaults": {
+     "eventtype": "mc",
+     "tree_primary": "events"
+    },
+    "stream_type": "event_stream",
+    "tree": "events"
+   }
+  },
+  "stage.BasicVars": {
+   "meta": {
+    "stage_id": "BasicVars",
+    "workflow_op": "hep.define"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "variables": [
+     {
+      "expr": "sqrt(Muon_Px ** 2 + Muon_Py ** 2)",
+      "name": "Muon_Pt"
+     },
+     {
+      "expr": "(Muon_Iso / Muon_Pt) < 0.10",
+      "name": "IsoMuon_Idx"
+     }
+    ]
+   }
+  },
+  "stage.DiMuonMass": {
+   "meta": {
+    "stage_id": "DiMuonMass",
+    "workflow_op": "hep.hist"
+   },
+   "outputs": {
+    "hist": "histogram"
+   },
+   "params": {
+    "axes": [
+     {
+      "bins": null,
+      "name": "dataset",
+      "source": "dataset_name",
+      "type": "category"
+     },
+     {
+      "bins": {
+       "high": 120,
+       "low": 60,
+       "nbins": 60
+      },
+      "name": "dimu_mass",
+      "source": "DiMuon_Mass",
+      "type": "regular"
+     }
+    ],
+    "storage": "weighted",
+    "weight_expr": "EventWeight"
+   }
+  },
+  "stage.DiMuons": {
+   "meta": {
+    "stage_id": "DiMuons",
+    "workflow_op": "hep.di_object_mass"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "collection": "Muon",
+    "mask": "IsoMuon_Idx"
+   }
+  }
+ },
+ "schema_version": 1
+}

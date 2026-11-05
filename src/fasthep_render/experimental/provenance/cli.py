@@ -18,8 +18,17 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="keep machine-specific values; only for gitignored local output",
     )
+    p.add_argument(
+        "--only",
+        action="append",
+        default=[],
+        metavar="NAME",
+        help="keep only artifacts with this name (repeatable); for small fixtures",
+    )
     args = p.parse_args(argv)
-    report = normalise(args.bundle, args.out, sanitize=not args.no_sanitize)
+    report = normalise(
+        args.bundle, args.out, sanitize=not args.no_sanitize, only=tuple(args.only)
+    )
     print(json.dumps(report["measurements"], indent=1))  # noqa: T201
     return 1 if report["leaks_found"] and not args.no_sanitize else 0
 

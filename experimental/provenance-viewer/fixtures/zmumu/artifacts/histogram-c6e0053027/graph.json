@@ -1,0 +1,219 @@
+{
+ "artifact_id": "histogram-c6e0053027",
+ "edges": [
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "read.events",
+   "target": "stage.BasicVars"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.BasicVars",
+   "target": "stage.DiMuons"
+  },
+  {
+   "input_name": "stream",
+   "output": "stream",
+   "source": "stage.DiMuons",
+   "target": "stage.DiMuonMass"
+  },
+  {
+   "output": "dataset",
+   "source": "dataset:data",
+   "target": "read.events"
+  },
+  {
+   "output": "dataset",
+   "source": "dataset:dy",
+   "target": "read.events"
+  },
+  {
+   "output": "dataset",
+   "source": "dataset:qcd",
+   "target": "read.events"
+  },
+  {
+   "output": "dataset",
+   "source": "dataset:single_top",
+   "target": "read.events"
+  },
+  {
+   "output": "dataset",
+   "source": "dataset:ttbar",
+   "target": "read.events"
+  },
+  {
+   "output": "dataset",
+   "source": "dataset:wjets",
+   "target": "read.events"
+  },
+  {
+   "output": "dataset",
+   "source": "dataset:ww",
+   "target": "read.events"
+  },
+  {
+   "output": "dataset",
+   "source": "dataset:wz",
+   "target": "read.events"
+  },
+  {
+   "output": "dataset",
+   "source": "dataset:zz",
+   "target": "read.events"
+  }
+ ],
+ "groups": [
+  {
+   "entry_edges": [],
+   "exit_edges": [],
+   "id": "chain:read.events",
+   "kind": "chain",
+   "label": "4 steps from read.events",
+   "node_ids": [
+    "read.events",
+    "stage.BasicVars",
+    "stage.DiMuons",
+    "stage.DiMuonMass"
+   ],
+   "origin": "inferred"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "read.events",
+   "implementation": "root_tree",
+   "kind": "processing",
+   "label": "events",
+   "role": "source",
+   "variation": null
+  },
+  {
+   "id": "stage.BasicVars",
+   "implementation": "hep.define",
+   "kind": "processing",
+   "label": "BasicVars",
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "id": "stage.DiMuonMass",
+   "implementation": "hep.hist",
+   "kind": "processing",
+   "label": "DiMuonMass",
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "id": "stage.DiMuons",
+   "implementation": "hep.di_object_mass",
+   "kind": "processing",
+   "label": "DiMuons",
+   "role": "transform",
+   "variation": null
+  },
+  {
+   "dataset_type": "data",
+   "event_count": "469384",
+   "file_count": 1,
+   "group": "data",
+   "id": "dataset:data",
+   "kind": "dataset",
+   "label": "data",
+   "meta": {},
+   "source_node": "read.events"
+  },
+  {
+   "dataset_type": "mc",
+   "event_count": "77729",
+   "file_count": 1,
+   "group": "dy",
+   "id": "dataset:dy",
+   "kind": "dataset",
+   "label": "dy",
+   "meta": {},
+   "source_node": "read.events"
+  },
+  {
+   "dataset_type": "mc",
+   "event_count": "142",
+   "file_count": 1,
+   "group": "qcd",
+   "id": "dataset:qcd",
+   "kind": "dataset",
+   "label": "qcd",
+   "meta": {},
+   "source_node": "read.events"
+  },
+  {
+   "dataset_type": "mc",
+   "event_count": "5684",
+   "file_count": 1,
+   "group": "single_top",
+   "id": "dataset:single_top",
+   "kind": "dataset",
+   "label": "single_top",
+   "meta": {},
+   "source_node": "read.events"
+  },
+  {
+   "dataset_type": "mc",
+   "event_count": "36941",
+   "file_count": 1,
+   "group": "ttbar",
+   "id": "dataset:ttbar",
+   "kind": "dataset",
+   "label": "ttbar",
+   "meta": {},
+   "source_node": "read.events"
+  },
+  {
+   "dataset_type": "mc",
+   "event_count": "109737",
+   "file_count": 1,
+   "group": "wjets",
+   "id": "dataset:wjets",
+   "kind": "dataset",
+   "label": "wjets",
+   "meta": {},
+   "source_node": "read.events"
+  },
+  {
+   "dataset_type": "mc",
+   "event_count": "4580",
+   "file_count": 1,
+   "group": "ww",
+   "id": "dataset:ww",
+   "kind": "dataset",
+   "label": "ww",
+   "meta": {},
+   "source_node": "read.events"
+  },
+  {
+   "dataset_type": "mc",
+   "event_count": "3367",
+   "file_count": 1,
+   "group": "wz",
+   "id": "dataset:wz",
+   "kind": "dataset",
+   "label": "wz",
+   "meta": {},
+   "source_node": "read.events"
+  },
+  {
+   "dataset_type": "mc",
+   "event_count": "2421",
+   "file_count": 1,
+   "group": "zz",
+   "id": "dataset:zz",
+   "kind": "dataset",
+   "label": "zz",
+   "meta": {},
+   "source_node": "read.events"
+  }
+ ],
+ "run_id": "136f1242-98e5-4e84-a893-1d4c98101073",
+ "schema_version": 1
+}

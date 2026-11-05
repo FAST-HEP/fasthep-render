@@ -1,0 +1,30 @@
+{
+ "bundle_label": "local-chunk200k",
+ "leaks_found": [],
+ "measurements": {
+  "artifacts": 1,
+  "normalise_seconds": 0.151,
+  "output_bytes": {
+   "artifacts/cutflow-b0cf6f46f3/details.json": 25850,
+   "artifacts/cutflow-b0cf6f46f3/graph.json": 10463,
+   "run-index.json": 1875
+  }
+ },
+ "origin_summary": {
+  "curated": [],
+  "inferred": "chain and region groups (computed here)",
+  "sanitized": "paths, host names, user names",
+  "source": "graph nodes, edges, dataset facts, meta.variation groups",
+  "synthetic": []
+ },
+ "sanitization_counts": {
+  "absolute_path": 2
+ },
+ "sanitized": true,
+ "schema_version": 1,
+ "source_graph_sha256": "60bf2b58bb0bef638060abfec1ce745a23867480c42423ac424062c057ba2d3c",
+ "subset_of_artifacts": [
+  "DetectorMitigationSelection"
+ ],
+ "tool": "fasthep_render.experimental.provenance.normalise"
+}

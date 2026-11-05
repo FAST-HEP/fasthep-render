@@ -1,0 +1,219 @@
+{
+ "artifact_id": "plot-828dd5359b",
+ "nodes": {
+  "read.events": {
+   "meta": {
+    "source_name": "events",
+    "workflow_kind": "root_tree"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "branches": [
+     "EventWeight",
+     "Muon_Px",
+     "Muon_Py",
+     "Muon_Pz",
+     "Muon_E",
+     "Muon_Iso"
+    ],
+    "defaults": {
+     "eventtype": "mc",
+     "tree_primary": "events"
+    },
+    "stream_type": "event_stream",
+    "tree": "events"
+   }
+  },
+  "render.DiMuonMass.0": {
+   "meta": {
+    "stage_id": "DiMuonMass",
+    "style_ref": "dimuon_mass",
+    "workflow_op": "hep.render.data_mc"
+   },
+   "outputs": {
+    "artifact": "artifact"
+   },
+   "params": {
+    "spec": {
+     "axes": {
+      "ratio": {
+       "label": "Data/MC",
+       "limits": [
+        0.5,
+        1.5
+       ],
+       "name": "ratio"
+      },
+      "x": {
+       "label": "Di-muon Mass, $M_{\\mu\\mu}$ [GeV/c$^{2}]$",
+       "limits": [
+        60,
+        120
+       ],
+       "name": "dimu_mass"
+      },
+      "y": {
+       "label": "Events",
+       "limits": [
+        "1e-2",
+        "1e5"
+       ],
+       "name": "events",
+       "scale": "log"
+      }
+     },
+     "data_mc": {
+      "backgrounds": [
+       "qcd",
+       "single_top",
+       "ttbar",
+       "wjets",
+       "ww",
+       "wz",
+       "zz"
+      ],
+      "data": "data",
+      "histtype_mc": "fill",
+      "ratio": true,
+      "show_mc_uncertainty": true,
+      "signals": [
+       "dy"
+      ],
+      "stack": true
+     },
+     "figure": {
+      "dpi": 300,
+      "size": [
+       12,
+       12
+      ]
+     },
+     "legend": {
+      "loc": "upper right",
+      "ncol": 3
+     },
+     "op": "hep.render.data_mc",
+     "style": {
+      "datasets": {
+       "data": {
+        "color": "black",
+        "kind": "data",
+        "label": "Data"
+       },
+       "dy": {
+        "color": "yellow",
+        "kind": "signal",
+        "label": "DY"
+       },
+       "qcd": {
+        "color": "orange",
+        "kind": "background",
+        "label": "QCD"
+       },
+       "single_top": {
+        "color": "green",
+        "kind": "background",
+        "label": "Single top"
+       },
+       "ttbar": {
+        "color": "red",
+        "kind": "background",
+        "label": "$t\\bar{t}$"
+       },
+       "wjets": {
+        "color": "blue",
+        "kind": "background",
+        "label": "W+jets"
+       },
+       "ww": {
+        "color": "cyan",
+        "kind": "background",
+        "label": "WW"
+       },
+       "wz": {
+        "color": "magenta",
+        "kind": "background",
+        "label": "WZ"
+       },
+       "zz": {
+        "color": "gray",
+        "kind": "background",
+        "label": "ZZ"
+       }
+      },
+      "experiment": "CMS"
+     }
+    },
+    "when": "run_end"
+   }
+  },
+  "stage.BasicVars": {
+   "meta": {
+    "stage_id": "BasicVars",
+    "workflow_op": "hep.define"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "variables": [
+     {
+      "expr": "sqrt(Muon_Px ** 2 + Muon_Py ** 2)",
+      "name": "Muon_Pt"
+     },
+     {
+      "expr": "(Muon_Iso / Muon_Pt) < 0.10",
+      "name": "IsoMuon_Idx"
+     }
+    ]
+   }
+  },
+  "stage.DiMuonMass": {
+   "meta": {
+    "stage_id": "DiMuonMass",
+    "workflow_op": "hep.hist"
+   },
+   "outputs": {
+    "hist": "histogram"
+   },
+   "params": {
+    "axes": [
+     {
+      "bins": null,
+      "name": "dataset",
+      "source": "dataset_name",
+      "type": "category"
+     },
+     {
+      "bins": {
+       "high": 120,
+       "low": 60,
+       "nbins": 60
+      },
+      "name": "dimu_mass",
+      "source": "DiMuon_Mass",
+      "type": "regular"
+     }
+    ],
+    "storage": "weighted",
+    "weight_expr": "EventWeight"
+   }
+  },
+  "stage.DiMuons": {
+   "meta": {
+    "stage_id": "DiMuons",
+    "workflow_op": "hep.di_object_mass"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "collection": "Muon",
+    "mask": "IsoMuon_Idx"
+   }
+  }
+ },
+ "schema_version": 1
+}

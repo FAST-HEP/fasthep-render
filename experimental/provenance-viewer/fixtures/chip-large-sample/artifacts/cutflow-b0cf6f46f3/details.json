@@ -1,0 +1,944 @@
+{
+ "artifact_id": "cutflow-b0cf6f46f3",
+ "nodes": {
+  "read.events": {
+   "meta": {
+    "source_name": "events",
+    "workflow_kind": "root_tree"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "defaults": {
+     "eventtype": "mc",
+     "tree_primary": "Events"
+    },
+    "stream_type": "event_stream",
+    "tree": "Events"
+   }
+  },
+  "stage.DetectorMitigationBadEcal@Regrouped_RelativeSample_2022_down": {
+   "meta": {
+    "applies_to": {
+     "eventtypes": [
+      "mc"
+     ]
+    },
+    "stage_id": "DetectorMitigationBadEcal",
+    "variation": {
+     "applies_to": {
+      "datasets": [],
+      "eventtypes": [
+       "mc"
+      ]
+     },
+     "direction": "down",
+     "group": "Regrouped_RelativeSample_2022",
+     "matrix_origin": {
+      "axes": {
+       "direction": [
+        "up",
+        "down"
+       ],
+       "source": [
+        "Regrouped_Absolute",
+        "Regrouped_BBEC1",
+        "Regrouped_EC2",
+        "Regrouped_HF",
+        "Regrouped_RelativeSample"
+       ]
+      }
+     },
+     "matrix_values": {
+      "direction": "down",
+      "source": "Regrouped_RelativeSample"
+     },
+     "metadata": {
+      "correction_source": "Regrouped_RelativeSample_2022",
+      "direction": "down",
+      "export_source": "Regrouped_RelativeSample_2022"
+     },
+     "mode": "inline",
+     "name": "Regrouped_RelativeSample_2022_down"
+    },
+    "variation_of": "stage.DetectorMitigationBadEcal",
+    "workflow_op": "chip.detector_bad_ecal_crystal_22ee"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "active_campaigns": [
+     "Run3Summer22EE"
+    ],
+    "active_eventtype": "data",
+    "campaign": "Run3Summer24",
+    "legacy": {
+     "active_key": "bad_ecal_crystal_22ee",
+     "also_seen_in": [
+      "legacy/pyRAT/config_lists/hinvisible.py",
+      "legacy/pyRAT-custom/tth_hinv_config.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc.py"
+     ],
+     "class": "DetectorMitigation",
+     "classification": "chip_local_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/detector_mitigation.py"
+     ],
+     "module": "DetectorMitigation",
+     "notes": "Pure branch/geometric mask for the checked-out pyRAT bad-ECAL-22EE path. It only affects data campaign Run3Summer22EE; for the active Run3Summer24 scaffold it writes an all-true mask. The pyRAT implementation calls eta_selection with negative bounds and default absolute eta; preserve_legacy_eta_abs_bug keeps that verified behaviour visible.",
+     "port_status": "implemented",
+     "role": "event-filter",
+     "unsupported_active_keys": [
+      "bad_hcal_strip_23",
+      "bad_hcal_crystal",
+      "bad_ecal_crystal"
+     ]
+    },
+    "preserve_legacy_eta_abs_bug": true
+   }
+  },
+  "stage.DetectorMitigationJetVeto@Regrouped_RelativeSample_2022_down": {
+   "meta": {
+    "applies_to": {
+     "eventtypes": [
+      "mc"
+     ]
+    },
+    "stage_id": "DetectorMitigationJetVeto",
+    "variation": {
+     "applies_to": {
+      "datasets": [],
+      "eventtypes": [
+       "mc"
+      ]
+     },
+     "direction": "down",
+     "group": "Regrouped_RelativeSample_2022",
+     "matrix_origin": {
+      "axes": {
+       "direction": [
+        "up",
+        "down"
+       ],
+       "source": [
+        "Regrouped_Absolute",
+        "Regrouped_BBEC1",
+        "Regrouped_EC2",
+        "Regrouped_HF",
+        "Regrouped_RelativeSample"
+       ]
+      }
+     },
+     "matrix_values": {
+      "direction": "down",
+      "source": "Regrouped_RelativeSample"
+     },
+     "metadata": {
+      "correction_source": "Regrouped_RelativeSample_2022",
+      "direction": "down",
+      "export_source": "Regrouped_RelativeSample_2022"
+     },
+     "mode": "inline",
+     "name": "Regrouped_RelativeSample_2022_down"
+    },
+    "variation_of": "stage.DetectorMitigationJetVeto",
+    "workflow_op": "chip.detector_jet_veto_map"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "legacy": {
+     "active_key": "jet_veto_maps",
+     "also_seen_in": [
+      "legacy/pyRAT/config_lists/hinvisible.py",
+      "legacy/pyRAT-custom/tth_hinv_config.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc.py"
+     ],
+     "class": "DetectorMitigation",
+     "classification": "chip_local_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/detector_mitigation.py"
+     ],
+     "module": "DetectorMitigation",
+     "notes": "Resource-backed JME jet veto map. The port reuses Jet_Nominal_pt from JetJEC_Nominal instead of recomputing JEC inside this stage.",
+     "port_status": "implemented",
+     "role": "event-filter"
+    },
+    "map_name": "jetvetomap",
+    "resource": "cms.jet_veto_map"
+   }
+  },
+  "stage.DetectorMitigationSelection@Regrouped_RelativeSample_2022_down": {
+   "meta": {
+    "applies_to": {
+     "eventtypes": [
+      "mc"
+     ]
+    },
+    "stage_id": "DetectorMitigationSelection",
+    "variation": {
+     "applies_to": {
+      "datasets": [],
+      "eventtypes": [
+       "mc"
+      ]
+     },
+     "direction": "down",
+     "group": "Regrouped_RelativeSample_2022",
+     "matrix_origin": {
+      "axes": {
+       "direction": [
+        "up",
+        "down"
+       ],
+       "source": [
+        "Regrouped_Absolute",
+        "Regrouped_BBEC1",
+        "Regrouped_EC2",
+        "Regrouped_HF",
+        "Regrouped_RelativeSample"
+       ]
+      }
+     },
+     "matrix_values": {
+      "direction": "down",
+      "source": "Regrouped_RelativeSample"
+     },
+     "metadata": {
+      "correction_source": "Regrouped_RelativeSample_2022",
+      "direction": "down",
+      "export_source": "Regrouped_RelativeSample_2022"
+     },
+     "mode": "inline",
+     "name": "Regrouped_RelativeSample_2022_down"
+    },
+    "variation_of": "stage.DetectorMitigationSelection",
+    "workflow_op": "hep.selection.cutflow"
+   },
+   "outputs": {
+    "cutflow": "cutflow",
+    "stream": "event_stream"
+   },
+   "params": {
+    "filter": "none",
+    "legacy": {
+     "class": "DetectorMitigation",
+     "classification": "existing_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/detector_mitigation.py"
+     ],
+     "module": "DetectorMitigation",
+     "notes": "Final pyRAT-style DetectorMitigation_selection is the logical AND of supported active mitigation masks.",
+     "port_status": "implemented",
+     "role": "event-filter"
+    },
+    "output_field": "DetectorMitigation_selection",
+    "selection": {
+     "DetectorMitigation_selection": [
+      "bad_ecal_crystal_22ee_selection",
+      "jet_veto_maps_selection"
+     ]
+    }
+   }
+  },
+  "stage.GenBosonFinder": {
+   "meta": {
+    "applies_to": {
+     "eventtype": "mc"
+    },
+    "stage_id": "GenBosonFinder",
+    "workflow_op": "chip.gen_boson_finder"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "legacy": {
+     "also_seen_in": [
+      "legacy/pyRAT/config_lists/hinvisible.py",
+      "legacy/pyRAT-custom/tth_hinv_config.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc.py"
+     ],
+     "candidate_fasthep": [
+      "chip.gen_boson_finder"
+     ],
+     "class": "GenBosonFinder",
+     "classification": "chip_local_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/gen_boson_finder.py"
+     ],
+     "module": "GenBosonFinder",
+     "notes": "MC generator boson bookkeeping; no output for data in the traced path.",
+     "port_status": "implemented",
+     "role": "generator"
+    }
+   }
+  },
+  "stage.GeneratorWeight": {
+   "meta": {
+    "applies_to": {
+     "eventtype": "mc"
+    },
+    "stage_id": "GeneratorWeight",
+    "workflow_op": "chip.generator_weight"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "legacy": {
+     "also_seen_in": [
+      "legacy/pyRAT/config_lists/hinvisible.py",
+      "legacy/pyRAT-custom/tth_hinv_config.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc.py"
+     ],
+     "candidate_fasthep": [
+      "chip.generator_weight"
+     ],
+     "class": "MCWeights",
+     "classification": "chip_local_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/mc_weights.py"
+     ],
+     "module": "MCWeights",
+     "notes": "Replaces the legacy weight_generator branch handling; copies Generator_weight to weight_generator_nominal.",
+     "port_status": "implemented",
+     "role": "weight"
+    }
+   }
+  },
+  "stage.JetJEC_L1": {
+   "meta": {
+    "stage_id": "JetJEC_L1",
+    "workflow_op": "chip.jet_jec"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "input_fields": [
+     "Jet_pt",
+     "Jet_eta",
+     "Jet_phi",
+     "Jet_rawFactor",
+     "Jet_area",
+     "Jet_muonSubtrFactor",
+     "Rho_fixedGridRhoFastjetAll",
+     "run"
+    ],
+    "legacy": {
+     "also_seen_in": [
+      "legacy/pyRAT/config_lists/hinvisible.py",
+      "legacy/pyRAT-custom/tth_hinv_config.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc.py"
+     ],
+     "class": "MET",
+     "classification": "chip_local_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/met.py",
+      "legacy/pyRAT/modules/helpers/corrections_utils.py"
+     ],
+     "module": "MET_jec_Nominal",
+     "notes": "L1FastJet split from legacy MET_jec_Nominal.",
+     "port_status": "implemented",
+     "role": "object"
+    },
+    "output_fields": [
+     "Jet_L1_pt"
+    ],
+    "resources_by_eventtype": {
+     "data": "cms.jec.ak4puppi.l1.data",
+     "mc": "cms.jec.ak4puppi.l1.mc"
+    }
+   }
+  },
+  "stage.JetJEC_Nominal@Regrouped_RelativeSample_2022_down": {
+   "meta": {
+    "applies_to": {
+     "eventtypes": [
+      "mc"
+     ]
+    },
+    "stage_id": "JetJEC_Nominal",
+    "variation": {
+     "applies_to": {
+      "datasets": [],
+      "eventtypes": [
+       "mc"
+      ]
+     },
+     "direction": "down",
+     "group": "Regrouped_RelativeSample_2022",
+     "matrix_origin": {
+      "axes": {
+       "direction": [
+        "up",
+        "down"
+       ],
+       "source": [
+        "Regrouped_Absolute",
+        "Regrouped_BBEC1",
+        "Regrouped_EC2",
+        "Regrouped_HF",
+        "Regrouped_RelativeSample"
+       ]
+      }
+     },
+     "matrix_values": {
+      "direction": "down",
+      "source": "Regrouped_RelativeSample"
+     },
+     "metadata": {
+      "correction_source": "Regrouped_RelativeSample_2022",
+      "direction": "down",
+      "export_source": "Regrouped_RelativeSample_2022"
+     },
+     "mode": "inline",
+     "name": "Regrouped_RelativeSample_2022_down"
+    },
+    "variation_of": "stage.JetJEC_Nominal",
+    "workflow_op": "chip.jet_jec"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "direction": "down",
+    "input_fields": [
+     "Jet_pt",
+     "Jet_eta",
+     "Jet_phi",
+     "Jet_rawFactor",
+     "Jet_area",
+     "Jet_muonSubtrFactor",
+     "Rho_fixedGridRhoFastjetAll",
+     "run"
+    ],
+    "legacy": {
+     "also_seen_in": [
+      "legacy/pyRAT/config_lists/hinvisible.py",
+      "legacy/pyRAT-custom/tth_hinv_config.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc.py"
+     ],
+     "class": "MET",
+     "classification": "chip_local_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/met.py",
+      "legacy/pyRAT/modules/helpers/corrections_utils.py"
+     ],
+     "module": "MET_jec_Nominal",
+     "notes": "Full nominal AK4PFPuppi JEC split from legacy MET_jec_Nominal. Data uses L1L2L3Res; MC uses L1L2L3 by explicit resource configuration.",
+     "port_status": "implemented",
+     "role": "object"
+    },
+    "output_fields": [
+     "Jet_Nominal_pt"
+    ],
+    "resources_by_eventtype": {
+     "data": "cms.jec.ak4puppi.full.data",
+     "mc": "cms.jec.ak4puppi.full.mc"
+    },
+    "source": "Regrouped_RelativeSample_2022",
+    "uncertainty_resources_by_eventtype": {
+     "mc": "cms.jec.ak4puppi.Regrouped_RelativeSample_2022.mc"
+    }
+   }
+  },
+  "stage.KeepEventIdentity": {
+   "meta": {
+    "stage_id": "KeepEventIdentity",
+    "workflow_op": "hep.align_schema"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "schema": {
+     "fields": {
+      "event": null,
+      "luminosityBlock": null
+     }
+    }
+   }
+  },
+  "stage.LumiMask": {
+   "meta": {
+    "applies_to": {
+     "eventtype": "data"
+    },
+    "stage_id": "LumiMask",
+    "workflow_op": "chip.data_quality_mask"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "legacy": {
+     "also_seen_in": [
+      "legacy/pyRAT/config_lists/hinvisible.py",
+      "legacy/pyRAT-custom/tth_hinv_config.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc.py"
+     ],
+     "candidate_fasthep": [
+      "chip.data_quality_mask"
+     ],
+     "class": "LumiMask",
+     "classification": "chip_local_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/lumi_mask.py"
+     ],
+     "module": "LumiMask",
+     "notes": "Golden JSON run/lumisection certification mask for data. Uses explicit certification JSON paths; luminosity summary JSON/CSV products are intentionally excluded.",
+     "port_status": "implemented",
+     "role": "data-quality"
+    },
+    "lumi_field": "luminosityBlock",
+    "output_field": "lumiMask_selection",
+    "resource": "cms.lumimask",
+    "run_field": "run"
+   }
+  },
+  "stage.LumiMaskMC": {
+   "meta": {
+    "applies_to": {
+     "eventtype": "mc"
+    },
+    "stage_id": "LumiMaskMC",
+    "workflow_op": "hep.define"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "variables": [
+     {
+      "dtype": "bool",
+      "expr": "True",
+      "name": "lumiMask_selection"
+     }
+    ]
+   }
+  },
+  "stage.METSelection@Regrouped_RelativeSample_2022_down": {
+   "meta": {
+    "applies_to": {
+     "eventtypes": [
+      "mc"
+     ]
+    },
+    "stage_id": "METSelection",
+    "variation": {
+     "applies_to": {
+      "datasets": [],
+      "eventtypes": [
+       "mc"
+      ]
+     },
+     "direction": "down",
+     "group": "Regrouped_RelativeSample_2022",
+     "matrix_origin": {
+      "axes": {
+       "direction": [
+        "up",
+        "down"
+       ],
+       "source": [
+        "Regrouped_Absolute",
+        "Regrouped_BBEC1",
+        "Regrouped_EC2",
+        "Regrouped_HF",
+        "Regrouped_RelativeSample"
+       ]
+      }
+     },
+     "matrix_values": {
+      "direction": "down",
+      "source": "Regrouped_RelativeSample"
+     },
+     "metadata": {
+      "correction_source": "Regrouped_RelativeSample_2022",
+      "direction": "down",
+      "export_source": "Regrouped_RelativeSample_2022"
+     },
+     "mode": "inline",
+     "name": "Regrouped_RelativeSample_2022_down"
+    },
+    "variation_of": "stage.METSelection",
+    "workflow_op": "hep.selection.cutflow"
+   },
+   "outputs": {
+    "cutflow": "cutflow",
+    "stream": "event_stream"
+   },
+   "params": {
+    "filter": "none",
+    "legacy": {
+     "class": "MET",
+     "classification": "existing_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/met.py"
+     ],
+     "module": "MET_jec_Nominal",
+     "notes": "Preserves the legacy selection output name. Active config has no min_pt or max_pt, so this selection is an explicit non-negative MET sanity mask.",
+     "port_status": "implemented",
+     "role": "selection"
+    },
+    "output_field": "jec_Nominal_TypeIPuppiMET_selection",
+    "selection": {
+     "jec_Nominal_TypeIPuppiMET_selection": [
+      "jec_Nominal_TypeIPuppiMET_pt >= 0"
+     ]
+    }
+   }
+  },
+  "stage.METType1@Regrouped_RelativeSample_2022_down": {
+   "meta": {
+    "applies_to": {
+     "eventtypes": [
+      "mc"
+     ]
+    },
+    "stage_id": "METType1",
+    "variation": {
+     "applies_to": {
+      "datasets": [],
+      "eventtypes": [
+       "mc"
+      ]
+     },
+     "direction": "down",
+     "group": "Regrouped_RelativeSample_2022",
+     "matrix_origin": {
+      "axes": {
+       "direction": [
+        "up",
+        "down"
+       ],
+       "source": [
+        "Regrouped_Absolute",
+        "Regrouped_BBEC1",
+        "Regrouped_EC2",
+        "Regrouped_HF",
+        "Regrouped_RelativeSample"
+       ]
+      }
+     },
+     "matrix_values": {
+      "direction": "down",
+      "source": "Regrouped_RelativeSample"
+     },
+     "metadata": {
+      "correction_source": "Regrouped_RelativeSample_2022",
+      "direction": "down",
+      "export_source": "Regrouped_RelativeSample_2022"
+     },
+     "mode": "inline",
+     "name": "Regrouped_RelativeSample_2022_down"
+    },
+    "variation_of": "stage.METType1",
+    "workflow_op": "chip.met_type1"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "input_fields": [
+     "RawPuppiMET_pt",
+     "RawPuppiMET_phi",
+     "Jet_L1_pt",
+     "Jet_Nominal_pt",
+     "Jet_phi",
+     "Jet_eta",
+     "Jet_neEmEF",
+     "Jet_chEmEF"
+    ],
+    "legacy": {
+     "also_seen_in": [
+      "legacy/pyRAT/config_lists/hinvisible.py",
+      "legacy/pyRAT-custom/tth_hinv_config.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc.py"
+     ],
+     "class": "MET",
+     "classification": "chip_local_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/met.py"
+     ],
+     "module": "MET_jec_Nominal",
+     "notes": "Type-I PuppiMET correction from RawPuppiMET plus reusable Jet_L1_pt and Jet_Nominal_pt. Does not apply a pT selection.",
+     "port_status": "implemented",
+     "role": "object"
+    },
+    "output_fields": [
+     "jec_Nominal_rawPuppiMET_pt",
+     "jec_Nominal_rawPuppiMET_phi",
+     "jec_Nominal_rawPuppiMET_eta",
+     "jec_Nominal_rawPuppiMET_mass",
+     "jec_Nominal_TypeIPuppiMET_pt",
+     "jec_Nominal_TypeIPuppiMET_phi",
+     "jec_Nominal_TypeIPuppiMET_eta",
+     "jec_Nominal_TypeIPuppiMET_mass"
+    ]
+   }
+  },
+  "stage.NoiseFilterSelection": {
+   "meta": {
+    "stage_id": "NoiseFilterSelection",
+    "workflow_op": "hep.selection.cutflow"
+   },
+   "outputs": {
+    "cutflow": "cutflow",
+    "stream": "event_stream"
+   },
+   "params": {
+    "filter": "none",
+    "legacy": {
+     "also_seen_in": [
+      "legacy/pyRAT/config_lists/hinvisible.py",
+      "legacy/pyRAT-custom/tth_hinv_config.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc.py"
+     ],
+     "candidate_fasthep": [
+      "hep.selection.cutflow"
+     ],
+     "class": "NoiseFilterSelection",
+     "classification": "existing_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/noise_filter_selection.py",
+      "legacy/pyRAT/modules/trigger_selection.py",
+      "legacy/pyRAT/utils/cms/year_run_utils.py"
+     ],
+     "module": "NoiseFilterSelection",
+     "notes": "Active Run 3 ttH-MVA path resolves both data and MC to CampaignInfoMap default filters for 2022, 2022EE, 2023, 2023BPix, and 2024. Legacy TriggerSelection copies each configured flag and writes Noise_filter_selection as their logical AND; missing configured flags raise a RuntimeError.",
+     "port_status": "implemented",
+     "role": "event-filter"
+    },
+    "output_field": "Noise_filter_selection",
+    "selection": {
+     "Noise_filter_selection": [
+      "Flag_goodVertices",
+      "Flag_globalSuperTightHalo2016Filter",
+      "Flag_HBHENoiseFilter",
+      "Flag_HBHENoiseIsoFilter",
+      "Flag_EcalDeadCellTriggerPrimitiveFilter",
+      "Flag_BadPFMuonFilter",
+      "Flag_BadPFMuonDzFilter",
+      "Flag_eeBadScFilter",
+      "Flag_ecalBadCalibFilter"
+     ]
+    }
+   }
+  },
+  "stage.NominalWeight": {
+   "meta": {
+    "applies_to": {
+     "eventtype": "mc"
+    },
+    "stage_id": "NominalWeight",
+    "workflow_op": "chip.nominal_weight"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "legacy": {
+     "also_seen_in": [
+      "legacy/pyRAT/config_lists/hinvisible.py",
+      "legacy/pyRAT-custom/tth_hinv_config.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc.py"
+     ],
+     "candidate_fasthep": [
+      "chip.nominal_weight"
+     ],
+     "class": "SimpleWeightModule",
+     "classification": "chip_local_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/simple_weight_module.py",
+      "legacy/pyRAT/modules/mc_weights.py"
+     ],
+     "module": "MCWeights",
+     "notes": "Explicitly composes weight_total from nominal generator and pileup factors.",
+     "port_status": "implemented",
+     "role": "weight"
+    }
+   }
+  },
+  "stage.PDFWeights": {
+   "meta": {
+    "applies_to": {
+     "eventtype": "mc"
+    },
+    "stage_id": "PDFWeights",
+    "workflow_op": "chip.pdf_weights"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "legacy": {
+     "also_seen_in": [
+      "legacy/pyRAT/config_lists/hinvisible.py",
+      "legacy/pyRAT-custom/tth_hinv_config.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc.py"
+     ],
+     "candidate_fasthep": [
+      "chip.pdf_weights"
+     ],
+     "class": "MCWeights",
+     "classification": "chip_local_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/mc_weights.py"
+     ],
+     "module": "MCWeights",
+     "notes": "Expands LHEPdfWeight into fixed numbered weight_pdf_<index> fields for auditable dependencies.",
+     "port_status": "implemented",
+     "role": "weight"
+    }
+   }
+  },
+  "stage.PileupWeights": {
+   "meta": {
+    "applies_to": {
+     "eventtype": "mc"
+    },
+    "stage_id": "PileupWeights",
+    "workflow_op": "chip.pileup_weights"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "legacy": {
+     "also_seen_in": [
+      "legacy/pyRAT/config_lists/hinvisible.py",
+      "legacy/pyRAT-custom/tth_hinv_config.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc.py"
+     ],
+     "candidate_fasthep": [
+      "chip.pileup_weights"
+     ],
+     "class": "MCWeights",
+     "classification": "chip_local_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/mc_weights.py",
+      "legacy/pyRAT/modules/helpers/corrections_utils.py"
+     ],
+     "module": "MCWeights",
+     "notes": "Uses Pileup_nTrueInt to evaluate an explicit correctionlib resource. No RunIII2024Summer24 POG pileup payload is currently present on CVMFS, so the workflow explicitly falls back to 2023_Summer23 with a runtime warning.",
+     "port_status": "partial",
+     "role": "weight"
+    },
+    "resource": "cms.pileup"
+   }
+  },
+  "stage.ScaleWeights": {
+   "meta": {
+    "applies_to": {
+     "eventtype": "mc"
+    },
+    "stage_id": "ScaleWeights",
+    "workflow_op": "chip.scale_weights"
+   },
+   "outputs": {
+    "stream": "event_stream"
+   },
+   "params": {
+    "legacy": {
+     "also_seen_in": [
+      "legacy/pyRAT/config_lists/hinvisible.py",
+      "legacy/pyRAT-custom/tth_hinv_config.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc.py"
+     ],
+     "candidate_fasthep": [
+      "chip.scale_weights"
+     ],
+     "class": "MCWeights",
+     "classification": "chip_local_component",
+     "configured_by": [
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_data_tthmva.py",
+      "legacy/pyRAT-custom/tth_hinv_config_Run3_mc_tthmva.py"
+     ],
+     "declared_in": [
+      "legacy/pyRAT/modules/mc_weights.py"
+     ],
+     "module": "MCWeights",
+     "notes": "Expands LHEScaleWeight into fixed numbered weight_scale_<index> fields.",
+     "port_status": "implemented",
+     "role": "weight"
+    }
+   }
+  }
+ },
+ "schema_version": 1
+}

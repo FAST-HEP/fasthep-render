@@ -1,0 +1,30 @@
+{
+ "bundle_label": "Zmumu",
+ "leaks_found": [],
+ "measurements": {
+  "artifacts": 2,
+  "normalise_seconds": 0.002,
+  "output_bytes": {
+   "artifacts/histogram-c6e0053027/details.json": 1681,
+   "artifacts/histogram-c6e0053027/graph.json": 4187,
+   "artifacts/plot-828dd5359b/details.json": 3965,
+   "artifacts/plot-828dd5359b/graph.json": 4511,
+   "run-index.json": 1565
+  }
+ },
+ "origin_summary": {
+  "curated": [],
+  "inferred": "chain and region groups (computed here)",
+  "sanitized": "paths, host names, user names",
+  "source": "graph nodes, edges, dataset facts, meta.variation groups",
+  "synthetic": []
+ },
+ "sanitization_counts": {
+  "absolute_path": 2
+ },
+ "sanitized": true,
+ "schema_version": 1,
+ "source_graph_sha256": "2d084f45d6d856bbbccd50b98abfeb932bdcdc59a25fee5eeecfb47a998f9b89",
+ "subset_of_artifacts": null,
+ "tool": "fasthep_render.experimental.provenance.normalise"
+}

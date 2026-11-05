@@ -1,0 +1,57 @@
+{
+ "artifacts": [
+  {
+   "ancestor_count": 18,
+   "completeness": "partial",
+   "completeness_note": "no provenance record; lineage derived from the compile graph",
+   "details_ref": "artifacts/cutflow-b0cf6f46f3/details.json",
+   "graph_ref": "artifacts/cutflow-b0cf6f46f3/graph.json",
+   "id": "cutflow-b0cf6f46f3",
+   "kind": "cutflow",
+   "name": "DetectorMitigationSelection",
+   "path": "artifacts/cutflows/DetectorMitigationSelection.json",
+   "producer_id": "stage.DetectorMitigationSelection@Regrouped_RelativeSample_2022_down",
+   "run_id": "6f54be37-af23-41db-b5ba-67ac337e4c1b"
+  }
+ ],
+ "run": {
+  "execution": {
+   "cwd": "<path>/chip",
+   "platform": "Linux-7.0.0-34-generic-x86_64-with-glibc2.43",
+   "python_executable": "<path>/python3.14",
+   "python_version": "3.14.7"
+  },
+  "graph_edge_count": 1912,
+  "graph_node_count": 1425,
+  "has_run_summary": true,
+  "id": "6f54be37-af23-41db-b5ba-67ac337e4c1b",
+  "partition_count": 1,
+  "resource_ids": [
+   "chip.nlo_kfactor.zjets.ewk.run3",
+   "cms.jec.ak4puppi.Regrouped_Absolute.mc",
+   "cms.jec.ak4puppi.Regrouped_Absolute_2022.mc",
+   "cms.jec.ak4puppi.Regrouped_BBEC1.mc",
+   "cms.jec.ak4puppi.Regrouped_BBEC1_2022.mc",
+   "cms.jec.ak4puppi.Regrouped_EC2.mc",
+   "cms.jec.ak4puppi.Regrouped_EC2_2022.mc",
+   "cms.jec.ak4puppi.Regrouped_FlavorQCD.mc",
+   "cms.jec.ak4puppi.Regrouped_HF.mc",
+   "cms.jec.ak4puppi.Regrouped_HF_2022.mc",
+   "cms.jec.ak4puppi.Regrouped_RelativeBal.mc",
+   "cms.jec.ak4puppi.Regrouped_RelativeSample_2022.mc",
+   "cms.jec.ak4puppi.Total.mc",
+   "cms.jec.ak4puppi.full.mc",
+   "cms.jec.ak4puppi.l1.mc",
+   "cms.jet_veto_map",
+   "cms.pileup"
+  ],
+  "software": {
+   "fasthep-carpenter": "2026.10.2",
+   "fasthep-cli": "2026.10.3.dev1+g8f2fc9220",
+   "fasthep-curator": "2026.10.1",
+   "fasthep-flow": "2026.10.1",
+   "fasthep-render": "2026.10.1"
+  }
+ },
+ "schema_version": 1
+}
