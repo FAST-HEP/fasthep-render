@@ -519,14 +519,13 @@ class RenderSpec:
                         },
                     )
 
-            elif isinstance(by, str):
-                if by != "dataset_group":
-                    return FlowIssue(
-                        level=IssueLevel.ERROR,
-                        code="RENDER_TRANSFORM_GROUP_UNKNOWN_MODE",
-                        message=f"Unsupported group transform mode: {by!r}",
-                        meta={"supported": ["dataset_group"]},
-                    )
+            elif isinstance(by, str) and by != "dataset_group":
+                return FlowIssue(
+                    level=IssueLevel.ERROR,
+                    code="RENDER_TRANSFORM_GROUP_UNKNOWN_MODE",
+                    message=f"Unsupported group transform mode: {by!r}",
+                    meta={"supported": ["dataset_group"]},
+                )
 
         return None
 
