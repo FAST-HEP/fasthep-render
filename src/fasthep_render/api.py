@@ -35,15 +35,19 @@ def run_render_sink(
     target: Any,
     spec: dict[str, Any] | None = None,
     output_path: str,
-    output_dir: str | None = None,
     ctx: dict[str, Any] | None = None,
     **_: Any,
-) -> OutputResult:
-    """Run a registered render sink through the public Render API boundary."""
+) -> OutputResult | list[OutputResult]:
+    """
+    Run a registered render sink through the public Render API boundary.
+
+    Returns one ``OutputResult`` per file written: a list when a renderer writes
+    several files (a per-dataset heatmap), an empty list when it wrote none (a
+    skipped render). Paths are absolute, so Flow reads them unambiguously.
+    """
     ctx = dict(ctx or {})
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
-    if output_dir is not None:
-        ctx["output_dir"] = output_dir
+    ctx["output_dir"] = str(Path(output_path).with_suffix(""))
     ctx["output_path"] = output_path
 
     product = target if isinstance(target, dict) else {"hist": target}
@@ -67,16 +71,26 @@ def run_render_sink(
     if outcome.status not in {RenderStatus.RENDERED, RenderStatus.SKIPPED}:
         raise RuntimeError(outcome.message or f"Render sink {op} failed")
 
-    path = str(outcome.meta.get("output") or output_path)
+    metadata = {
+        "sink": op,
+        "render_status": outcome.status.value,
+        **dict(outcome.meta or {}),
+    }
+    written = outcome.meta.get("outputs")
+    if isinstance(written, list):
+        return [_output_result(path, metadata) for path in written]
+    if outcome.status is RenderStatus.SKIPPED:
+        return []
+    return _output_result(str(outcome.meta.get("output") or output_path), metadata)
+
+
+def _output_result(path: str, metadata: dict[str, Any]) -> OutputResult:
+    absolute = str(Path(path).absolute())
     return OutputResult(
         kind="artifact",
-        path=path,
-        format=Path(path).suffix.lstrip(".") or "png",
-        metadata={
-            "sink": op,
-            "render_status": outcome.status.value,
-            **dict(outcome.meta or {}),
-        },
+        path=absolute,
+        format=Path(absolute).suffix.lstrip(".") or "png",
+        metadata=dict(metadata),
     )
 
 
