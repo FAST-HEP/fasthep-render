@@ -37,7 +37,7 @@ def _per_dataset_spec(*, per_dataset: bool = True) -> dict:
 
 
 def _dataset_hist2d(datasets: list[str]) -> hist.Hist:
-    h = hist.Hist(
+    h: hist.Hist = hist.Hist(
         hist.axis.StrCategory(datasets, name="dataset", growth=True),
         hist.axis.Regular(4, 0.0, 4.0, name="pt"),
         hist.axis.Regular(4, -2.0, 2.0, name="eta"),
