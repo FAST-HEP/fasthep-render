@@ -48,6 +48,7 @@ def run_schema_validation_render(
     rendered: list[OutputResult] = []
     for output in configured_outputs:
         output_path = _output_path(output, outdir)
+        output_path = output_path.absolute()
         output_format = str(output["format"]).lower()
         output_path.parent.mkdir(parents=True, exist_ok=True)
         if output_format in {"markdown", "md"}:
@@ -72,8 +73,6 @@ def run_schema_validation_render(
                     "writer_manifest": {
                         "kind": f"schema_validation_{final_format}",
                         "node_id": str(meta.get("node_id") or ""),
-                        "path": _relative_to_outdir(output_path, outdir),
-                        "path_type": "relative_to_outdir",
                         "inputs": list(render_model.get("input_products") or []),
                     },
                 },
@@ -268,13 +267,6 @@ def _output_path(output: dict[str, str], outdir: Path) -> Path:
     if path.is_absolute():
         return path
     return outdir / path
-
-
-def _relative_to_outdir(path: Path, outdir: Path) -> str:
-    try:
-        return path.resolve().relative_to(outdir.resolve()).as_posix()
-    except ValueError:
-        return path.as_posix()
 
 
 __all__ = [
