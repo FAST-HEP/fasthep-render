@@ -47,7 +47,7 @@ def run_report_template(
 
     rendered: list[OutputResult] = []
     for output in outputs:
-        output_path = Path(str(output["path"]))
+        output_path = Path(str(output["path"])).absolute()
         output_format = str(output["format"]).lower()
         output_path.parent.mkdir(parents=True, exist_ok=True)
         if output_format in {"markdown", "md"}:

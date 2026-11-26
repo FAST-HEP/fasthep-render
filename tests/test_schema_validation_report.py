@@ -118,7 +118,10 @@ def test_schema_validation_render_writes_markdown_html_and_manifest_metadata(
     assert "<html" in html_text
     assert "Schema Validation Report" in html_text
     manifest = outputs[0].metadata["writer_manifest"]
-    assert manifest["path"] == "reports/schema-validation.md"
+    # Flow owns the recorded location; the sink reports where it wrote.
+    assert "path" not in manifest
+    assert "path_type" not in manifest
+    assert outputs[0].path == str(markdown)
     assert manifest["inputs"] == [
         {
             "name": "mc",
@@ -195,3 +198,18 @@ def _empty_comparison() -> dict:
             "only_in_target": 0,
         },
     }
+
+
+def test_schema_validation_reports_absolute_paths_with_a_relative_outdir(
+    tmp_path: Path, monkeypatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+
+    outputs = run_schema_validation_render(
+        {"mc": _comparison()},
+        spec={"outputs": [{"path": "reports/sv.md", "format": "markdown"}]},
+        ctx={"outdir": "build"},
+    )
+
+    assert outputs[0].path == str(tmp_path / "build" / "reports" / "sv.md")
+    assert Path(outputs[0].path).is_file()

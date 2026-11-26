@@ -123,3 +123,28 @@ def _context() -> dict:
         ],
         "warnings": [],
     }
+
+
+def test_report_template_reports_absolute_paths_for_relative_outputs(
+    tmp_path: Path, monkeypatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+
+    outputs = run_report_template(
+        report_context=_context(),
+        source="provenance",
+        template="hep.provenance.default",
+        outputs=[{"path": "reports/out.md", "format": "markdown"}],
+        ctx={
+            "report_templates": {
+                "hep.provenance.default": {
+                    "path": "fasthep_render/templates/reports/provenance.md.j2",
+                    "source": "provenance",
+                    "formats": ["markdown"],
+                }
+            }
+        },
+    )
+
+    assert outputs[0].path == str(tmp_path / "reports" / "out.md")
+    assert Path(outputs[0].path).is_file()
