@@ -30,7 +30,7 @@ def test_report_template_renders_markdown_and_html(tmp_path: Path) -> None:
         },
     )
 
-    assert [output.format for output in outputs] == ["markdown", "html"]
+    assert [output.metadata["format"] for output in outputs] == ["markdown", "html"]
     markdown = markdown_path.read_text(encoding="utf-8")
     html = html_path.read_text(encoding="utf-8")
     assert "# Provenance Report" in markdown

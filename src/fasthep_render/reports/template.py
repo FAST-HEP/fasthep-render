@@ -66,8 +66,8 @@ def run_report_template(
             OutputResult(
                 kind="artifact",
                 path=str(output_path),
-                format=final_format,
                 metadata={
+                    "format": final_format,
                     "sink": "hep.report.template",
                     "source": source,
                     "template": template_id,

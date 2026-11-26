@@ -89,7 +89,6 @@ def _output_result(path: str, metadata: dict[str, Any]) -> OutputResult:
     return OutputResult(
         kind="artifact",
         path=absolute,
-        format=Path(absolute).suffix.lstrip(".") or "png",
         metadata=dict(metadata),
     )
 
