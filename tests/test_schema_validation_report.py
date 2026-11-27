@@ -98,7 +98,7 @@ def test_schema_validation_render_writes_markdown_html_and_manifest_metadata(
         meta={"node_id": "render.SchemaValidationReport.0"},
     )
 
-    assert [output.format for output in outputs] == ["markdown", "html"]
+    assert [output.metadata["format"] for output in outputs] == ["markdown", "html"]
     report = markdown.read_text(encoding="utf-8")
     html_text = html.read_text(encoding="utf-8")
     assert "# Schema Validation Report" in report

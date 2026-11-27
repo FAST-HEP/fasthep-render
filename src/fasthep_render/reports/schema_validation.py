@@ -67,8 +67,8 @@ def run_schema_validation_render(
             OutputResult(
                 kind="artifact",
                 path=str(output_path),
-                format=final_format,
                 metadata={
+                    "format": final_format,
                     "artifact_kind": f"schema_validation_{final_format}",
                     "writer_manifest": {
                         "kind": f"schema_validation_{final_format}",
